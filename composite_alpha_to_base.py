@@ -1,239 +1,153 @@
 import torch
-import os
-import hashlib
-from torchvision import transforms
-from typing import Tuple, Union
-
-from PIL import Image, ImageOps, ImageSequence, ImageDraw
-import numpy as np
-import cv2
-import pickle
-from typing import List, Union
-from skimage import img_as_float, img_as_ubyte
-
-from utils.tensor_utils import TensorImgUtils
-from transform.scale import ImageScaler
-from equalize.equalize_size import SizeMatcher
-
-
-# sys.path.insert(0, os.path.join(os.path.dirname(os.path.realpath(__file__)), "comfy"))
-
-import folder_paths
-
-# class Example:
-#     """
-#     A example node
-
-#     Class methods
-#     -------------
-#     INPUT_TYPES (dict):
-#         Tell the main program input parameters of nodes.
-#     IS_CHANGED:
-#         optional method to control when the node is re executed.
-
-#     Attributes
-#     ----------
-#     RETURN_TYPES (`tuple`):
-#         The type of each element in the output tulple.
-#     RETURN_NAMES (`tuple`):
-#         Optional: The name of each output in the output tulple.
-#     FUNCTION (`str`):
-#         The name of the entry-point method. For example, if `FUNCTION = "execute"` then it will run Example().execute()
-#     OUTPUT_NODE ([`bool`]):
-#         If this node is an output node that outputs a result/image from the graph. The SaveImage node is an example.
-#         The backend iterates on these output nodes and tries to execute all their parents if their parent graph is properly connected.
-#         Assumed to be False if not present.
-#     CATEGORY (`str`):
-#         The category the node should appear in the UI.
-#     execute(s) -> tuple || None:
-#         The entry point method. The name of this method must be the same as the value of property `FUNCTION`.
-#         For example, if `FUNCTION = "execute"` then this method's name must be `execute`, if `FUNCTION = "foo"` then it must be `foo`.
-#     """
-#     def __init__(self):
-#         pass
-
-#     @classmethod
-#     def INPUT_TYPES(s):
-#         """
-#             Return a dictionary which contains config for all input fields.
-#             Some types (string): "MODEL", "VAE", "CLIP", "CONDITIONING", "LATENT", "IMAGE", "INT", "STRING", "FLOAT".
-#             Input types "INT", "STRING" or "FLOAT" are special values for fields on the node.
-#             The type can be a list for selection.
-
-#             Returns: `dict`:
-#                 - Key input_fields_group (`string`): Can be either required, hidden or optional. A node class must have property `required`
-#                 - Value input_fields (`dict`): Contains input fields config:
-#                     * Key field_name (`string`): Name of a entry-point method's argument
-#                     * Value field_config (`tuple`):
-#                         + First value is a string indicate the type of field or a list for selection.
-#                         + Secound value is a config for type "INT", "STRING" or "FLOAT".
-#         """
-#         return {
-#             "required": {
-#                 "image": ("IMAGE",),
-#                 "int_field": ("INT", {
-#                     "default": 0,
-#                     "min": 0, #Minimum value
-#                     "max": 4096, #Maximum value
-#                     "step": 64, #Slider's step
-#                     "display": "number" # Cosmetic only: display as "number" or "slider"
-#                 }),
-#                 "float_field": ("FLOAT", {
-#                     "default": 1.0,
-#                     "min": 0.0,
-#                     "max": 10.0,
-#                     "step": 0.01,
-#                     "round": 0.001, #The value represeting the precision to round to, will be set to the step value by default. Can be set to False to disable rounding.
-#                     "display": "number"}),
-#                 "print_to_screen": (["enable", "disable"],),
-#                 "string_field": ("STRING", {
-#                     "multiline": False, #True if you want the field to look like the one on the ClipTextEncode node
-#                     "default": "Hello World!"
-#                 }),
-#             },
-#         }
-
-#     RETURN_TYPES = ("IMAGE",)
-#     #RETURN_NAMES = ("image_output_name",)
-
-#     FUNCTION = "test"
-
-#     #OUTPUT_NODE = False
-
-#     CATEGORY = "Example"
-
-#     def test(self, image, string_field, int_field, float_field, print_to_screen):
-#         if print_to_screen == "enable":
-#             print(f"""Your input contains:
-#                 string_field aka input text: {string_field}
-#                 int_field: {int_field}
-#                 float_field: {float_field}
-#             """)
-#         #do some processing on the image, in this example I just invert it
-#         image = 1.0 - image
-#         return (image,)
-
-#     """
-#         The node will always be re executed if any of the inputs change but
-#         this method can be used to force the node to execute again even when the inputs don't change.
-#         You can make this node return a number or a string. This value will be compared to the one returned the last time the node was
-#         executed, if it is different the node will be executed again.
-#         This method is used in the core repo for the LoadImage node where they return the image hash as a string, if the image hash
-#         changes between executions the LoadImage node is executed again.
-#     """
-#     #@classmethod
-#     #def IS_CHANGED(s, image, string_field, int_field, float_field, print_to_screen):
-#     #    return ""
-
-# # Set the web directory, any .js file in that directory will be loaded by the frontend as a frontend extension
-# # WEB_DIRECTORY = "./somejs"
-
-# # A dictionary that contains all nodes you want to export with their names
-# # NOTE: names should be globally unique
-# NODE_CLASS_MAPPINGS = {
-#     "Example": Example
-# }
-
-# # A dictionary that contains the friendly/humanly readable titles for the nodes
-# NODE_DISPLAY_NAME_MAPPINGS = {
-#     "Example": "Example Node"
-# }
+from typing import Tuple
+from .utils.tensor_utils import TensorImgUtils
+from .equalize.equalize_size import SizeMatcher
 
 
 class CompositeAlphaToBase:
     def __init__(self):
-        CATEGORY = "image"
-        RETURN_TYPES = ("IMAGE",)
-        FUNCTION = "main"
+        pass
+
+    CATEGORY = "image"
+    RETURN_TYPES = ("IMAGE",)
+    FUNCTION = "main"
 
     @classmethod
     def INPUT_TYPES(s):
-        input_dir = folder_paths.get_input_directory()
-        # files = [
-        #     f
-        #     for f in os.listdir(input_dir)
-        #     if os.path.isfile(os.path.join(input_dir, f))
-        # ]
         return {
             "required": {
-                # "base_image": (sorted(files), {"image_upload": True}),
-                # "alpha_overlay": (sorted(files), {"image_upload": True}),
                 "base_image": ("IMAGE",),
-                "alpha_overlay": ("IMAGE",),
+                "cutout": ("IMAGE",),
+                "cutout_alpha": ("MASK",),
                 "size_matching_method": (
                     [
-                        "fit_center_and_pad",
-                        "cover_maintain_aspect_ratio_with_crop",
-                        "cover_perfect_by_distorting",
-                        "crop_larger_to_match_center",
-                        "crop_larger_to_match_inplace",
+                        "cover_crop_center",
+                        "cover_crop",
+                        "center_dont_resize",
+                        "fill",
+                        "fit_center",
+                        "crop_larger_center",
+                        "crop_larger_topleft",
                     ],
                 ),
             },
         }
 
+    def main(
+        self,
+        base_image: torch.Tensor,  # [Batch_n, H, W, 3-channel]
+        cutout: torch.Tensor,  # [Batch_n, H, W, 3-channel]
+        cutout_alpha: torch.Tensor,  # [H, W, 1-channel]
+        size_matching_method: str = "cover_crop_center",
+    ) -> Tuple[torch.Tensor, ...]:
+
+        # Recurse by batch dimension if present
+        if base_image.dim() == 4 or cutout.dim() == 4 or cutout_alpha.dim() == 4:
+            return tuple(
+                self.main(
+                    base_image[i] if base_image.dim() == 4 else base_image,
+                    cutout[i] if cutout.dim() == 4 else cutout,
+                    cutout_alpha[i] if cutout_alpha.dim() == 4 else cutout_alpha,
+                    size_matching_method,
+                )
+                for i in range(base_image.size(0))
+            )
+
+        # NOTE: comfy using [batch, height, width, channels]
+        base_image = self.__to_chw_singleton(base_image)
+        cutout = self.__to_chw_singleton(cutout)
+
+        alpha_cutout = self.recombine_alpha(cutout, cutout_alpha)
+        base_image, alpha_cutout = self.match_size(
+            base_image, alpha_cutout, size_matching_method
+        )
+
+        ret = self.composite(base_image, alpha_cutout)
+        ret = self.__to_hwc_singleton(ret)
+
+        # NOTE: return type
+        return (ret,)
+
+    def __to_chw_singleton(self, tensor: torch.Tensor) -> torch.Tensor:
+        # If
+        return TensorImgUtils.test_squeeze_batch(tensor).permute(2, 0, 1)
+
+    def __to_hwc_singleton(self, tensor: torch.Tensor) -> torch.Tensor:
+        return TensorImgUtils.test_squeeze_batch(tensor).permute(1, 2, 0)
+
+    def __to_chw(self, tensor: torch.Tensor) -> torch.Tensor:
+        return tensor.permute(0, 3, 1, 2)
+
+    def __to_hwc(self, tensor: torch.Tensor) -> torch.Tensor:
+        return tensor.permute(0, 2, 3, 1)
+
     def composite(
-        self, base_image: torch.Tensor, alpha_overlay: torch.Tensor
+        self, base_image: torch.Tensor, alpha_cutout: torch.Tensor
     ) -> torch.Tensor:
-        
-        alpha_overlay = TensorImgUtils.test_squeeze_batch(alpha_overlay)
+
+        alpha_cutout = TensorImgUtils.test_squeeze_batch(alpha_cutout)
         base_image = TensorImgUtils.test_squeeze_batch(base_image)
 
+        # Extract the alpha channel from the cutout
+        alpha_only = alpha_cutout[3, :, :]
 
-        # Initialize the composite image as a copy of the base image
-        composite_image = base_image.clone()
+        # All pixels that are not transparent should be from the cutout
+        composite = alpha_cutout[:3, :, :] * alpha_only + base_image * (1 - alpha_only)
 
-        # Iterate over the pixels of the base image
-        for i in range(base_image.shape[1]):  # Iterate over the height of the image
-            for j in range(base_image.shape[2]): # Iterate over the width of the image
-                # Replace pixel values with corresponding values from alpha layer if alpha value is not transparent
-                # Check if dimension 0 has size 4 at this pixel
-                if alpha_overlay.shape[0] == 4 and alpha_overlay[3, i, j] > 0: 
-                    composite_image[:, i, j] = alpha_overlay[:3, i, j]
-
-        return composite_image
+        return composite
 
     def match_size(
         self,
         base_image: torch.Tensor,
-        alpha_overlay: torch.Tensor,
+        alpha_cutout: torch.Tensor,
         size_matching_method: str,
     ) -> Tuple[torch.Tensor]:
         base_image = base_image.unsqueeze(0)
-        alpha_overlay = alpha_overlay.unsqueeze(0)
+        alpha_cutout = alpha_cutout.unsqueeze(0)
 
         size_matcher = SizeMatcher()
-        if size_matching_method == "fit_center_and_pad":
-            base_image, alpha_overlay = size_matcher.fit_maintain_pad(
-                base_image, alpha_overlay
+        if size_matching_method == "fit_center":
+            base_image, alpha_cutout = size_matcher.fit_maintain_pad(
+                base_image, alpha_cutout
             )
-        elif size_matching_method == "cover_maintain_aspect_ratio_with_crop":
-            base_image, alpha_overlay = size_matcher.cover_maintain(
-                base_image, alpha_overlay
+        elif size_matching_method == "cover_crop_center":
+            base_image, alpha_cutout = size_matcher.cover_maintain(
+                base_image, alpha_cutout, center=True
             )
-        elif size_matching_method == "cover_perfect_by_distorting":
-            base_image, alpha_overlay = size_matcher.cover_distort(
-                base_image, alpha_overlay
+        elif size_matching_method == "cover_crop":
+            base_image, alpha_cutout = size_matcher.cover_maintain(
+                base_image, alpha_cutout, center=False
             )
-        elif size_matching_method == "crop_larger_to_match":
-            base_image, alpha_overlay = size_matcher.crop_larger_to_match(
-                base_image, alpha_overlay, center=True
+        elif size_matching_method == "fill":
+            base_image, alpha_cutout = size_matcher.cover_distort(
+                base_image, alpha_cutout
             )
-        elif size_matching_method == "crop_larger_to_match_inplace":
-            base_image, alpha_overlay = size_matcher.crop_larger_to_match(
-                base_image, alpha_overlay, center=False
+        elif size_matching_method == "crop_larger_center":
+            base_image, alpha_cutout = size_matcher.crop_larger_to_match(
+                base_image, alpha_cutout, center=True
+            )
+        elif size_matching_method == "crop_larger_topleft":
+            base_image, alpha_cutout = size_matcher.crop_larger_to_match(
+                base_image, alpha_cutout, center=False
+            )
+        elif size_matching_method == "center_dont_resize":
+            base_image, alpha_cutout = size_matcher.pad_smaller(
+                base_image, alpha_cutout
             )
 
-        return (base_image, alpha_overlay)
+        return (base_image, alpha_cutout)
 
-    def main(
-        self,
-        base_image: torch.Tensor,
-        alpha_overlay: torch.Tensor,
-        size_matching_method: str = "cover_and_crop",
-    ) -> Tuple[torch.Tensor]:
-        base_image, alpha_overlay = self.match_size(
-            base_image, alpha_overlay, size_matching_method
-        )
-        return self.composite(base_image, alpha_overlay)
+    def recombine_alpha(self, image: torch.Tensor, alpha: torch.Tensor) -> torch.Tensor:
+        """
+        Recombine the image and alpha channel into a single tensor.
 
+        Args:
+            image (torch.Tensor): The image tensor.
+            alpha (torch.Tensor): The alpha channel tensor.
+
+        Returns:
+            torch.Tensor: The recombined image tensor.
+        """
+        # invert the alpha channel if it was a mask
+        alpha = 1 - alpha
+        return torch.cat((image, alpha), 0)

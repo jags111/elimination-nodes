@@ -14,10 +14,10 @@ import matplotlib.pyplot as plt
 import math
 from typing import Tuple
 
-sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), ".."))
-from composite_alpha_to_base import CompositeAlphaToBase
-from compare.make_grid import ComparisonGrid
-from utils.tensor_utils import TensorImgUtils
+
+from ..composite_alpha_to_base import CompositeAlphaToBase
+from ..compare.make_grid import ComparisonGrid
+from ..utils.tensor_utils import TensorImgUtils
 
 
 root = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
@@ -33,7 +33,9 @@ class TestCompositeAlphaToBase(unittest.TestCase):
         alpha = self.__random_real_alpha_img_tensors(1)[0]
 
         compositer = CompositeAlphaToBase()
-        composite = compositer.main(base, alpha, "cover_maintain_aspect_ratio_with_crop")
+        composite = compositer.main(
+            base, alpha, "cover_maintain_aspect_ratio_with_crop"
+        )
         self.assertIn(composite.shape[1:], [base.shape[1:], alpha.shape[1:]])
 
         ComparisonGrid(
@@ -269,9 +271,17 @@ class TestCompositeAlphaToBase(unittest.TestCase):
         random_indices = random.sample(range(0, len(sample)), n)
         fullpaths = [os.path.join(test_base_images, sample[i]) for i in random_indices]
 
-        # downscale to 20% 
+        # downscale to 20%
         pre_downscale = [self.__load_img_as_tensor(fullpaths[i]) for i in range(n)]
-        post_downscale = [transforms.Resize((int(pre_downscale[i].shape[1] * 0.2), int(pre_downscale[i].shape[2] * 0.2)))(pre_downscale[i]) for i in range(n)]
+        post_downscale = [
+            transforms.Resize(
+                (
+                    int(pre_downscale[i].shape[1] * 0.2),
+                    int(pre_downscale[i].shape[2] * 0.2),
+                )
+            )(pre_downscale[i])
+            for i in range(n)
+        ]
         return post_downscale
 
     def __random_real_alpha_img_tensors(self, n):
@@ -284,14 +294,22 @@ class TestCompositeAlphaToBase(unittest.TestCase):
         random_indices = random.sample(range(0, len(sample)), n)
         fullpaths = [os.path.join(test_alpha_images, sample[i]) for i in random_indices]
         pre_downscale = [self.__load_img_rgba_as_tensor(fullpaths[i]) for i in range(n)]
-        post_downscale = [transforms.Resize((int(pre_downscale[i].shape[1] * 0.2), int(pre_downscale[i].shape[2] * 0.2)))(pre_downscale[i]) for i in range(n)]
+        post_downscale = [
+            transforms.Resize(
+                (
+                    int(pre_downscale[i].shape[1] * 0.2),
+                    int(pre_downscale[i].shape[2] * 0.2),
+                )
+            )(pre_downscale[i])
+            for i in range(n)
+        ]
         return post_downscale
 
     def __load_img_as_tensor(self, img_fullpath):
         pil_image = Image.open(img_fullpath)
         tensor_image = transforms.ToTensor()(pil_image)
         return tensor_image
-    
+
     def __load_img_rgba_as_tensor(self, img_fullpath):
         pil_image = Image.open(img_fullpath)
         pil_image = pil_image.convert("RGBA")
@@ -301,4 +319,3 @@ class TestCompositeAlphaToBase(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

@@ -1,9 +1,8 @@
 import torch
 from torchvision import transforms
 from typing import Tuple
-from utils.tensor_utils import TensorImgUtils
-from transform.scale import ImageScaler
-from termcolor import colored
+from ..utils.tensor_utils import TensorImgUtils
+from ..transform.scale import ImageScaler
 
 
 class SizeMatcher:
@@ -164,7 +163,7 @@ class SizeMatcher:
         return (image_1, image_2)
 
     def cover_maintain(
-        self, image_1: torch.Tensor, image_2: torch.Tensor
+        self, image_1: torch.Tensor, image_2: torch.Tensor, center=True
     ) -> Tuple[torch.Tensor]:
         """
         Resizes the smaller of the two images to cover the dimensions of the larger image.
@@ -185,13 +184,13 @@ class SizeMatcher:
             image_2_ret = self.scale.by_side(
                 image_2, image_1.shape[target_axis], target_axis
             )
-            image_2_ret = self.crop_to_match(image_2_ret, (h1, w1), center=True)
+            image_2_ret = self.crop_to_match(image_2_ret, (h1, w1), center=center)
             if image_2_ret.shape[-2:] != image_1.shape[-2:]:
                 target_axis = TensorImgUtils.larger_axis(image_2)
                 image_2_ret = self.scale.by_side(
                     image_2, image_1.shape[target_axis], target_axis
                 )
-                image_2_ret = self.crop_to_match(image_2_ret, (h1, w1), center=True)
+                image_2_ret = self.crop_to_match(image_2_ret, (h1, w1), center=center)
 
             return (image_1, image_2_ret)
         else:
@@ -199,12 +198,12 @@ class SizeMatcher:
             image_1_ret = self.scale.by_side(
                 image_1, image_2.shape[target_axis], target_axis
             )
-            image_1_ret = self.crop_to_match(image_1_ret, (h2, w2), center=True)
+            image_1_ret = self.crop_to_match(image_1_ret, (h2, w2), center=center)
             if image_1_ret.shape[-2:] != image_2.shape[-2:]:
                 target_axis = TensorImgUtils.larger_axis(image_1)
                 image_1_ret = self.scale.by_side(
                     image_1, image_2.shape[target_axis], target_axis
                 )
-                image_1_ret = self.crop_to_match(image_1_ret, (h2, w2), center=True)
+                image_1_ret = self.crop_to_match(image_1_ret, (h2, w2), center=center)
 
             return (image_1_ret, image_2)
