@@ -19,6 +19,14 @@ class TensorImgUtils:
             return tensor
 
     @staticmethod
+    def most_pixels(img_tensors: list[torch.Tensor]) -> torch.Tensor:
+        sizes = [
+            TensorImgUtils.height_width(img)[0] * TensorImgUtils.height_width(img)[1]
+            for img in img_tensors
+        ]
+        return img_tensors[sizes.index(max(sizes))]
+
+    @staticmethod
     def height_width(image: torch.Tensor) -> Tuple[int, int]:
         """Like torchvision.transforms methods, this method assumes Tensor to
         have [..., H, W] shape, where ... means an arbitrary number of leading

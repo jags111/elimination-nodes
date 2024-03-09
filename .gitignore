@@ -16,6 +16,10 @@
 **/target/
 **/out/
 **/__pycache__/
+__pycache__
+**/.mypy_cache/
+**/.pytest_cache/
+**/.tox/
 **/.next/
 **/.pytest_cache/
 **/.coverage

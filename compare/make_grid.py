@@ -11,6 +11,8 @@ class ComparisonGrid:
     def __init__(
         self,
         images: list[Tuple[str, torch.Tensor]],
+        favor_dimension = "height",
+        filename_prefix: str = "",
         cell_padding: int = 10,
         temp_dirname: str = "temp",
     ):
@@ -21,12 +23,13 @@ class ComparisonGrid:
             for caption, img in images
         ]
 
+        self.favor = favor_dimension
+        self.filename_prefix = filename_prefix
         self.cell_padding = int(cell_padding)
         self.temp_dirname = temp_dirname
         os.makedirs(temp_dirname, exist_ok=True)
         self.rows, self.cols = self.best_square_grid(len(images))
         self.__set_dimensions()
-        self.create()
 
     def best_square_grid(self, n_items) -> Tuple[int, int]:
         """
@@ -40,7 +43,10 @@ class ComparisonGrid:
             # distance to next integer
             dist = root - int(root)
             if dist < 0.5:
-                return int(root) + 1, int(root)
+                if self.favor == "height":
+                    return int(root), int(root) + 1
+                else:
+                    return int(root) + 1 , int(root)
             else:
                 return int(root) + 1, int(root) + 1
 
@@ -48,9 +54,10 @@ class ComparisonGrid:
         self.cell_w = max([img.width for _, img in self.images]) + self.cell_padding
         self.cell_h = max([img.height for _, img in self.images]) + self.cell_padding
 
-    def create(self):
+    def __call__(self):
         # Stitch to grid
-        canvas = Image.new("RGB", (self.cols * self.cell_w, self.rows * self.max_h))
+        # high contrast light pink as rgb is (255, 182, 193)
+        canvas = Image.new("RGB", (self.cols * self.cell_w, self.rows * self.cell_h), color=(255, 182, 193))
         for i, (caption, img) in enumerate(self.images):
             row = i // self.cols
             col = i % self.cols
@@ -71,7 +78,7 @@ class ComparisonGrid:
 
         canvas.save(
             os.path.join(
-                self.temp_dirname, f"comparison_grid{time.strftime('%I_%M%p')}.jpg"
+                self.temp_dirname, f"{self.filename_prefix}-comparison_grid{time.strftime('%I_%M%p')}.jpg"
             )
         )
 

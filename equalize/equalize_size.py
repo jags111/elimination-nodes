@@ -2,11 +2,13 @@ import torch
 from torchvision import transforms
 from typing import Tuple
 from utils.tensor_utils import TensorImgUtils
+from transform.scale import ImageScaler
+from termcolor import colored
 
 
 class SizeMatcher:
-    def __init__(self, mode: str):
-        self.mode = mode
+    def __init__(self):
+        self.scale = ImageScaler()
 
     def crop_to_match(
         self, image: torch.Tensor, target_dimensions, center=False
@@ -22,9 +24,31 @@ class SizeMatcher:
         Returns:
             torch.Tensor: The cropped image tensor.
         """
-        if center:
-            return transforms.CenterCrop(target_dimensions)(image)
-        return image[:, :, : target_dimensions[0], : target_dimensions[1]]
+        diff_h = image.shape[2] - target_dimensions[0]
+        diff_w = image.shape[3] - target_dimensions[1]
+        # Calculate margins for center cropping
+        top_margin = diff_h // 2
+        bot_margin = top_margin + target_dimensions[0]
+        left_margin = diff_w // 2
+        right_margin = left_margin + target_dimensions[1]
+
+        if diff_h < 0 and diff_w < 0:
+            return image
+        elif diff_h < 0 and diff_w >= 0:
+            if center:
+                return image[:, :, :, left_margin:right_margin]
+            else:
+                return image[:, :, :, : target_dimensions[1]]
+        elif diff_w < 0 and diff_h >= 0:
+            if center:
+                return image[:, :, top_margin:bot_margin, :]
+            else:
+                return image[:, :, : target_dimensions[0], :]
+        else:
+            if center:
+                return image[:, :, top_margin:bot_margin, left_margin:right_margin]
+            else:
+                return image[:, :, : target_dimensions[0], : target_dimensions[1]]
 
     def fit_maintain_pad(
         self, image_1: torch.Tensor, image_2: torch.Tensor
@@ -45,11 +69,17 @@ class SizeMatcher:
         h1, w1 = TensorImgUtils.height_width(image_1)
         h2, w2 = TensorImgUtils.height_width(image_2)
         if h1 * w1 > h2 * w2:
-            target_axis = TensorImgUtils.smaller_axis(image_2)
-            image_2 = self.scale_side(image_2, image_1.shape[target_axis], target_axis)
+            max_scale_factor = min(h1 / h2, w1 / w2)
+            image_2 = self.scale.by_side(image_2, int(h2 * max_scale_factor), 2)
+            image_2 = transforms.Pad(
+                (0, 0, w1 - image_2.shape[3], h1 - image_2.shape[2])
+            )(image_2)
         else:
-            target_axis = TensorImgUtils.smaller_axis(image_1)
-            image_1 = self.scale_side(image_1, image_2.shape[target_axis], target_axis)
+            max_scale_factor = min(h2 / h1, w2 / w1)
+            image_1 = self.scale.by_side(image_1, int(h1 * max_scale_factor), 2)
+            image_1 = transforms.Pad(
+                (0, 0, w2 - image_1.shape[3], h2 - image_1.shape[2])
+            )(image_1)
 
         return (image_1, image_2)
 
@@ -77,7 +107,7 @@ class SizeMatcher:
         return (image_1, image_2)
 
     def crop_larger_to_match(
-        self, image_1: torch.Tensor, image_2: torch.Tensor
+        self, image_1: torch.Tensor, image_2: torch.Tensor, center=True
     ) -> Tuple[torch.Tensor]:
         """
         Crop the larger of the two images to match the dimensions of the smaller image.
@@ -91,10 +121,15 @@ class SizeMatcher:
         """
         h1, w1 = TensorImgUtils.height_width(image_1)
         h2, w2 = TensorImgUtils.height_width(image_2)
+        # If both sides are not larger, revert to cover_maintain
         if h1 * w1 > h2 * w2:
-            image_1 = self.crop_to_match(image_1, (h2, w2), center=True)
+            if h1 < h2 or w1 < w2:
+                return self.cover_maintain(image_1, image_2)
+            image_1 = self.crop_to_match(image_1, (h2, w2), center=center)
         else:
-            image_2 = self.crop_to_match(image_2, (h1, w1), center=True)
+            if h2 < h1 or w2 < w1:
+                return self.cover_maintain(image_1, image_2)
+            image_2 = self.crop_to_match(image_2, (h1, w1), center=center)
 
         return (image_1, image_2)
 
@@ -117,11 +152,35 @@ class SizeMatcher:
         h2, w2 = TensorImgUtils.height_width(image_2)
         if h1 * w1 > h2 * w2:
             target_axis = TensorImgUtils.smaller_axis(image_2)
-            image_2 = self.scale_side(image_2, image_1.shape[target_axis], target_axis)
-            image_2 = self.crop_to_match(image_2, (h1, w1), center=True)
+            image_2_ret = self.scale.by_side(
+                image_2, image_1.shape[target_axis], target_axis
+            )
+            image_2_ret = self.crop_to_match(image_2_ret, (h1, w1), center=True)
+            if image_2_ret.shape[-2:] != image_1.shape[-2:]:
+                print(f"image_2_ret.shape: {image_2_ret.shape}")
+                print(f"image_1.shape: {image_1.shape}")
+                print(f"target_axis: {target_axis}")
+                target_axis = TensorImgUtils.larger_axis(image_2)
+                image_2_ret = self.scale.by_side(
+                    image_2, image_1.shape[target_axis], target_axis
+                )
+                image_2_ret = self.crop_to_match(image_2_ret, (h1, w1), center=True)
+
+            return (image_1, image_2_ret)
         else:
             target_axis = TensorImgUtils.smaller_axis(image_1)
-            image_1 = self.scale_side(image_1, image_2.shape[target_axis], target_axis)
-            image_1 = self.crop_to_match(image_1, (h2, w2), center=True)
+            image_1_ret = self.scale.by_side(
+                image_1, image_2.shape[target_axis], target_axis
+            )
+            image_1_ret = self.crop_to_match(image_1_ret, (h2, w2), center=True)
+            if image_1_ret.shape[-2:] != image_2.shape[-2:]:
+                print(f"image_1_ret.shape: {image_1_ret.shape}")
+                print(f"image_2.shape: {image_2.shape}")
+                print(f"target_axis: {target_axis}")
+                target_axis = TensorImgUtils.larger_axis(image_1)
+                image_1_ret = self.scale.by_side(
+                    image_1, image_2.shape[target_axis], target_axis
+                )
+                image_1_ret = self.crop_to_match(image_1_ret, (h2, w2), center=True)
 
-        return (image_1, image_2)
+            return (image_1_ret, image_2)

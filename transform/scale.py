@@ -5,17 +5,11 @@ from utils.tensor_utils import TensorImgUtils
 
 
 class ImageScaler:
-    def __init__(self, scale_factor):
-        self.scale_factor = scale_factor
+    def __init__(self, pad_constant=0, weight=1):
+        self.pad_constant = pad_constant
+        self.weight = weight
 
-    def __call__(self, sample):
-        image, landmarks = sample["image"], sample["landmarks"]
-        image = image * self.scale_factor
-        return {"image": image, "landmarks": landmarks}
-
-    def scale_side(
-        self, image: torch.Tensor, target_size: int, axis: int
-    ) -> torch.Tensor:
+    def by_side(self, image: torch.Tensor, target_size: int, axis: int) -> torch.Tensor:
         """
         Scales the given image tensor along the specified axis to the target size.
 

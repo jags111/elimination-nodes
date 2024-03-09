@@ -16,6 +16,7 @@ from typing import Tuple
 
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), ".."))
 from composite_alpha_to_base import CompositeAlphaToBase
+from compare.make_grid import ComparisonGrid
 
 
 HOME = os.path.expanduser("~")
@@ -30,87 +31,50 @@ TEST_IMAGES = [
 
 
 class TestCompositeAlphaToBase(unittest.TestCase):
-    def test_composite_accepts_tensors(self):
+    def test_composite_accepts_and_returns_tensors(self):
         random_real_img = self.__random_real_img_tensors(1)[0]
         random_noise_img = self.__random_noise_img_tensors(1)[0]
         compositer = CompositeAlphaToBase()
-        compositer.composite(random_real_img, random_noise_img)
+        res1, res2 = compositer.composite(random_real_img, random_noise_img)
 
-        self.assertEqual(type(compositer.base_image), torch.Tensor)
-        self.assertEqual(type(compositer.alpha_overlay), torch.Tensor)
+        self.assertEqual(type(res1), torch.Tensor)
+        self.assertEqual(type(res2), torch.Tensor)
 
-    def test_composite_resizes_to_fit(self):
-        compositer = CompositeAlphaToBase()
-        permutations = self.__image_difference_permutations()
-        results = []
-        for index, (img1, img2) in enumerate(permutations):
-            case_str = f"\n\n{'Case' if index < 7 else 'Edge Case' } {(index % 7) + 1}"
-            pre_resize_str = (
-                f"\n\nBefore Resize:\nimg1: {img1.shape}, img2: {img2.shape}"
-            )
-            resized = compositer.composite(img1, img2)
-            post_resize_str = (
-                f"\n\nAfter Resize:\n{resized[0].shape}, {resized[1].shape}"
-            )
-            self.assertEqual(
-                resized[0].shape[1:],
-                resized[1].shape[1:],
-                f"{case_str}{pre_resize_str}{post_resize_str}",
-            )
-            results += [
-                (f"{case_str} - Input Image 1 ({img1.shape})", img1),
-                (f"{case_str} - Input Image 2 ({img2.shape})", img2),
-                (f"{case_str} - Resized Image 1 ({resized[0].shape})", resized[0]),
-                (f"{case_str} - Resized Image 2 ({resized[1].shape})", resized[1]),
-            ]
-        
-        self.comparison_grid(results)
+    def test_composite_matches_input_sizes_all_modes(self):
+        modes = [
+            "cover_maintain_aspect_ratio_with_crop",
+            "cover_perfect_by_distorting",
+            "crop_larger_to_match",
+            "fit_center_and_pad",
+        ]
+        for mode in modes:
+            compositer = CompositeAlphaToBase()
+            permutations = self.__image_difference_permutations()
+            results = []
+            for index, (img1, img2) in enumerate(permutations):
+                case_str = (
+                    f"\n\n{'Case' if index < 7 else 'Edge Case' } {(index % 7) + 1}"
+                )
+                pre_resize_str = (
+                    f"\n\nBefore Resize:\nimg1: {img1.shape}, img2: {img2.shape}"
+                )
+                resized = compositer.composite(img1, img2, mode)
+                post_resize_str = (
+                    f"\n\nAfter Resize:\n{resized[0].shape}, {resized[1].shape}"
+                )
+                self.assertEqual(
+                    resized[0].shape[1:],
+                    resized[1].shape[1:],
+                    f"\n\n{mode}\n{case_str}{pre_resize_str}{post_resize_str}",
+                )
+                results += [
+                    (f"{case_str} - Input Image 1 ({img1.shape})", img1),
+                    (f"{case_str} - Input Image 2 ({img2.shape})", img2),
+                    (f"{case_str} - Resized Image 1 ({resized[0].shape})", resized[0]),
+                    (f"{case_str} - Resized Image 2 ({resized[1].shape})", resized[1]),
+                ]
 
-    def comparison_grid(self, images: list[Tuple[str, torch.Tensor]]):
-        cmp = CompositeAlphaToBase()
-        
-        to_pil = transforms.ToPILImage()
-        images = [(caption, to_pil(cmp.test_squeeze_batch(img))) for caption, img in images]
-        
-        temp_dirname = "temp"
-        os.makedirs(temp_dirname, exist_ok=True)
-
-        base_padding = 10 
-        max_w = 0
-        max_h = 0
-        for i, (_, img) in enumerate(images):
-            if img.width > max_w:
-                max_w = img.width
-            if img.height > max_h:
-                max_h = img.height
-            img.save(os.path.join(temp_dirname, f"img{i}.jpg"))
-
-        max_w += base_padding
-        max_h += base_padding
-
-
-        rows, cols = self.best_square_grid(len(images))
-
-        # Stitch to grid
-        canvas = Image.new("RGB", (cols * max_w, rows * max_h))
-        for i, (caption, img) in enumerate(images):
-            row = i // cols
-            col = i % cols
-
-            # Draw caption
-            ImageDraw.Draw(img).text((0, 0), caption, fill="white")
-
-            # Center in cell
-            padding_x = 0 if img.width >= max_w-2 else (max_w - img.width) // 2
-            padding_y = 0 if img.height >= max_h-2 else (max_h - img.height) // 2
-            canvas.paste(img, (col * max_w + padding_x, row * max_h + padding_y))
-
-        canvas.save(os.path.join(temp_dirname, "comparison_grid.jpg"))
-
-        os.system(
-            f"{self.__get_xdg_equiv()} {os.path.join(temp_dirname, 'comparison_grid.jpg')}"
-        )
-
+            ComparisonGrid(results, mode)().show()
 
     def __image_difference_permutations(self) -> list[list[torch.Tensor]]:
         """

@@ -160,7 +160,7 @@ class CompositeAlphaToBase:
                 # "alpha_overlay": (sorted(files), {"image_upload": True}),
                 "base_image": ("IMAGE",),
                 "alpha_overlay": ("IMAGE",),
-                "size_matching_method": (["fit_center_and_pad", "cover_maintain_aspect_ratio_with_crop", "cover_perfect_by_distorting", "crop_larger_to_match"],),
+                "size_matching_method": (["fit_center_and_pad", "cover_maintain_aspect_ratio_with_crop", "cover_perfect_by_distorting", "crop_larger_to_match_center", "crop_larger_to_match_inplace"],),
             },
         }
 
@@ -182,8 +182,15 @@ class CompositeAlphaToBase:
             base_image, alpha_overlay = size_matcher.cover_distort(
                 base_image, alpha_overlay
             )
-        elif size_matching_method == "crop_to_match":
+        elif size_matching_method == "crop_larger_to_match":
             base_image, alpha_overlay = size_matcher.crop_larger_to_match(
-                base_image, alpha_overlay
-            ) 
+                base_image, alpha_overlay,
+                center=True
+            )
+        elif size_matching_method == "crop_larger_to_match_inplace":
+            base_image, alpha_overlay = size_matcher.crop_larger_to_match(
+                base_image, alpha_overlay,
+                center=False
+            )
 
+        return (base_image, alpha_overlay)
