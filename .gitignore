@@ -1,0 +1,86 @@
+
+#
+# ------------------ General -------------------
+#
+
+# Ignore temporary files with various extensions
+**/notes.*
+**/temp.*
+**/*.bak       # Backup files
+**/*.swp       # Vim swap files
+**/*~          # Backup files (Emacs)
+
+# Ignore build files
+**/build/
+**/dist/
+**/target/
+**/out/
+**/__pycache__/
+**/.next/
+**/.pytest_cache/
+**/.coverage
+**/*.egg-info/  # Python egg-info directories
+**/*.egg        # Python egg files
+**/*.log        # Log files
+**/*.pyc        # Compiled Python bytecode files
+
+# Ignore workspace/IDE files
+**/.vscode/
+**/.idea/
+**/.vs/
+**/.suo
+**/.ntvs_analysis.dat
+**/.ntvs_test_results.dat
+**/.mypy_cache/
+
+# Ignore dependencies
+**/node_modules/
+venv/
+.virtualenv
+.venv*/    # Match all virtual environment folders with common naming conventions
+
+# Ignore secrets and passwords
+**/.secrets
+**/.secrets.*
+**/secrets.*
+**/secrets
+**/*.key      # Key files
+**/*.pem      # PEM files
+**/*.crt      # Certificate files
+**/*.cer      # Certificate files
+
+# Ignore environment variables
+**/.env
+**/.env.*
+**/env.*
+.ENV
+
+# Ignore compressed files
+# Uncomment if needed
+**/*.7z
+**/*.dmg
+**/*.gz
+**/*.iso
+# **/*.jar
+**/*.rar
+**/*.tar
+
+# Ignore compiled binaries
+**/*.o       # Object files
+**/*.a       # Static library files
+**/*.so      # Shared library files
+**/*.dll     # Windows DLL files
+**/*.exe     # Executable files
+**/*.bin     # Binary files
+**/*.img     # Disk images
+**/*.iso     # Disk images
+**/*.apk     # Android APK files
+**/*.app     # macOS application bundles
+**/*.ipa     # iOS IPA files
+
+# Ignore generated documentation
+**/docs/generated/*
+
+#
+# --- Auto ignored from workflow script ---
+#

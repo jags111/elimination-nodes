@@ -1,19 +1,18 @@
+"""
+pyenv local 3.10.6
+
+"""
+
 import torch
 import os
 import hashlib
-from torchvision import transforms
-from typing import Tuple, Union
 
-from PIL import Image, ImageOps, ImageSequence, ImageDraw
+from PIL import Image, ImageOps, ImageSequence
 import numpy as np
 import cv2
 import pickle
 from typing import List, Union
 from skimage import img_as_float, img_as_ubyte
-
-from utils.tensor_utils import TensorImgUtils
-from transform.scale import ImageScaler
-from equalize.equalize_size import SizeMatcher
 
 
 # sys.path.insert(0, os.path.join(os.path.dirname(os.path.realpath(__file__)), "comfy"))
@@ -142,9 +141,7 @@ import folder_paths
 
 class CompositeAlphaToBase:
     def __init__(self):
-        CATEGORY = "image"
-        RETURN_TYPES = ("IMAGE",)
-        FUNCTION = "composite"
+        pass
 
     @classmethod
     def INPUT_TYPES(s):
@@ -160,30 +157,129 @@ class CompositeAlphaToBase:
                 # "alpha_overlay": (sorted(files), {"image_upload": True}),
                 "base_image": ("IMAGE",),
                 "alpha_overlay": ("IMAGE",),
-                "size_matching_method": (["fit_center_and_pad", "cover_maintain_aspect_ratio_with_crop", "cover_perfect_by_distorting", "crop_larger_to_match"],),
             },
         }
 
+    CATEGORY = "image"
+    RETURN_TYPES = ("IMAGE",)
+    FUNCTION = "composite"
 
-    def composite(self, base_image: torch.Tensor, alpha_overlay: torch.Tensor, size_matching_method: str = "cover_and_crop") -> Tuple[torch.Tensor]:
-        base_image = base_image.unsqueeze(0)
-        alpha_overlay = alpha_overlay.unsqueeze(0)
+    """pickle"""
 
-        size_matcher = SizeMatcher()
-        if size_matching_method == "fit_center_and_pad":            
-            base_image, alpha_overlay = size_matcher.fit_maintain_pad(
-                base_image, alpha_overlay
-            )
-        elif size_matching_method == "cover_maintain_aspect_ratio_with_crop":
-            base_image, alpha_overlay = size_matcher.cover_maintain(
-                base_image, alpha_overlay
-            )
-        elif size_matching_method == "cover_perfect_by_distorting":
-            base_image, alpha_overlay = size_matcher.cover_distort(
-                base_image, alpha_overlay
-            )
-        elif size_matching_method == "crop_to_match":
-            base_image, alpha_overlay = size_matcher.crop_larger_to_match(
-                base_image, alpha_overlay
-            ) 
+    def read_image(self, filename: str) -> Image:
+        return Image.open(filename)
 
+    def pickle_to_file(self, obj: object, file_path: str):
+        with open(file_path, "wb") as f:
+            pickle.dump(obj, f)
+
+    def load_pickle(self, file_name: str) -> object:
+        with open(file_name, "rb") as f:
+            obj = pickle.load(f)
+        return obj
+
+    def load_light_leak_images(self) -> list:
+        file = os.path.join(folder_paths.models_dir, "layerstyle", "light_leak.pkl")
+        return self.load_pickle(file)
+
+    """Converter"""
+
+    def cv22ski(self, cv2_image: np.ndarray) -> np.array:
+        return img_as_float(cv2_image)
+
+    def ski2cv2(self, ski: np.array) -> np.ndarray:
+        return img_as_ubyte(ski)
+
+    def cv22pil(self, cv2_img: np.ndarray) -> Image:
+        cv2_img = cv2.cvtColor(cv2_img, cv2.COLOR_BGR2RGB)
+        return Image.fromarray(cv2_img)
+
+    def pil2cv2(self, pil_img: Image) -> np.array:
+        np_img_array = np.asarray(pil_img)
+        return cv2.cvtColor(np_img_array, cv2.COLOR_RGB2BGR)
+
+    def pil2tensor(self, image: Image) -> torch.Tensor:
+        return torch.from_numpy(np.array(image).astype(np.float32) / 255.0).unsqueeze(0)
+
+    def np2tensor(self, img_np: Union[np.ndarray, List[np.ndarray]]) -> torch.Tensor:
+        if isinstance(img_np, list):
+            return torch.cat([self.np2tensor(img) for img in img_np], dim=0)
+        return torch.from_numpy(img_np.astype(np.float32) / 255.0).unsqueeze(0)
+
+    def tensor2np(self, tensor: torch.Tensor) -> List[np.ndarray]:
+        if len(tensor.shape) == 3:  # Single image
+            return np.clip(255.0 * tensor.cpu().numpy(), 0, 255).astype(np.uint8)
+        else:  # Batch of images
+            return [
+                np.clip(255.0 * t.cpu().numpy(), 0, 255).astype(np.uint8)
+                for t in tensor
+            ]
+
+    def image2mask(self, image: Image) -> torch.Tensor:
+        _image = image.convert("RGBA")
+        alpha = _image.split()[0]
+        bg = Image.new("L", _image.size)
+        _image = Image.merge("RGBA", (bg, bg, bg, alpha))
+        ret_mask = torch.tensor([self.pil2tensor(_image)[0, :, :, 3].tolist()])
+        return ret_mask
+
+    def mask2image(self, mask: torch.Tensor) -> Image:
+        masks = self.tensor2np(mask)
+        for m in masks:
+            _mask = Image.fromarray(m).convert("L")
+            _image = Image.new("RGBA", _mask.size, color="white")
+            _image = Image.composite(
+                _image, Image.new("RGBA", _mask.size, color="black"), _mask
+            )
+        return _image
+
+    def tensor2pil(self, t_image: torch.Tensor) -> Image:
+        """Converts a torch tensor to a PIL image with Alpha Channel intact"""
+        # https://github.com/chflame163/ComfyUI_LayerStyle/blob/35a7f6e157391f6d3886985fad5279b9af12754d/py/imagefunc.py#L106
+        return Image.fromarray(
+            np.clip(255.0 * t_image.cpu().numpy().squeeze(), 0, 255).astype(np.uint8)
+        )
+
+    def resize_to_fit(self, image, target_size):
+        # Resize the image to be larger than the target size
+        aspect_ratio = image.shape[2] / image.shape[3]
+        if aspect_ratio > target_size[0] / target_size[1]:
+            new_size = (target_size[0], int(target_size[0] / aspect_ratio))
+        else:
+            new_size = (int(target_size[1] * aspect_ratio), target_size[1])
+        image = torch.nn.functional.interpolate(
+            image, size=new_size, mode="bilinear", align_corners=False
+        )
+
+        # Crop the image to the target size
+        crop_top = (image.shape[2] - target_size[0]) // 2
+        crop_left = (image.shape[3] - target_size[1]) // 2
+        return image[
+            :,
+            :,
+            crop_top : crop_top + target_size[0],
+            crop_left : crop_left + target_size[1],
+        ]
+
+    def composite(self, base_image, alpha_overlay):
+        # https://github.com/chflame163/ComfyUI_LayerStyle/blob/35a7f6e157391f6d3886985fad5279b9af12754d/py/image_blend.py
+        # Convert tensors to PIL images
+        base_pil = self.tensor2pil(base_image).convert("RGBA")
+        overlay_pil = self.tensor2pil(alpha_overlay).convert("RGBA")
+
+        # Resize overlay to match base image
+        overlay_pil = overlay_pil.resize(base_pil.size)
+
+        # Extract alpha channel from overlay
+        alpha = overlay_pil.split()[-1]
+
+        # Apply alpha channel as mask to overlay
+        overlay_pil.putalpha(alpha)
+
+        # Blend overlay onto base image
+        blended = Image.alpha_composite(base_pil, overlay_pil)
+
+        # Convert blended image back to tensor
+        blended = self.pil2tensor(blended.convert("RGB"))
+
+        return (blended,)
