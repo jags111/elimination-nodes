@@ -6,12 +6,9 @@ pyenv local 3.10.6
 import unittest
 import torch
 from torchvision import transforms
-from PIL import Image, ImageDraw
+from PIL import Image
 import os
 import random
-import sys
-import matplotlib.pyplot as plt
-import math
 from typing import Tuple
 
 
