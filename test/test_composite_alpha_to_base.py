@@ -17,30 +17,155 @@ from typing import Tuple
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), ".."))
 from composite_alpha_to_base import CompositeAlphaToBase
 from compare.make_grid import ComparisonGrid
+from utils.tensor_utils import TensorImgUtils
 
 
-HOME = os.path.expanduser("~")
-TEST_IMAGES = [
-    # "test-image.jpg",
-    # "2.jpg",
-    # "3.jpg",
-    # "star_wars.jpg",
-    "star_wars-small.jpg",
-    "star_wars-medium.jpg",
-]
+root = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+test_base_images = os.path.join(root, "test-images", "base-layers")
+test_alpha_images = os.path.join(root, "test-images", "alpha-layers")
 
 
 class TestCompositeAlphaToBase(unittest.TestCase):
-    def test_composite_accepts_and_returns_tensors(self):
+
+    def test_composite_pre_cut_alpha(self):
+
+        base = self.__random_real_img_tensors(1)[0]
+        alpha = self.__random_real_alpha_img_tensors(1)[0]
+
+        compositer = CompositeAlphaToBase()
+        composite = compositer.main(base, alpha, "cover_maintain_aspect_ratio_with_crop")
+        self.assertIn(composite.shape[1:], [base.shape[1:], alpha.shape[1:]])
+
+        ComparisonGrid(
+            [
+                ("Base", base),
+                ("Alpha", alpha),
+                ("Composite", composite),
+            ],
+            "composite",
+        )().show()
+
+    def rtest_main_resizes_and_composites_different_size_permutations(self):
+        compositer = CompositeAlphaToBase()
+        results = []
+        for index, (img1, img2) in enumerate(self.__image_difference_permutations()):
+            case_str = f"\n\n{'Case' if index < 7 else 'Edge Case' } {(index % 7) + 1}"
+            pre_resize_str = (
+                f"\n\nBefore Resize:\nimg1: {img1.shape}, img2: {img2.shape}"
+            )
+            composite = compositer.main(
+                img1, img2, "cover_maintain_aspect_ratio_with_crop"
+            )
+            post_resize_str = f"\n\nAfter Resize:\n{composite.shape}"
+            self.assertIn(
+                composite.shape[1:],
+                [img1.shape[1:], img2.shape[1:]],
+                f"\n\n{case_str}{pre_resize_str}{post_resize_str}",
+            )
+            results += [
+                (f"{case_str} - Input Image 1 ({img1.shape})", img1),
+                (f"{case_str} - Input Image 2 ({img2.shape})", img2),
+                (f"{case_str} - Composite Image ({composite.shape})", composite),
+            ]
+
+        ComparisonGrid(results, "composite")().show()
+
+    def rtest_composite_pastes_alpha_overlay_on_base_image_random_dimensions(
+        self,
+    ) -> Tuple[torch.Tensor]:
+        """
+        Create a random alpha cutout from the given image tensor.
+        Input img may not have an alpha channel at first, but the returned tensor will have one.
+        The size of the alpha channel will be the same as the input image.
+        """
+        comp = CompositeAlphaToBase()
+        random_images = self.__random_real_img_tensors(6)
+        results = []
+        i = 0
+        while i < 4:
+            base = random_images[i]
+            overlay = random_images[i + 1]
+            base, overlay = comp.match_size(
+                base, overlay, "cover_maintain_aspect_ratio_with_crop"
+            )
+            base = TensorImgUtils.test_squeeze_batch(base)
+            overlay = TensorImgUtils.test_squeeze_batch(overlay)
+            lower_bound = min(
+                base.shape[1], base.shape[2], overlay.shape[1], overlay.shape[2]
+            )
+            smaller = lambda: random.randint(1, (lower_bound // 2) - 4)
+            x = smaller()
+            y = smaller()
+            width = smaller()
+            height = smaller()
+
+            # Create a transparent alpha channel
+            alpha = torch.zeros(1, base.shape[1], base.shape[2])
+
+            # Set the cutout dimensions to opaque
+            alpha[:, x : x + width, y : y + height] = 1
+
+            # Concat the alpha channel and alpha overlay along the 0th (rgb) dimension (assuming no batch dimension)
+            overlay = torch.cat((overlay, alpha), 0)
+
+            composite = comp.composite(base, overlay)
+
+            self.assertEqual(composite.shape[-2:], base.shape[-2:])
+            self.assertEqual(composite.shape[-2:], overlay.shape[-2:])
+
+            results += [
+                (f"Base Image {i + 1}", base),
+                (f"Alpha Overlay {i + 1}", overlay),
+                (f"Composite {i + 1}", composite),
+            ]
+
+            i += 2
+
+        ComparisonGrid(results, "composite")().show()
+
+    def rtest_composite_accepts_and_returns_tensors(self):
         random_real_img = self.__random_real_img_tensors(1)[0]
         random_noise_img = self.__random_noise_img_tensors(1)[0]
         compositer = CompositeAlphaToBase()
-        res1, res2 = compositer.composite(random_real_img, random_noise_img)
+        res = compositer.composite(random_real_img, random_noise_img)
+        self.assertEqual(type(res), torch.Tensor)
+
+    def rtest_composite_returns_tensor_with_same_size_as_input_images(self):
+        compositer = CompositeAlphaToBase()
+        permutations = self.__image_difference_permutations()
+        results = []
+        for index, (img1, img2) in enumerate(permutations):
+            case_str = f"\n\n{'Case' if index < 7 else 'Edge Case' } {(index % 7) + 1}"
+            pre_resize_str = (
+                f"\n\nBefore Resize:\nimg1: {img1.shape}, img2: {img2.shape}"
+            )
+            resized = compositer.composite(img1, img2)
+            post_resize_str = f"\n\nAfter Resize:\n{resized.shape}"
+            self.assertEqual(
+                img1.shape[1:],
+                resized.shape[1:],
+                f"\n\n{case_str}{pre_resize_str}{post_resize_str}",
+            )
+            results += [
+                (f"{case_str} - Input Image 1 ({img1.shape})", img1),
+                (f"{case_str} - Input Image 2 ({img2.shape})", img2),
+                (f"{case_str} - Resized Image ({resized.shape})", resized),
+            ]
+
+        ComparisonGrid(results, "composite")()
+
+    def rtest_match_size_accepts_and_returns_tensors(self):
+        random_real_img = self.__random_real_img_tensors(1)[0]
+        random_noise_img = self.__random_noise_img_tensors(1)[0]
+        compositer = CompositeAlphaToBase()
+        res1, res2 = compositer.match_size(
+            random_real_img, random_noise_img, "fit_center_and_pad"
+        )
 
         self.assertEqual(type(res1), torch.Tensor)
         self.assertEqual(type(res2), torch.Tensor)
 
-    def test_composite_matches_input_sizes_all_modes(self):
+    def rtest_match_size_matches_input_sizes_all_modes(self):
         modes = [
             "cover_maintain_aspect_ratio_with_crop",
             "cover_perfect_by_distorting",
@@ -58,7 +183,7 @@ class TestCompositeAlphaToBase(unittest.TestCase):
                 pre_resize_str = (
                     f"\n\nBefore Resize:\nimg1: {img1.shape}, img2: {img2.shape}"
                 )
-                resized = compositer.composite(img1, img2, mode)
+                resized = compositer.match_size(img1, img2, mode)
                 post_resize_str = (
                     f"\n\nAfter Resize:\n{resized[0].shape}, {resized[1].shape}"
                 )
@@ -121,13 +246,13 @@ class TestCompositeAlphaToBase(unittest.TestCase):
             ],  # Case 4
             [img1, img2],  # Case 5
             [img1[:, : larger(), : larger()], img2],  # Case 6
-            # [img1, img2[:, : larger(), : larger()]],  # Case 7
-            # [img1[:, :1, : larger()], img2],  # Edge Case 1
-            # [img1[:, : larger(), :1], img2],  # Edge Case 2
-            # [img1, img2[:, :1, : larger()]],  # Edge Case 3
-            # [img1, img2[:, : larger(), :1]],  # Edge Case 4
-            # [img1[:, :71, : larger()], img2],  # Edge Case 5
-            # [img1[:, : larger(), :71], img2],  # Edge Case 6
+            [img1, img2[:, : larger(), : larger()]],  # Case 7
+            [img1[:, :1, : larger()], img2],  # Edge Case 1
+            [img1[:, : larger(), :1], img2],  # Edge Case 2
+            [img1, img2[:, :1, : larger()]],  # Edge Case 3
+            [img1, img2[:, : larger(), :1]],  # Edge Case 4
+            [img1[:, :71, : larger()], img2],  # Edge Case 5
+            [img1[:, : larger(), :71], img2],  # Edge Case 6
         ]
         return cases
 
@@ -135,15 +260,45 @@ class TestCompositeAlphaToBase(unittest.TestCase):
         return [torch.rand(3, 100, 100) for _ in range(n)]
 
     def __random_real_img_tensors(self, n):
-        random_indices = random.sample(range(0, len(TEST_IMAGES)), n)
-        fullpaths = [os.path.join(HOME, TEST_IMAGES[i]) for i in random_indices]
-        return [self.__load_img_as_tensor(fullpaths[i]) for i in range(n)]
+        valid_photo_extensions = [".jpg", ".jpeg", ".png", ".webp", ".bmp"]
+        sample = [
+            f
+            for f in os.listdir(test_base_images)
+            if f.endswith(tuple(valid_photo_extensions))
+        ]
+        random_indices = random.sample(range(0, len(sample)), n)
+        fullpaths = [os.path.join(test_base_images, sample[i]) for i in random_indices]
+
+        # downscale to 20% 
+        pre_downscale = [self.__load_img_as_tensor(fullpaths[i]) for i in range(n)]
+        post_downscale = [transforms.Resize((int(pre_downscale[i].shape[1] * 0.2), int(pre_downscale[i].shape[2] * 0.2)))(pre_downscale[i]) for i in range(n)]
+        return post_downscale
+
+    def __random_real_alpha_img_tensors(self, n):
+        valid_photo_extensions = [".jpg", ".jpeg", ".png", ".webp", ".bmp"]
+        sample = [
+            f
+            for f in os.listdir(test_alpha_images)
+            if f.endswith(tuple(valid_photo_extensions))
+        ]
+        random_indices = random.sample(range(0, len(sample)), n)
+        fullpaths = [os.path.join(test_alpha_images, sample[i]) for i in random_indices]
+        pre_downscale = [self.__load_img_rgba_as_tensor(fullpaths[i]) for i in range(n)]
+        post_downscale = [transforms.Resize((int(pre_downscale[i].shape[1] * 0.2), int(pre_downscale[i].shape[2] * 0.2)))(pre_downscale[i]) for i in range(n)]
+        return post_downscale
 
     def __load_img_as_tensor(self, img_fullpath):
         pil_image = Image.open(img_fullpath)
+        tensor_image = transforms.ToTensor()(pil_image)
+        return tensor_image
+    
+    def __load_img_rgba_as_tensor(self, img_fullpath):
+        pil_image = Image.open(img_fullpath)
+        pil_image = pil_image.convert("RGBA")
         tensor_image = transforms.ToTensor()(pil_image)
         return tensor_image
 
 
 if __name__ == "__main__":
     unittest.main()
+

@@ -1,3 +1,7 @@
 # Some Custom ComfyUI Nodes
 
-Focused on composition, blending, and, segmentation. With a testing suite useful for any application that manipulates image tensors, maybe. 
+Focused on composition, blending, and, segmentation. With tests
+
+### Composite Cutout with Base
+
+![example generated during test](test-results/-comparison_grid06_14AM.jpg)

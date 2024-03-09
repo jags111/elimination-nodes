@@ -10,6 +10,36 @@ class SizeMatcher:
     def __init__(self):
         self.scale = ImageScaler()
 
+    def pad_smaller(
+        self, image_1: torch.Tensor, image_2: torch.Tensor
+    ) -> Tuple[torch.Tensor]:
+        """
+        Pads the smaller image to match the dimensions of the larger image.
+
+        Args:
+            image_1 (torch.Tensor): The first input image.
+            image_2 (torch.Tensor): The second input image.
+
+        Returns:
+            Tuple[torch.Tensor]: A tuple containing the resized images.
+        """
+        h1, w1 = TensorImgUtils.height_width(image_1)
+        h2, w2 = TensorImgUtils.height_width(image_2)
+        if h1 * w1 > h2 * w2:
+            top_pad = (h1 - h2) // 2
+            bot_pad = h1 - h2 - top_pad
+            left_pad = (w1 - w2) // 2
+            right_pad = w1 - w2 - left_pad
+            image_2 = transforms.Pad((left_pad, top_pad, right_pad, bot_pad))(image_2)
+        else:
+            top_pad = (h2 - h1) // 2
+            bot_pad = h2 - h1 - top_pad
+            left_pad = (w2 - w1) // 2
+            right_pad = w2 - w1 - left_pad
+            image_1 = transforms.Pad((left_pad, top_pad, right_pad, bot_pad))(image_1)
+
+        return (image_1, image_2)
+
     def crop_to_match(
         self, image: torch.Tensor, target_dimensions, center=False
     ) -> torch.Tensor:
@@ -157,9 +187,6 @@ class SizeMatcher:
             )
             image_2_ret = self.crop_to_match(image_2_ret, (h1, w1), center=True)
             if image_2_ret.shape[-2:] != image_1.shape[-2:]:
-                print(f"image_2_ret.shape: {image_2_ret.shape}")
-                print(f"image_1.shape: {image_1.shape}")
-                print(f"target_axis: {target_axis}")
                 target_axis = TensorImgUtils.larger_axis(image_2)
                 image_2_ret = self.scale.by_side(
                     image_2, image_1.shape[target_axis], target_axis
@@ -174,9 +201,6 @@ class SizeMatcher:
             )
             image_1_ret = self.crop_to_match(image_1_ret, (h2, w2), center=True)
             if image_1_ret.shape[-2:] != image_2.shape[-2:]:
-                print(f"image_1_ret.shape: {image_1_ret.shape}")
-                print(f"image_2.shape: {image_2.shape}")
-                print(f"target_axis: {target_axis}")
                 target_axis = TensorImgUtils.larger_axis(image_1)
                 image_1_ret = self.scale.by_side(
                     image_1, image_2.shape[target_axis], target_axis

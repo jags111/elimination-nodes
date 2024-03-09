@@ -144,7 +144,7 @@ class CompositeAlphaToBase:
     def __init__(self):
         CATEGORY = "image"
         RETURN_TYPES = ("IMAGE",)
-        FUNCTION = "composite"
+        FUNCTION = "main"
 
     @classmethod
     def INPUT_TYPES(s):
@@ -160,17 +160,50 @@ class CompositeAlphaToBase:
                 # "alpha_overlay": (sorted(files), {"image_upload": True}),
                 "base_image": ("IMAGE",),
                 "alpha_overlay": ("IMAGE",),
-                "size_matching_method": (["fit_center_and_pad", "cover_maintain_aspect_ratio_with_crop", "cover_perfect_by_distorting", "crop_larger_to_match_center", "crop_larger_to_match_inplace"],),
+                "size_matching_method": (
+                    [
+                        "fit_center_and_pad",
+                        "cover_maintain_aspect_ratio_with_crop",
+                        "cover_perfect_by_distorting",
+                        "crop_larger_to_match_center",
+                        "crop_larger_to_match_inplace",
+                    ],
+                ),
             },
         }
 
+    def composite(
+        self, base_image: torch.Tensor, alpha_overlay: torch.Tensor
+    ) -> torch.Tensor:
+        
+        alpha_overlay = TensorImgUtils.test_squeeze_batch(alpha_overlay)
+        base_image = TensorImgUtils.test_squeeze_batch(base_image)
 
-    def composite(self, base_image: torch.Tensor, alpha_overlay: torch.Tensor, size_matching_method: str = "cover_and_crop") -> Tuple[torch.Tensor]:
+
+        # Initialize the composite image as a copy of the base image
+        composite_image = base_image.clone()
+
+        # Iterate over the pixels of the base image
+        for i in range(base_image.shape[1]):  # Iterate over the height of the image
+            for j in range(base_image.shape[2]): # Iterate over the width of the image
+                # Replace pixel values with corresponding values from alpha layer if alpha value is not transparent
+                # Check if dimension 0 has size 4 at this pixel
+                if alpha_overlay.shape[0] == 4 and alpha_overlay[3, i, j] > 0: 
+                    composite_image[:, i, j] = alpha_overlay[:3, i, j]
+
+        return composite_image
+
+    def match_size(
+        self,
+        base_image: torch.Tensor,
+        alpha_overlay: torch.Tensor,
+        size_matching_method: str,
+    ) -> Tuple[torch.Tensor]:
         base_image = base_image.unsqueeze(0)
         alpha_overlay = alpha_overlay.unsqueeze(0)
 
         size_matcher = SizeMatcher()
-        if size_matching_method == "fit_center_and_pad":            
+        if size_matching_method == "fit_center_and_pad":
             base_image, alpha_overlay = size_matcher.fit_maintain_pad(
                 base_image, alpha_overlay
             )
@@ -184,13 +217,23 @@ class CompositeAlphaToBase:
             )
         elif size_matching_method == "crop_larger_to_match":
             base_image, alpha_overlay = size_matcher.crop_larger_to_match(
-                base_image, alpha_overlay,
-                center=True
+                base_image, alpha_overlay, center=True
             )
         elif size_matching_method == "crop_larger_to_match_inplace":
             base_image, alpha_overlay = size_matcher.crop_larger_to_match(
-                base_image, alpha_overlay,
-                center=False
+                base_image, alpha_overlay, center=False
             )
 
         return (base_image, alpha_overlay)
+
+    def main(
+        self,
+        base_image: torch.Tensor,
+        alpha_overlay: torch.Tensor,
+        size_matching_method: str = "cover_and_crop",
+    ) -> Tuple[torch.Tensor]:
+        base_image, alpha_overlay = self.match_size(
+            base_image, alpha_overlay, size_matching_method
+        )
+        return self.composite(base_image, alpha_overlay)
+
