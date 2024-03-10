@@ -12,11 +12,18 @@ The custom node highlighted is red in the screenshots
 
 - Automatically matches size of two images with various size matching methods
 - Invert cutout option
+- If the cutout doesn't have an alpha channel (not really a cutout), the bg is automatically inferred and made transparent
 - Useful for creating logos and when doing things that require object segmentation/removal
 
 ![paste-cutout-on-base-image-demo_pic](wiki/wiki-pics/node-demos/paste-cutout-on-base-image-demo_pic.png)
 
-Alongside auto segmentation
+
+**When the cutout doesn't have an alpha channel (BG auto inferred)**
+
+![paste-cutout-on-base-image-demo_pic-infer_bg](wiki/wiki-pics/node-demos/paste-cutout-on-base-image-inferred_bg-demo_pic.png)
+
+
+**Alongside auto segmentation**
 
 ![paste-cutout-on-base-image-demo_pic-with_segmentation](wiki/wiki-pics/node-demos/paste-cutout-on-base-image-with_segmentation-demo_pic.png)
 
@@ -38,7 +45,6 @@ Alongside auto segmentation
 
 # TODO
 
-- rename class
 - match size node
 - parallax node
 - comparison grid

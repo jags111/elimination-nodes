@@ -4,6 +4,7 @@ import torch
 from typing import Tuple
 from ...utils.tensor_utils import TensorImgUtils
 from ...equalize.equalize_size import SizeMatcher
+from ...segment.chromakey import ChromaKey
 
 
 class CompositeCutoutOnBase:
@@ -61,6 +62,7 @@ class CompositeCutoutOnBase:
             cutout_alpha (torch.Tensor): The cutout alpha channel tensor with shape [H, W, 1-channel].
             size_matching_method (str, optional): The method for matching the size of base_image and alpha_cutout.
                 Defaults to "cover_crop_center".
+            invert_cutout (str, optional): Whether to invert the cutout alpha channel. Defaults to "False".
 
         Returns:
             Tuple[torch.Tensor, ...]: A tuple containing the resulting composite image tensor with shape [Batch_n, H, W, 3-channel].
@@ -98,35 +100,25 @@ class CompositeCutoutOnBase:
             )
 
         # NOTE: comfy using [batch, height, width, channels], but we are recurring over batch
-        base_image = self.__to_chw_singleton(base_image)
-        cutout = self.__to_chw_singleton(cutout)
+        base_image = TensorImgUtils.to_chw_singleton(base_image)
+        cutout = TensorImgUtils.to_chw_singleton(cutout)
         # NOTE: masks don't have batch dimension either way
 
-        # If the cutout doesn't even have an alpha (it should, as a cutout, but just in case),
-        #   comfy will give a default mask of size 64x64. So we check if the sizes don't match
-        #   (indicating an auto-generated mask, and therefore no original alpha channel), and
-        #   then generate a mask based on rgb intensity (assuming user expects the cutout to be
-        #   transparent in black areas of the cutout image)
+        # NOTE: comfy ImageLoader always takes rgb, gives alpha as separate output (inverted) (mask)
+        # If no alpha channel, comfy makes default 64x64 alpha channel mask.
+        # In that case, infer an alpha layer from the cutout image automatically.
         if cutout_alpha.size(1) != cutout.size(1) or cutout_alpha.size(
             2
         ) != cutout.size(2):
             print(
                 "Input cutout did not have an alpha channel. Generating one using intensity."
             )
-            # White background remove = .95
-            # White/grey svg background remove
-            threshold = 0.88
-            # Black background remove: threshold = 0.05
-            cutout_intensity = cutout.mean(dim=0)
-            cutout_alpha = torch.where(
-                cutout_intensity > threshold, torch.tensor(1.0), torch.tensor(0.0)
-            )
-            cutout_alpha = cutout_alpha.unsqueeze(0)
+            chroma_key = ChromaKey()
+            _, cutout_alpha, _ = chroma_key.infer_bg_and_remove(cutout)
 
         if invert_cutout:
             cutout_alpha = 1 - cutout_alpha
 
-        # NOTE: comfy ImageLoader always takes rgb, gives alpha as separate output (inverted) (mask)
         alpha_cutout = self.recombine_alpha(
             cutout, cutout_alpha
         )  # recombine just so resize is easier
@@ -136,23 +128,11 @@ class CompositeCutoutOnBase:
         )
 
         ret = self.composite(base_image, alpha_cutout)
-        ret = self.__to_hwc_singleton(ret)
+        ret = TensorImgUtils.to_hwc_singleton(ret)
 
         # add batch dimension back of 1
         ret = ret.unsqueeze(0)
         return ret
-
-    def __to_chw_singleton(self, tensor: torch.Tensor) -> torch.Tensor:
-        return TensorImgUtils.test_squeeze_batch(tensor).permute(2, 0, 1)
-
-    def __to_hwc_singleton(self, tensor: torch.Tensor) -> torch.Tensor:
-        return TensorImgUtils.test_squeeze_batch(tensor).permute(1, 2, 0)
-
-    def __to_chw(self, tensor: torch.Tensor) -> torch.Tensor:
-        return tensor.permute(0, 3, 1, 2)
-
-    def __to_hwc(self, tensor: torch.Tensor) -> torch.Tensor:
-        return tensor.permute(0, 2, 3, 1)
 
     def composite(self, base_image: torch.Tensor, cutout: torch.Tensor) -> torch.Tensor:
         """
@@ -248,5 +228,7 @@ class CompositeCutoutOnBase:
         Returns:
             torch.Tensor: The recombined image tensor.
         """
+        if alpha.dim() == 2:
+            alpha = alpha.unsqueeze(0)
         alpha = 1 - alpha
         return torch.cat((image, alpha), 0)
