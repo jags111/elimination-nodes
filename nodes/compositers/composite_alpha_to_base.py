@@ -1,7 +1,6 @@
 """Method signatures automatically generated"""
 
 import torch
-import numpy as np
 from typing import Tuple
 from ...utils.tensor_utils import TensorImgUtils
 from ...equalize.equalize_size import SizeMatcher
@@ -51,6 +50,11 @@ class CompositeCutoutOnBase:
         """
         Main method for performing composite alpha-to-base operation.
 
+        If any of the tensors have a batch dimension, it iterates over each batch element (i) and applies the self.main() function to corresponding slices of each tensor along the batch dimension.
+        The result of each iteration is concatenated along the batch dimension using torch.cat() to form a new batch.
+        Finally, the tuple of concatenated tensors is returned.
+        This approach ensures that if any of the input tensors are batches of images, the processing is applied batch-wise across all images in the batch. This is a common strategy when dealing with deep learning models that are designed to handle batches of data efficiently.
+
         Args:
             base_image (torch.Tensor): The base image tensor with shape [Batch_n, H, W, 3-channel].
             cutout (torch.Tensor): The cutout image tensor with shape [Batch_n, H, W, 3-channel].
@@ -67,51 +71,57 @@ class CompositeCutoutOnBase:
             - The cutout_alpha tensor is expected to have shape [H, W, 1-channel].
             - The size_matching_method determines how the size of base_image and alpha_cutout is matched.
         """
+        # Handle when alpha is in shape [H, W]
+        if cutout_alpha.dim() == 2:
+            cutout_alpha = cutout_alpha.unsqueeze(0)
+
         # Recurse by batch dimension if present (comfy default is BHWC)
         if base_image.dim() == 4 or cutout.dim() == 4 or cutout_alpha.dim() == 4:
-            return torch.cat(
-                [
-                    self.main(
-                        base_image[i] if base_image.dim() == 4 else base_image,
-                        cutout[i] if cutout.dim() == 4 else cutout,
-                        cutout_alpha[i] if cutout_alpha.dim() == 4 else cutout_alpha,
-                        size_matching_method,
-                        invert_cutout,
-                    )
-                    for i in range(base_image.size(0))
-                ],
-                dim=0,
+            return (
+                torch.cat(
+                    tuple(
+                        self.main(
+                            base_image[i] if base_image.dim() == 4 else base_image,
+                            cutout[i] if cutout.dim() == 4 else cutout,
+                            (
+                                cutout_alpha[i]
+                                if cutout_alpha.dim() == 4
+                                else cutout_alpha
+                            ),
+                            size_matching_method,
+                            invert_cutout,
+                        )
+                        for i in range(base_image.size(0))
+                    ),
+                    dim=0,  # Concat along batch dimension
+                ),  # Include comma to force tuple type despite single element
             )
 
-        # NOTE: comfy using [batch, height, width, channels]
+        # NOTE: comfy using [batch, height, width, channels], but we are recurring over batch
         base_image = self.__to_chw_singleton(base_image)
         cutout = self.__to_chw_singleton(cutout)
-        # NOTE: masks don't have batch dimension
+        # NOTE: masks don't have batch dimension either way
 
         # If the cutout doesn't even have an alpha (it should, as a cutout, but just in case),
         #   comfy will give a default mask of size 64x64. So we check if the sizes don't match
         #   (indicating an auto-generated mask, and therefore no original alpha channel), and
         #   then generate a mask based on rgb intensity (assuming user expects the cutout to be
-        #   transparent in black areas of the cutout image
+        #   transparent in black areas of the cutout image)
         if cutout_alpha.size(1) != cutout.size(1) or cutout_alpha.size(
             2
         ) != cutout.size(2):
             print(
                 "Input cutout did not have an alpha channel. Generating one using intensity."
             )
-            # Automatically calculate the alpha channel based on RGB intensity
-            threshold = 0.5
+            # White background remove = .95
+            # White/grey svg background remove
+            threshold = 0.88
+            # Black background remove: threshold = 0.05
+            cutout_intensity = cutout.mean(dim=0)
             cutout_alpha = torch.where(
-                (cutout[:, :, :, 0] > threshold)
-                & (cutout[:, :, :, 1] > threshold)
-                & (cutout[:, :, :, 2] > threshold),
-                torch.tensor(1.0),
-                torch.tensor(0.0),
+                cutout_intensity > threshold, torch.tensor(1.0), torch.tensor(0.0)
             )
-
-        print(
-            f"Argument for invert_alpha: {invert_cutout} (type: {type(invert_cutout)})"
-        )
+            cutout_alpha = cutout_alpha.unsqueeze(0)
 
         if invert_cutout:
             cutout_alpha = 1 - cutout_alpha
@@ -128,8 +138,7 @@ class CompositeCutoutOnBase:
         ret = self.composite(base_image, alpha_cutout)
         ret = self.__to_hwc_singleton(ret)
 
-        # NOTE: return type
-        # add batch dimension
+        # add batch dimension back of 1
         ret = ret.unsqueeze(0)
         return ret
 
@@ -239,7 +248,5 @@ class CompositeCutoutOnBase:
         Returns:
             torch.Tensor: The recombined image tensor.
         """
-        # TODO: Resize alpha to match image if necessary
-        # Invert the alpha channel, assuming it was a mask
         alpha = 1 - alpha
         return torch.cat((image, alpha), 0)

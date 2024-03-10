@@ -43,3 +43,19 @@ class TensorImgUtils:
     def larger_axis(image: torch.Tensor) -> int:
         h, w = TensorImgUtils.height_width(image)
         return 2 if h > w else 3
+
+    @staticmethod
+    def to_chw_singleton(tensor: torch.Tensor) -> torch.Tensor:
+        return TensorImgUtils.test_squeeze_batch(tensor).permute(2, 0, 1)
+
+    @staticmethod
+    def to_hwc_singleton(tensor: torch.Tensor) -> torch.Tensor:
+        return TensorImgUtils.test_squeeze_batch(tensor).permute(1, 2, 0)
+
+    @staticmethod
+    def to_chw(tensor: torch.Tensor) -> torch.Tensor:
+        return tensor.permute(0, 3, 1, 2)
+
+    @staticmethod
+    def to_hwc(tensor: torch.Tensor) -> torch.Tensor:
+        return tensor.permute(0, 2, 3, 1)
