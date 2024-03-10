@@ -1,6 +1,11 @@
+"""Method signatures automatically generated
+
+pyenv local 3.10.6"""
+
 import torch
 from torchvision import transforms
-from typing import Tuple
+from typing import Tuple, Union
+from ..types.image_tensor_types import ImageTensorTypes as itt
 from ..utils.tensor_utils import TensorImgUtils
 from ..transform.scale import ImageScaler
 
@@ -8,6 +13,51 @@ from ..transform.scale import ImageScaler
 class SizeMatcher:
     def __init__(self):
         self.scale = ImageScaler()
+
+    def size_match_by_method_str(
+        self,
+        image_1: Union[itt.B_C_H_W_Tensor, itt.C_H_W_Tensor],
+        image_2: Union[itt.B_C_H_W_Tensor, itt.C_H_W_Tensor],
+        size_matching_method: str,
+    ) -> Tuple[Union[itt.B_C_H_W_Tensor, itt.C_H_W_Tensor]]:
+        """
+        Matches the size of two images based on the specified size matching method.
+
+        Args:
+            image_1: The first image to be resized.
+            image_2: The second image to be resized.
+            size_matching_method: The method used for size matching. Available options are:
+                - "fit_center": Resizes the images to fit within the specified dimensions while maintaining the aspect ratio. The images are centered within the new dimensions.
+                - "cover_crop_center": Resizes the images to cover the specified dimensions while maintaining the aspect ratio. The images are cropped from the center.
+                - "cover_crop": Resizes the images to cover the specified dimensions while maintaining the aspect ratio. The images are cropped from the top-left corner.
+                - "fill": Resizes the images to fill the specified dimensions while maintaining the aspect ratio. The images are distorted to fit.
+                - "crop_larger_center": Crops the larger image to match the size of the smaller image while maintaining the aspect ratio. The images are cropped from the center.
+                - "crop_larger_topleft": Crops the larger image to match the size of the smaller image while maintaining the aspect ratio. The images are cropped from the top-left corner.
+                - "center_dont_resize": Pads the smaller image to match the size of the larger image. The images are centered within the new dimensions.
+
+        Returns:
+            A tuple containing the resized images.
+
+        """
+        image_1 = TensorImgUtils.test_unsqueeze_batch(image_1)
+        image_2 = TensorImgUtils.test_unsqueeze_batch(image_2)
+
+        if size_matching_method == "fit_center":
+            image_1, image_2 = self.fit_maintain_pad(image_1, image_2)
+        elif size_matching_method == "cover_crop_center":
+            image_1, image_2 = self.cover_maintain(image_1, image_2, center=True)
+        elif size_matching_method == "cover_crop":
+            image_1, image_2 = self.cover_maintain(image_1, image_2, center=False)
+        elif size_matching_method == "fill":
+            image_1, image_2 = self.cover_distort(image_1, image_2)
+        elif size_matching_method == "crop_larger_center":
+            image_1, image_2 = self.crop_larger_to_match(image_1, image_2, center=True)
+        elif size_matching_method == "crop_larger_topleft":
+            image_1, image_2 = self.crop_larger_to_match(image_1, image_2, center=False)
+        elif size_matching_method == "center_dont_resize":
+            image_1, image_2 = self.pad_smaller(image_1, image_2)
+
+        return (image_1, image_2)
 
     def pad_smaller(
         self, image_1: torch.Tensor, image_2: torch.Tensor
@@ -100,14 +150,22 @@ class SizeMatcher:
         if h1 * w1 > h2 * w2:
             max_scale_factor = min(h1 / h2, w1 / w2)
             image_2 = self.scale.by_side(image_2, int(h2 * max_scale_factor), 2)
+            margin_top = (h1 - image_2.shape[2]) // 2
+            margin_left = (w1 - image_2.shape[3]) // 2
+            margin_bot = h1 - image_2.shape[2] - margin_top
+            margin_right = w1 - image_2.shape[3] - margin_left
             image_2 = transforms.Pad(
-                (0, 0, w1 - image_2.shape[3], h1 - image_2.shape[2])
+                (margin_left, margin_top, margin_right, margin_bot)
             )(image_2)
         else:
             max_scale_factor = min(h2 / h1, w2 / w1)
             image_1 = self.scale.by_side(image_1, int(h1 * max_scale_factor), 2)
+            margin_top = (h2 - image_1.shape[2]) // 2
+            margin_left = (w2 - image_1.shape[3]) // 2
+            margin_bot = h2 - image_1.shape[2] - margin_top
+            margin_right = w2 - image_1.shape[3] - margin_left
             image_1 = transforms.Pad(
-                (0, 0, w2 - image_1.shape[3], h2 - image_1.shape[2])
+                (margin_left, margin_top, margin_right, margin_bot)
             )(image_1)
 
         return (image_1, image_2)

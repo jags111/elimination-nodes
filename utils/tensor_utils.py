@@ -19,6 +19,16 @@ class TensorImgUtils:
             return tensor
 
     @staticmethod
+    def test_unsqueeze_batch(tensor: torch.Tensor) -> torch.Tensor:
+        # Check if the tensor has a batch dimension (size 4)
+        if tensor.dim() == 3:
+            # If it doesn't have a batch dimension, add one. It represents a single image.
+            return tensor.unsqueeze(0)
+        else:
+            # Otherwise, it already has a batch dimension, so just return the tensor as is.
+            return tensor
+
+    @staticmethod
     def most_pixels(img_tensors: list[torch.Tensor]) -> torch.Tensor:
         sizes = [
             TensorImgUtils.height_width(img)[0] * TensorImgUtils.height_width(img)[1]

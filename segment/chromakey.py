@@ -1,3 +1,9 @@
+"""
+Method signatures automatically generated
+
+pyenv local 3.10.6
+"""
+
 import torch
 from typing import Tuple
 

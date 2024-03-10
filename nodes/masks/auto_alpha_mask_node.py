@@ -1,4 +1,6 @@
-"""Method signatures automatically generated"""
+"""Method signatures automatically generated
+
+pyenv local 3.10.6"""
 
 import torch
 from typing import Tuple
@@ -6,7 +8,7 @@ from ...utils.tensor_utils import TensorImgUtils
 from ...segment.chromakey import ChromaKey
 
 
-class AutoAlphaMask:
+class AutoAlphaMaskNode:
     def __init__(self):
         pass
 
@@ -60,12 +62,20 @@ class AutoAlphaMask:
         use_custom_color: bool,
         custom_bg_rgb: str = "255, 255, 255",
     ) -> Tuple[torch.Tensor, ...]:
-        
+
         image = TensorImgUtils.to_chw_singleton(image)
         chroma_key = ChromaKey()
         error_margin = leniance / 100.0
 
-        if method == "remove_non_neutrals_bg":
+        if method == "remove_white_bg":
+            _, alpha, _ = chroma_key.remove_white(image, error_margin)
+        elif method == "remove_white_grey_bg":
+            _, alpha, _ = chroma_key.remove_specific_rgb(
+                image, (128, 128, 128), error_margin * 2
+            )
+        elif method == "remove_black_bg":
+            _, alpha, _ = chroma_key.remove_black(image, error_margin)
+        elif method == "remove_non_neutrals_bg":
             _, alpha, _ = chroma_key.remove_non_neutrals(image, error_margin)
         elif method == "remove_neutrals_bg":
             _, alpha, _ = chroma_key.remove_neutrals(image, error_margin)
@@ -74,15 +84,10 @@ class AutoAlphaMask:
                 custom_bg_rgb = custom_bg_rgb.split(",")
                 custom_bg_rgb = [int(i) for i in custom_bg_rgb]
             except Exception:
-                custom_bg_rgb = [255, 255, 255]
+                custom_bg_rgb = [235, 235, 235]
             _, alpha, _ = chroma_key.remove_specific_rgb(
                 image, custom_bg_rgb, error_margin
             )
-
-        elif method == "remove_white_bg" or method == "remove_white_grey_bg":
-            _, alpha, _ = chroma_key.remove_white(image, error_margin)
-        elif method == "remove_black_bg":
-            _, alpha, _ = chroma_key.remove_black(image, error_margin)
 
         if not invert:
             alpha = 1 - alpha

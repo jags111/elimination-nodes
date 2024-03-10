@@ -1,18 +1,30 @@
-# Some Custom ComfyUI Nodes
 
 Some nodes I created / am creating 🤗
 
 I wrote a ***[GUIDE](wiki/creating-custom-comfyui_nodes-guide.md)*** for creating custom nodes while I was learning how to make these, it covers the general process of creating a custom node and some of the errors I encountered and how to fix them.
 
+
+*Table of Contents:*
+
+- [Nodes](#nodes)
+  - [*NODE* — Paste Cutout on Base Image](#node--paste-cutout-on-base-image)
+  - [*NODE* — Infer Alpha from RGB Image](#node--infer-alpha-from-rgb-image)
+  - [*NODE* — Size Match Images/Masks](#node--size-match-imagesmasks)
+- [Test Suite](#test-suite)
+- [To-do](#to-do)
+
+
+&nbsp;
+
 # Nodes
 
 The custom node highlighted is red in the screenshots
 
-## Paste Cutout on Base Image
+## *NODE* — Paste Cutout on Base Image
 
 - Automatically matches size of two images with various size matching methods
-- Invert cutout option
 - If the cutout doesn't have an alpha channel (not really a cutout), the bg is automatically inferred and made transparent
+- Invert option
 - Useful for creating logos and when doing things that require object segmentation/removal
 
 ![paste-cutout-on-base-image-demo_pic](wiki/wiki-pics/node-demos/paste-cutout-on-base-image-demo_pic.png)
@@ -28,7 +40,7 @@ The custom node highlighted is red in the screenshots
 ![paste-cutout-on-base-image-demo_pic-with_segmentation](wiki/wiki-pics/node-demos/paste-cutout-on-base-image-with_segmentation-demo_pic.png)
 
 
-## Infer Alpha from RGB Image
+## *NODE* — Infer Alpha from RGB Image
 
 - Chromakeying, remove white bg, remove black bg, remove neutrals, remove non-neutrals, remove by color
 - Invert option
@@ -37,13 +49,19 @@ The custom node highlighted is red in the screenshots
 
 ![infer-alpha-from-rgb-image-demo_pic](wiki/wiki-pics/node-demos/infer_alpha_from_rgb_image-demo.png)
 
+
+## *NODE* — Size Match Images/Masks
+
+- Automatically matches size of two images with various size matching methods
+
+
 ---------------------
 
 # Test Suite
 
 ![Test Suite](test/test_composite_alpha_to_base)
 
-# TODO
+# To-do
 
 - match size node
 - parallax node

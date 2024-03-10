@@ -1,4 +1,6 @@
-"""Method signatures automatically generated"""
+"""Method signatures automatically generated
+
+pyenv local 3.10.6"""
 
 import torch
 from typing import Tuple
@@ -7,7 +9,7 @@ from ...equalize.equalize_size import SizeMatcher
 from ...segment.chromakey import ChromaKey
 
 
-class CompositeCutoutOnBase:
+class CompositeCutoutOnBaseNode:
     def __init__(self):
         pass
 
@@ -110,9 +112,6 @@ class CompositeCutoutOnBase:
         if cutout_alpha.size(1) != cutout.size(1) or cutout_alpha.size(
             2
         ) != cutout.size(2):
-            print(
-                "Input cutout did not have an alpha channel. Generating one using intensity."
-            )
             chroma_key = ChromaKey()
             _, cutout_alpha, _ = chroma_key.infer_bg_and_remove(cutout)
 
@@ -181,41 +180,9 @@ class CompositeCutoutOnBase:
         Returns:
             Tuple[torch.Tensor]: A tuple containing the resized base image and alpha cutout tensors.
         """
-
-        base_image = base_image.unsqueeze(0)
-        alpha_cutout = alpha_cutout.unsqueeze(0)
-
-        size_matcher = SizeMatcher()
-        if size_matching_method == "fit_center":
-            base_image, alpha_cutout = size_matcher.fit_maintain_pad(
-                base_image, alpha_cutout
-            )
-        elif size_matching_method == "cover_crop_center":
-            base_image, alpha_cutout = size_matcher.cover_maintain(
-                base_image, alpha_cutout, center=True
-            )
-        elif size_matching_method == "cover_crop":
-            base_image, alpha_cutout = size_matcher.cover_maintain(
-                base_image, alpha_cutout, center=False
-            )
-        elif size_matching_method == "fill":
-            base_image, alpha_cutout = size_matcher.cover_distort(
-                base_image, alpha_cutout
-            )
-        elif size_matching_method == "crop_larger_center":
-            base_image, alpha_cutout = size_matcher.crop_larger_to_match(
-                base_image, alpha_cutout, center=True
-            )
-        elif size_matching_method == "crop_larger_topleft":
-            base_image, alpha_cutout = size_matcher.crop_larger_to_match(
-                base_image, alpha_cutout, center=False
-            )
-        elif size_matching_method == "center_dont_resize":
-            base_image, alpha_cutout = size_matcher.pad_smaller(
-                base_image, alpha_cutout
-            )
-
-        return (base_image, alpha_cutout)
+        return SizeMatcher().size_match_by_method_str(
+            base_image, alpha_cutout, size_matching_method
+        )
 
     def recombine_alpha(self, image: torch.Tensor, alpha: torch.Tensor) -> torch.Tensor:
         """
