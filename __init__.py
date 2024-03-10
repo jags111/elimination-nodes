@@ -1,11 +1,11 @@
-from .composite_alpha_to_base import CompositeAlphaToBase
+from .nodes.compositers.composite_alpha_to_base import *
 
 NODE_CLASS_MAPPINGS = {
-    'Composite Alpha Layer on Base | Elimination': CompositeAlphaToBase
+    'Composite Alpha Layer | Elimination Nodes': CompositeCutoutOnBase
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    'Composite Alpha Layer on Base | Elimination': 'Paste Cutout on Base Image'
+    'Composite Alpha Layer | Elimination Nodes': 'Paste Cutout on Base Image'
 }
 
 # WEB_DIRECTORY = './js'

@@ -104,12 +104,9 @@ class Example:
         }
 
     RETURN_TYPES = ("IMAGE",)
-    #RETURN_NAMES = ("image_output_name",)
-
+    RETURN_NAMES = ("image_output_name",)
     FUNCTION = "test"
-
-    #OUTPUT_NODE = False
-
+    OUTPUT_NODE = False
     CATEGORY = "Example"
 
     def test(self, image, string_field, int_field, float_field, print_to_screen):

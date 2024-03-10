@@ -12,7 +12,7 @@ import random
 from typing import Tuple
 
 
-from ..composite_alpha_to_base import CompositeAlphaToBase
+from ..nodes.compositers.composite_alpha_to_base import CompositeCutoutOnBase
 from ..compare.make_grid import ComparisonGrid
 from ..utils.tensor_utils import TensorImgUtils
 
@@ -29,7 +29,7 @@ class TestCompositeAlphaToBase(unittest.TestCase):
         base = self.__random_real_img_tensors(1)[0]
         alpha = self.__random_real_alpha_img_tensors(1)[0]
 
-        compositer = CompositeAlphaToBase()
+        compositer = CompositeCutoutOnBase()
         composite = compositer.main(
             base, alpha, "cover_maintain_aspect_ratio_with_crop"
         )
@@ -45,7 +45,7 @@ class TestCompositeAlphaToBase(unittest.TestCase):
         )().show()
 
     def rtest_main_resizes_and_composites_different_size_permutations(self):
-        compositer = CompositeAlphaToBase()
+        compositer = CompositeCutoutOnBase()
         results = []
         for index, (img1, img2) in enumerate(self.__image_difference_permutations()):
             case_str = f"\n\n{'Case' if index < 7 else 'Edge Case' } {(index % 7) + 1}"
@@ -77,7 +77,7 @@ class TestCompositeAlphaToBase(unittest.TestCase):
         Input img may not have an alpha channel at first, but the returned tensor will have one.
         The size of the alpha channel will be the same as the input image.
         """
-        comp = CompositeAlphaToBase()
+        comp = CompositeCutoutOnBase()
         random_images = self.__random_real_img_tensors(6)
         results = []
         i = 0
@@ -125,12 +125,12 @@ class TestCompositeAlphaToBase(unittest.TestCase):
     def rtest_composite_accepts_and_returns_tensors(self):
         random_real_img = self.__random_real_img_tensors(1)[0]
         random_noise_img = self.__random_noise_img_tensors(1)[0]
-        compositer = CompositeAlphaToBase()
+        compositer = CompositeCutoutOnBase()
         res = compositer.composite(random_real_img, random_noise_img)
         self.assertEqual(type(res), torch.Tensor)
 
     def rtest_composite_returns_tensor_with_same_size_as_input_images(self):
-        compositer = CompositeAlphaToBase()
+        compositer = CompositeCutoutOnBase()
         permutations = self.__image_difference_permutations()
         results = []
         for index, (img1, img2) in enumerate(permutations):
@@ -156,7 +156,7 @@ class TestCompositeAlphaToBase(unittest.TestCase):
     def rtest_match_size_accepts_and_returns_tensors(self):
         random_real_img = self.__random_real_img_tensors(1)[0]
         random_noise_img = self.__random_noise_img_tensors(1)[0]
-        compositer = CompositeAlphaToBase()
+        compositer = CompositeCutoutOnBase()
         res1, res2 = compositer.match_size(
             random_real_img, random_noise_img, "fit_center_and_pad"
         )
@@ -172,7 +172,7 @@ class TestCompositeAlphaToBase(unittest.TestCase):
             "fit_center_and_pad",
         ]
         for mode in modes:
-            compositer = CompositeAlphaToBase()
+            compositer = CompositeCutoutOnBase()
             permutations = self.__image_difference_permutations()
             results = []
             for index, (img1, img2) in enumerate(permutations):
