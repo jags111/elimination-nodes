@@ -5,7 +5,7 @@ pyenv local 3.10.6"""
 import torch
 from torchvision import transforms
 from typing import Tuple, Union
-from ..types.image_tensor_types import ImageTensorTypes as itt
+from ..types_interfaces.image_tensor_types import ImageTensorTypes as itt
 from ..utils.tensor_utils import TensorImgUtils
 from ..transform.scale import ImageScaler
 
