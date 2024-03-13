@@ -78,7 +78,7 @@ The custom node highlighted is red in the screenshots
 
 ## Demo
 
-![test suite webview demo gif](wiki/wiki-pics/test-suite-demo/test-results-webview-gif.gif)
+![test suite webview demo gif](wiki/wiki-pics/test-suite-demo/test-results-webview-gif2.gif)
 
 ![test suite webview screenshot](wiki/wiki-pics/test-suite-demo/test-results-webview-picture.png)
 
