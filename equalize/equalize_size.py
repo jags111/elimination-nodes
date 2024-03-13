@@ -245,6 +245,9 @@ class SizeMatcher:
         Returns:
             Tuple[torch.Tensor]: A tuple containing the resized images.
         """
+        HEIGHT_AXIS = 2
+        WIDTH_AXIS = 3
+        other_axis = lambda axis: HEIGHT_AXIS if axis == WIDTH_AXIS else WIDTH_AXIS
         h1, w1 = TensorImgUtils.height_width(image_1)
         h2, w2 = TensorImgUtils.height_width(image_2)
         if h1 * w1 > h2 * w2:
@@ -254,7 +257,8 @@ class SizeMatcher:
             )
             image_2_ret = self.crop_to_match(image_2_ret, (h1, w1), center=center)
             if image_2_ret.shape[-2:] != image_1.shape[-2:]:
-                target_axis = TensorImgUtils.larger_axis(image_2)
+                # If you try to alternate axis by using TensorImgUtils.larger_axis(image_2) here, and image_2 is square, the situation wont' change
+                target_axis = other_axis(target_axis)
                 image_2_ret = self.scale.by_side(
                     image_2, image_1.shape[target_axis], target_axis
                 )
@@ -268,7 +272,7 @@ class SizeMatcher:
             )
             image_1_ret = self.crop_to_match(image_1_ret, (h2, w2), center=center)
             if image_1_ret.shape[-2:] != image_2.shape[-2:]:
-                target_axis = TensorImgUtils.larger_axis(image_1)
+                target_axis = other_axis(target_axis)
                 image_1_ret = self.scale.by_side(
                     image_1, image_2.shape[target_axis], target_axis
                 )

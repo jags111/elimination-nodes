@@ -30,10 +30,28 @@ class TestImages:
         self.img_dir = os.path.join(self.path, "test-images")
 
         self.images = {}
+        self.all_tags = set()
         self.__map_images()
+        self.__log(
+            "Found ",
+            colored(f"{len(self.images)}", "green"),
+            "images in test-images folder.\n",
+            "Use these tags to select images when using get_media:\n",
+            colored(f"{self.all_tags}", "green"),
+        )
 
         self.max_width = max_width
         self.max_height = max_height
+
+        self.to_tensor = transforms.ToTensor()
+
+    def __log(self, *args):
+        prefix = colored("[TestImages Generation] ", "light_red")
+        out = " ".join([str(a) for a in args])
+        if out[0] != "\n":
+            out = f"{prefix}{out}"
+        out = out.replace("\n", f"\n{prefix} ")
+        print(out)
 
     def set_max_dimensions(self, width: int, height: int):
         self.max_width = int(width)
@@ -47,12 +65,12 @@ class TestImages:
 
     def __path_to_chw_tensor(self, img_path: str) -> itt.C_H_W_Tensor:
         img = Image.open(img_path)
-        img = transforms.ToTensor()(img)
+        img = self.to_tensor(img)
         return img
 
     def get_media(
         self,
-        count=1,
+        count,
         tags=[],
         prioritize_real=True,
         is_video=False,
@@ -62,13 +80,19 @@ class TestImages:
         if not prioritize_real:
             return self.__generate_images(count)
 
-        print(
-            f"Getting {count} random images with tags {tags} and size limit {mb_limit}MB"
+        self.__log(
+            "\nGetting",
+            colored(f"{count}", "cyan"),
+            "random images with tags ",
+            colored(f"{tags}", "light_cyan"),
+            "and size limit ",
+            colored(f"{mb_limit}", "cyan"),
+            "MB",
         )
-        ret = []
+        matches = []
         tags = set(tags)
 
-        for key, img in self.images.items():
+        for img in self.images.values():
             if is_video and not img["is_video"]:
                 continue
             if is_picture and not img["is_picture"]:
@@ -77,42 +101,47 @@ class TestImages:
                 continue
             if tags and not tags.issubset(set(img["tags"])):
                 continue
-            ret.append(img)
-            if len(ret) == count:
-                break
 
-        if len(ret) != count:
-            print(
-                f"Only found {len(ret)} images with tags {tags} and size limit {mb_limit}MB",
-                "\nGenerating random noise images to supplement.",
-            )
-        all_images = self.__generate_images(count - len(ret))
-        to_tensor = transforms.ToTensor()
-        print(
-            f"Resizing {len(ret)} images to {self.max_width}x{self.max_height} while maintaining aspect ratio."
+            matches.append(img)
+
+        random_selection = random.sample(matches, count)
+        self.__log(
+            f"\nResizing {len(random_selection)} images to {self.max_width}x{self.max_height} while maintaining aspect ratio."
         )
-        for img in ret:
+        use_rgba_tags = [
+            "rgba",
+            "alpha",
+            "alpha-layer",
+            "alpha-layers",
+            "cutout",
+            "mask",
+        ]
+        ret = []
+        for img in random_selection:
             pil = Image.open(img["fullpath"])
-            if (
-                "rgba" in tags
-                or "alpha" in tags
-                or "alpha-layer" in tags
-                or "alpha-layers" in tags
-                or "cutout" in tags
-                or "icon" in tags
-                or "mask" in tags
-            ):
+            if any(tag in img["tags"] for tag in use_rgba_tags):
                 pil = pil.convert("RGBA")
-                print(colored(f"Converting {img['file']} to RGBA", 'red'))
+                self.__log(colored(f"Converting {img['file']} to RGBA", "yellow"))
             else:
                 pil = pil.convert("RGB")
-                print(colored(f"Converting {img['file']} to RGB", 'green'))
-            as_tensor = to_tensor(self.__resize_image(pil))
-            print(f"Resized {img['file']} to {as_tensor.size()}")
-            print(f"Shape: {as_tensor.shape}")
-            all_images.append(to_tensor(self.__resize_image(pil)))
+            as_tensor = self.to_tensor(self.__resize_image(pil))
+            self.__log(
+                "Shape of returned test image:", colored(f"{as_tensor.shape}", "yellow")
+            )
+            ret.append(as_tensor)
 
-        return all_images
+        if len(ret) < count:
+            self.__log(
+                colored(f"\nOnly found {len(ret)}/{count}", "red"),
+                f"{'images/videos' if is_picture and is_video else 'images' if is_picture else 'videos'} with tags:\n",
+                colored(f"{tags}", "light_cyan"),
+                "\nand size limit ",
+                colored(f"{mb_limit}mb", "light_red"),
+                "\nGenerating random noise images to supplement.",
+            )
+            ret.extend(self.__generate_images(count - len(ret)))
+
+        return ret
 
     def __generate_images(self, count):
         if count > 0:
@@ -128,7 +157,6 @@ class TestImages:
         return file_ext.lower() in PICTURE_EXTENSION_LIST
 
     def __map_images(self):
-        print(f"Mapping images from test-images folder")
         for root, dirs, files in os.walk(self.img_dir):
             for file in files:
                 file_path = os.path.join(root, file)
@@ -138,6 +166,8 @@ class TestImages:
                     tags = set()
                     for path_path in os.path.relpath(root, self.img_dir).split(os.sep):
                         tags.add(path_path)
+                    self.all_tags.update(tags)
+
                     width, height = self.get_dimensions(file_path)
                     file_size = os.path.getsize(file_path)
                     self.images[file] = {

@@ -23,23 +23,23 @@
   <body>
     <div role="main">
       <div class="container-fluid">
-        <div class="row mx-2 mt-4 mb-4">
+        <div class="row mx-2 mt-4 mb-5 py-4">
           <div class="col-12 text-center">
             <h1 class="display-1" style="font-weight: 100 !important">
               Test Results
             </h1>
           </div>
         </div>
+        <div class="row m-1">
         
-        <div class="row my-4">
-          <div class="col-4 col-sm-10">
-            <p class="h3">Case 1: img1_width > img2_width and img1_height > img2_height</p>
+        <div class="col-xl-12 col-xxl-6 mb-3 d-flex container-fluid flex-column">
+          <div class="col-12">
+            <p class="h4">Case 1: img1_width > img2_width and img1_height > img2_height</p>
           </div>
-        </div>
-        <div class="row mb-3">
+          <div class="col-12 d-flex flex-row">
           
           <div class="col">
-            <div class="card">
+            <div class="card p-3 h-100">
               <img
                 src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Case 1: img1_width > img2_width and img1_height > img2_height-1.png"
                 class="card-img-top img-fluid"
@@ -47,7 +47,7 @@
                 title=""
               />
               <div class="card-body">
-                <h5 class="card-title"></h5>
+                <h5 class="card-title">Input Image</h5>
                 <p class="card-text"></p>
 
                 <p class="card-text">
@@ -58,17 +58,14 @@
                 <p class="card-text">
                   <span class="text-muted">TENSOR SHAPE&nbsp;</span>
 
-                  torch.Size([3, 145, 224])
+                  torch.Size([3, 140, 224])
                 </p>
                 <p class="card-text">
                   <span class="text-muted">HEIGHT&nbsp;</span>
-
-                  145
-                </p>
-                <p class="card-text">
+                  <strong> 140 </strong>
+                  &nbsp;&nbsp;
                   <span class="text-muted">WIDTH&nbsp;</span>
-
-                  224
+                  <strong> 224 </strong>
                 </p>
                 <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Case 1: img1_width > img2_width and img1_height > img2_height-1.png" class="btn btn-primary"
                   >OPEN IMG FILE</a
@@ -83,7 +80,7 @@
           </div>
           
           <div class="col">
-            <div class="card">
+            <div class="card p-3 h-100">
               <img
                 src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Case 1: img1_width > img2_width and img1_height > img2_height-2.png"
                 class="card-img-top img-fluid"
@@ -91,7 +88,7 @@
                 title=""
               />
               <div class="card-body">
-                <h5 class="card-title"></h5>
+                <h5 class="card-title">Input Alpha Layer</h5>
                 <p class="card-text"></p>
 
                 <p class="card-text">
@@ -102,17 +99,14 @@
                 <p class="card-text">
                   <span class="text-muted">TENSOR SHAPE&nbsp;</span>
 
-                  torch.Size([3, 2, 47])
+                  torch.Size([3, 68, 94])
                 </p>
                 <p class="card-text">
                   <span class="text-muted">HEIGHT&nbsp;</span>
-
-                  2
-                </p>
-                <p class="card-text">
+                  <strong> 68 </strong>
+                  &nbsp;&nbsp;
                   <span class="text-muted">WIDTH&nbsp;</span>
-
-                  47
+                  <strong> 94 </strong>
                 </p>
                 <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Case 1: img1_width > img2_width and img1_height > img2_height-2.png" class="btn btn-primary"
                   >OPEN IMG FILE</a
@@ -127,7 +121,7 @@
           </div>
           
           <div class="col">
-            <div class="card">
+            <div class="card p-3 h-100">
               <img
                 src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Case 1: img1_width > img2_width and img1_height > img2_height-3.png"
                 class="card-img-top img-fluid"
@@ -135,7 +129,7 @@
                 title=""
               />
               <div class="card-body">
-                <h5 class="card-title"></h5>
+                <h5 class="card-title">Size Matched and Composited</h5>
                 <p class="card-text"></p>
 
                 <p class="card-text">
@@ -146,17 +140,14 @@
                 <p class="card-text">
                   <span class="text-muted">TENSOR SHAPE&nbsp;</span>
 
-                  torch.Size([3, 145, 224])
+                  torch.Size([3, 140, 224])
                 </p>
                 <p class="card-text">
                   <span class="text-muted">HEIGHT&nbsp;</span>
-
-                  145
-                </p>
-                <p class="card-text">
+                  <strong> 140 </strong>
+                  &nbsp;&nbsp;
                   <span class="text-muted">WIDTH&nbsp;</span>
-
-                  224
+                  <strong> 224 </strong>
                 </p>
                 <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Case 1: img1_width > img2_width and img1_height > img2_height-3.png" class="btn btn-primary"
                   >OPEN IMG FILE</a
@@ -170,17 +161,17 @@
             </div>
           </div>
           
-        </div>
-        
-        <div class="row my-4">
-          <div class="col-4 col-sm-10">
-            <p class="h3">Case 2: img1_width > img2_width and img1_height < img2_height</p>
           </div>
         </div>
-        <div class="row mb-3">
+        
+        <div class="col-xl-12 col-xxl-6 mb-3 d-flex container-fluid flex-column">
+          <div class="col-12">
+            <p class="h4">Case 2: img1_width > img2_width and img1_height < img2_height</p>
+          </div>
+          <div class="col-12 d-flex flex-row">
           
           <div class="col">
-            <div class="card">
+            <div class="card p-3 h-100">
               <img
                 src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Case 2: img1_width > img2_width and img1_height < img2_height-1.png"
                 class="card-img-top img-fluid"
@@ -188,7 +179,7 @@
                 title=""
               />
               <div class="card-body">
-                <h5 class="card-title"></h5>
+                <h5 class="card-title">Input Image</h5>
                 <p class="card-text"></p>
 
                 <p class="card-text">
@@ -199,17 +190,14 @@
                 <p class="card-text">
                   <span class="text-muted">TENSOR SHAPE&nbsp;</span>
 
-                  torch.Size([3, 145, 137])
+                  torch.Size([3, 98, 224])
                 </p>
                 <p class="card-text">
                   <span class="text-muted">HEIGHT&nbsp;</span>
-
-                  145
-                </p>
-                <p class="card-text">
+                  <strong> 98 </strong>
+                  &nbsp;&nbsp;
                   <span class="text-muted">WIDTH&nbsp;</span>
-
-                  137
+                  <strong> 224 </strong>
                 </p>
                 <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Case 2: img1_width > img2_width and img1_height < img2_height-1.png" class="btn btn-primary"
                   >OPEN IMG FILE</a
@@ -224,7 +212,7 @@
           </div>
           
           <div class="col">
-            <div class="card">
+            <div class="card p-3 h-100">
               <img
                 src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Case 2: img1_width > img2_width and img1_height < img2_height-2.png"
                 class="card-img-top img-fluid"
@@ -232,7 +220,7 @@
                 title=""
               />
               <div class="card-body">
-                <h5 class="card-title"></h5>
+                <h5 class="card-title">Input Alpha Layer</h5>
                 <p class="card-text"></p>
 
                 <p class="card-text">
@@ -243,17 +231,14 @@
                 <p class="card-text">
                   <span class="text-muted">TENSOR SHAPE&nbsp;</span>
 
-                  torch.Size([3, 46, 224])
+                  torch.Size([3, 126, 75])
                 </p>
                 <p class="card-text">
                   <span class="text-muted">HEIGHT&nbsp;</span>
-
-                  46
-                </p>
-                <p class="card-text">
+                  <strong> 126 </strong>
+                  &nbsp;&nbsp;
                   <span class="text-muted">WIDTH&nbsp;</span>
-
-                  224
+                  <strong> 75 </strong>
                 </p>
                 <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Case 2: img1_width > img2_width and img1_height < img2_height-2.png" class="btn btn-primary"
                   >OPEN IMG FILE</a
@@ -268,7 +253,7 @@
           </div>
           
           <div class="col">
-            <div class="card">
+            <div class="card p-3 h-100">
               <img
                 src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Case 2: img1_width > img2_width and img1_height < img2_height-3.png"
                 class="card-img-top img-fluid"
@@ -276,7 +261,7 @@
                 title=""
               />
               <div class="card-body">
-                <h5 class="card-title"></h5>
+                <h5 class="card-title">Size Matched and Composited</h5>
                 <p class="card-text"></p>
 
                 <p class="card-text">
@@ -287,17 +272,14 @@
                 <p class="card-text">
                   <span class="text-muted">TENSOR SHAPE&nbsp;</span>
 
-                  torch.Size([3, 145, 137])
+                  torch.Size([3, 98, 224])
                 </p>
                 <p class="card-text">
                   <span class="text-muted">HEIGHT&nbsp;</span>
-
-                  145
-                </p>
-                <p class="card-text">
+                  <strong> 98 </strong>
+                  &nbsp;&nbsp;
                   <span class="text-muted">WIDTH&nbsp;</span>
-
-                  137
+                  <strong> 224 </strong>
                 </p>
                 <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Case 2: img1_width > img2_width and img1_height < img2_height-3.png" class="btn btn-primary"
                   >OPEN IMG FILE</a
@@ -311,17 +293,17 @@
             </div>
           </div>
           
-        </div>
-        
-        <div class="row my-4">
-          <div class="col-4 col-sm-10">
-            <p class="h3">Case 3: img1_width < img2_width and img1_height > img2_height</p>
           </div>
         </div>
-        <div class="row mb-3">
+        
+        <div class="col-xl-12 col-xxl-6 mb-3 d-flex container-fluid flex-column">
+          <div class="col-12">
+            <p class="h4">Case 3: img1_width < img2_width and img1_height > img2_height</p>
+          </div>
+          <div class="col-12 d-flex flex-row">
           
           <div class="col">
-            <div class="card">
+            <div class="card p-3 h-100">
               <img
                 src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Case 3: img1_width < img2_width and img1_height > img2_height-1.png"
                 class="card-img-top img-fluid"
@@ -329,7 +311,7 @@
                 title=""
               />
               <div class="card-body">
-                <h5 class="card-title"></h5>
+                <h5 class="card-title">Input Image</h5>
                 <p class="card-text"></p>
 
                 <p class="card-text">
@@ -340,17 +322,14 @@
                 <p class="card-text">
                   <span class="text-muted">TENSOR SHAPE&nbsp;</span>
 
-                  torch.Size([3, 136, 224])
+                  torch.Size([3, 140, 91])
                 </p>
                 <p class="card-text">
                   <span class="text-muted">HEIGHT&nbsp;</span>
-
-                  136
-                </p>
-                <p class="card-text">
+                  <strong> 140 </strong>
+                  &nbsp;&nbsp;
                   <span class="text-muted">WIDTH&nbsp;</span>
-
-                  224
+                  <strong> 91 </strong>
                 </p>
                 <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Case 3: img1_width < img2_width and img1_height > img2_height-1.png" class="btn btn-primary"
                   >OPEN IMG FILE</a
@@ -365,7 +344,7 @@
           </div>
           
           <div class="col">
-            <div class="card">
+            <div class="card p-3 h-100">
               <img
                 src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Case 3: img1_width < img2_width and img1_height > img2_height-2.png"
                 class="card-img-top img-fluid"
@@ -373,7 +352,7 @@
                 title=""
               />
               <div class="card-body">
-                <h5 class="card-title"></h5>
+                <h5 class="card-title">Input Alpha Layer</h5>
                 <p class="card-text"></p>
 
                 <p class="card-text">
@@ -384,17 +363,14 @@
                 <p class="card-text">
                   <span class="text-muted">TENSOR SHAPE&nbsp;</span>
 
-                  torch.Size([3, 140, 115])
+                  torch.Size([3, 74, 224])
                 </p>
                 <p class="card-text">
                   <span class="text-muted">HEIGHT&nbsp;</span>
-
-                  140
-                </p>
-                <p class="card-text">
+                  <strong> 74 </strong>
+                  &nbsp;&nbsp;
                   <span class="text-muted">WIDTH&nbsp;</span>
-
-                  115
+                  <strong> 224 </strong>
                 </p>
                 <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Case 3: img1_width < img2_width and img1_height > img2_height-2.png" class="btn btn-primary"
                   >OPEN IMG FILE</a
@@ -409,7 +385,7 @@
           </div>
           
           <div class="col">
-            <div class="card">
+            <div class="card p-3 h-100">
               <img
                 src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Case 3: img1_width < img2_width and img1_height > img2_height-3.png"
                 class="card-img-top img-fluid"
@@ -417,7 +393,7 @@
                 title=""
               />
               <div class="card-body">
-                <h5 class="card-title"></h5>
+                <h5 class="card-title">Size Matched and Composited</h5>
                 <p class="card-text"></p>
 
                 <p class="card-text">
@@ -428,17 +404,14 @@
                 <p class="card-text">
                   <span class="text-muted">TENSOR SHAPE&nbsp;</span>
 
-                  torch.Size([3, 136, 224])
+                  torch.Size([3, 74, 224])
                 </p>
                 <p class="card-text">
                   <span class="text-muted">HEIGHT&nbsp;</span>
-
-                  136
-                </p>
-                <p class="card-text">
+                  <strong> 74 </strong>
+                  &nbsp;&nbsp;
                   <span class="text-muted">WIDTH&nbsp;</span>
-
-                  224
+                  <strong> 224 </strong>
                 </p>
                 <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Case 3: img1_width < img2_width and img1_height > img2_height-3.png" class="btn btn-primary"
                   >OPEN IMG FILE</a
@@ -452,17 +425,17 @@
             </div>
           </div>
           
-        </div>
-        
-        <div class="row my-4">
-          <div class="col-4 col-sm-10">
-            <p class="h3">Case 4: img1_width < img2_width and img1_height < img2_height (redundant)</p>
           </div>
         </div>
-        <div class="row mb-3">
+        
+        <div class="col-xl-12 col-xxl-6 mb-3 d-flex container-fluid flex-column">
+          <div class="col-12">
+            <p class="h4">Case 4: img1_width < img2_width and img1_height < img2_height (redundant)</p>
+          </div>
+          <div class="col-12 d-flex flex-row">
           
           <div class="col">
-            <div class="card">
+            <div class="card p-3 h-100">
               <img
                 src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Case 4: img1_width < img2_width and img1_height < img2_height (redundant)-1.png"
                 class="card-img-top img-fluid"
@@ -470,7 +443,7 @@
                 title=""
               />
               <div class="card-body">
-                <h5 class="card-title"></h5>
+                <h5 class="card-title">Input Image</h5>
                 <p class="card-text"></p>
 
                 <p class="card-text">
@@ -481,17 +454,14 @@
                 <p class="card-text">
                   <span class="text-muted">TENSOR SHAPE&nbsp;</span>
 
-                  torch.Size([3, 9, 112])
+                  torch.Size([3, 87, 113])
                 </p>
                 <p class="card-text">
                   <span class="text-muted">HEIGHT&nbsp;</span>
-
-                  9
-                </p>
-                <p class="card-text">
+                  <strong> 87 </strong>
+                  &nbsp;&nbsp;
                   <span class="text-muted">WIDTH&nbsp;</span>
-
-                  112
+                  <strong> 113 </strong>
                 </p>
                 <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Case 4: img1_width < img2_width and img1_height < img2_height (redundant)-1.png" class="btn btn-primary"
                   >OPEN IMG FILE</a
@@ -506,7 +476,7 @@
           </div>
           
           <div class="col">
-            <div class="card">
+            <div class="card p-3 h-100">
               <img
                 src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Case 4: img1_width < img2_width and img1_height < img2_height (redundant)-2.png"
                 class="card-img-top img-fluid"
@@ -514,7 +484,7 @@
                 title=""
               />
               <div class="card-body">
-                <h5 class="card-title"></h5>
+                <h5 class="card-title">Input Alpha Layer</h5>
                 <p class="card-text"></p>
 
                 <p class="card-text">
@@ -525,17 +495,14 @@
                 <p class="card-text">
                   <span class="text-muted">TENSOR SHAPE&nbsp;</span>
 
-                  torch.Size([3, 140, 224])
+                  torch.Size([3, 126, 224])
                 </p>
                 <p class="card-text">
                   <span class="text-muted">HEIGHT&nbsp;</span>
-
-                  140
-                </p>
-                <p class="card-text">
+                  <strong> 126 </strong>
+                  &nbsp;&nbsp;
                   <span class="text-muted">WIDTH&nbsp;</span>
-
-                  224
+                  <strong> 224 </strong>
                 </p>
                 <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Case 4: img1_width < img2_width and img1_height < img2_height (redundant)-2.png" class="btn btn-primary"
                   >OPEN IMG FILE</a
@@ -550,7 +517,7 @@
           </div>
           
           <div class="col">
-            <div class="card">
+            <div class="card p-3 h-100">
               <img
                 src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Case 4: img1_width < img2_width and img1_height < img2_height (redundant)-3.png"
                 class="card-img-top img-fluid"
@@ -558,7 +525,7 @@
                 title=""
               />
               <div class="card-body">
-                <h5 class="card-title"></h5>
+                <h5 class="card-title">Size Matched and Composited</h5>
                 <p class="card-text"></p>
 
                 <p class="card-text">
@@ -569,17 +536,14 @@
                 <p class="card-text">
                   <span class="text-muted">TENSOR SHAPE&nbsp;</span>
 
-                  torch.Size([3, 140, 224])
+                  torch.Size([3, 126, 224])
                 </p>
                 <p class="card-text">
                   <span class="text-muted">HEIGHT&nbsp;</span>
-
-                  140
-                </p>
-                <p class="card-text">
+                  <strong> 126 </strong>
+                  &nbsp;&nbsp;
                   <span class="text-muted">WIDTH&nbsp;</span>
-
-                  224
+                  <strong> 224 </strong>
                 </p>
                 <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Case 4: img1_width < img2_width and img1_height < img2_height (redundant)-3.png" class="btn btn-primary"
                   >OPEN IMG FILE</a
@@ -593,17 +557,17 @@
             </div>
           </div>
           
-        </div>
-        
-        <div class="row my-4">
-          <div class="col-4 col-sm-10">
-            <p class="h3">Case 5: img1_width == img2_width and img1_height == img2_height</p>
           </div>
         </div>
-        <div class="row mb-3">
+        
+        <div class="col-xl-12 col-xxl-6 mb-3 d-flex container-fluid flex-column">
+          <div class="col-12">
+            <p class="h4">Case 5: img1_width == img2_width and img1_height == img2_height</p>
+          </div>
+          <div class="col-12 d-flex flex-row">
           
           <div class="col">
-            <div class="card">
+            <div class="card p-3 h-100">
               <img
                 src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Case 5: img1_width == img2_width and img1_height == img2_height-1.png"
                 class="card-img-top img-fluid"
@@ -611,7 +575,7 @@
                 title=""
               />
               <div class="card-body">
-                <h5 class="card-title"></h5>
+                <h5 class="card-title">Input Image</h5>
                 <p class="card-text"></p>
 
                 <p class="card-text">
@@ -622,17 +586,14 @@
                 <p class="card-text">
                   <span class="text-muted">TENSOR SHAPE&nbsp;</span>
 
-                  torch.Size([3, 145, 224])
+                  torch.Size([3, 126, 126])
                 </p>
                 <p class="card-text">
                   <span class="text-muted">HEIGHT&nbsp;</span>
-
-                  145
-                </p>
-                <p class="card-text">
+                  <strong> 126 </strong>
+                  &nbsp;&nbsp;
                   <span class="text-muted">WIDTH&nbsp;</span>
-
-                  224
+                  <strong> 126 </strong>
                 </p>
                 <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Case 5: img1_width == img2_width and img1_height == img2_height-1.png" class="btn btn-primary"
                   >OPEN IMG FILE</a
@@ -647,7 +608,7 @@
           </div>
           
           <div class="col">
-            <div class="card">
+            <div class="card p-3 h-100">
               <img
                 src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Case 5: img1_width == img2_width and img1_height == img2_height-2.png"
                 class="card-img-top img-fluid"
@@ -655,7 +616,7 @@
                 title=""
               />
               <div class="card-body">
-                <h5 class="card-title"></h5>
+                <h5 class="card-title">Input Alpha Layer</h5>
                 <p class="card-text"></p>
 
                 <p class="card-text">
@@ -666,17 +627,14 @@
                 <p class="card-text">
                   <span class="text-muted">TENSOR SHAPE&nbsp;</span>
 
-                  torch.Size([3, 140, 224])
+                  torch.Size([3, 126, 126])
                 </p>
                 <p class="card-text">
                   <span class="text-muted">HEIGHT&nbsp;</span>
-
-                  140
-                </p>
-                <p class="card-text">
+                  <strong> 126 </strong>
+                  &nbsp;&nbsp;
                   <span class="text-muted">WIDTH&nbsp;</span>
-
-                  224
+                  <strong> 126 </strong>
                 </p>
                 <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Case 5: img1_width == img2_width and img1_height == img2_height-2.png" class="btn btn-primary"
                   >OPEN IMG FILE</a
@@ -691,7 +649,7 @@
           </div>
           
           <div class="col">
-            <div class="card">
+            <div class="card p-3 h-100">
               <img
                 src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Case 5: img1_width == img2_width and img1_height == img2_height-3.png"
                 class="card-img-top img-fluid"
@@ -699,7 +657,7 @@
                 title=""
               />
               <div class="card-body">
-                <h5 class="card-title"></h5>
+                <h5 class="card-title">Size Matched and Composited</h5>
                 <p class="card-text"></p>
 
                 <p class="card-text">
@@ -710,17 +668,14 @@
                 <p class="card-text">
                   <span class="text-muted">TENSOR SHAPE&nbsp;</span>
 
-                  torch.Size([3, 145, 224])
+                  torch.Size([3, 126, 126])
                 </p>
                 <p class="card-text">
                   <span class="text-muted">HEIGHT&nbsp;</span>
-
-                  145
-                </p>
-                <p class="card-text">
+                  <strong> 126 </strong>
+                  &nbsp;&nbsp;
                   <span class="text-muted">WIDTH&nbsp;</span>
-
-                  224
+                  <strong> 126 </strong>
                 </p>
                 <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Case 5: img1_width == img2_width and img1_height == img2_height-3.png" class="btn btn-primary"
                   >OPEN IMG FILE</a
@@ -734,17 +689,17 @@
             </div>
           </div>
           
-        </div>
-        
-        <div class="row my-4">
-          <div class="col-4 col-sm-10">
-            <p class="h3">Case 6: img1_width == img2_width and img1_height > img2_height</p>
           </div>
         </div>
-        <div class="row mb-3">
+        
+        <div class="col-xl-12 col-xxl-6 mb-3 d-flex container-fluid flex-column">
+          <div class="col-12">
+            <p class="h4">Case 6: img1_width == img2_width and img1_height > img2_height</p>
+          </div>
+          <div class="col-12 d-flex flex-row">
           
           <div class="col">
-            <div class="card">
+            <div class="card p-3 h-100">
               <img
                 src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Case 6: img1_width == img2_width and img1_height > img2_height-1.png"
                 class="card-img-top img-fluid"
@@ -752,7 +707,7 @@
                 title=""
               />
               <div class="card-body">
-                <h5 class="card-title"></h5>
+                <h5 class="card-title">Input Image</h5>
                 <p class="card-text"></p>
 
                 <p class="card-text">
@@ -763,17 +718,14 @@
                 <p class="card-text">
                   <span class="text-muted">TENSOR SHAPE&nbsp;</span>
 
-                  torch.Size([3, 145, 224])
+                  torch.Size([3, 140, 126])
                 </p>
                 <p class="card-text">
                   <span class="text-muted">HEIGHT&nbsp;</span>
-
-                  145
-                </p>
-                <p class="card-text">
+                  <strong> 140 </strong>
+                  &nbsp;&nbsp;
                   <span class="text-muted">WIDTH&nbsp;</span>
-
-                  224
+                  <strong> 126 </strong>
                 </p>
                 <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Case 6: img1_width == img2_width and img1_height > img2_height-1.png" class="btn btn-primary"
                   >OPEN IMG FILE</a
@@ -788,7 +740,7 @@
           </div>
           
           <div class="col">
-            <div class="card">
+            <div class="card p-3 h-100">
               <img
                 src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Case 6: img1_width == img2_width and img1_height > img2_height-2.png"
                 class="card-img-top img-fluid"
@@ -796,7 +748,7 @@
                 title=""
               />
               <div class="card-body">
-                <h5 class="card-title"></h5>
+                <h5 class="card-title">Input Alpha Layer</h5>
                 <p class="card-text"></p>
 
                 <p class="card-text">
@@ -807,17 +759,14 @@
                 <p class="card-text">
                   <span class="text-muted">TENSOR SHAPE&nbsp;</span>
 
-                  torch.Size([3, 140, 224])
+                  torch.Size([3, 90, 126])
                 </p>
                 <p class="card-text">
                   <span class="text-muted">HEIGHT&nbsp;</span>
-
-                  140
-                </p>
-                <p class="card-text">
+                  <strong> 90 </strong>
+                  &nbsp;&nbsp;
                   <span class="text-muted">WIDTH&nbsp;</span>
-
-                  224
+                  <strong> 126 </strong>
                 </p>
                 <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Case 6: img1_width == img2_width and img1_height > img2_height-2.png" class="btn btn-primary"
                   >OPEN IMG FILE</a
@@ -832,7 +781,7 @@
           </div>
           
           <div class="col">
-            <div class="card">
+            <div class="card p-3 h-100">
               <img
                 src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Case 6: img1_width == img2_width and img1_height > img2_height-3.png"
                 class="card-img-top img-fluid"
@@ -840,7 +789,7 @@
                 title=""
               />
               <div class="card-body">
-                <h5 class="card-title"></h5>
+                <h5 class="card-title">Size Matched and Composited</h5>
                 <p class="card-text"></p>
 
                 <p class="card-text">
@@ -851,17 +800,14 @@
                 <p class="card-text">
                   <span class="text-muted">TENSOR SHAPE&nbsp;</span>
 
-                  torch.Size([3, 145, 224])
+                  torch.Size([3, 140, 126])
                 </p>
                 <p class="card-text">
                   <span class="text-muted">HEIGHT&nbsp;</span>
-
-                  145
-                </p>
-                <p class="card-text">
+                  <strong> 140 </strong>
+                  &nbsp;&nbsp;
                   <span class="text-muted">WIDTH&nbsp;</span>
-
-                  224
+                  <strong> 126 </strong>
                 </p>
                 <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Case 6: img1_width == img2_width and img1_height > img2_height-3.png" class="btn btn-primary"
                   >OPEN IMG FILE</a
@@ -875,17 +821,17 @@
             </div>
           </div>
           
-        </div>
-        
-        <div class="row my-4">
-          <div class="col-4 col-sm-10">
-            <p class="h3">Case 7: img1_width > img2_width and img1_height == img2_height</p>
           </div>
         </div>
-        <div class="row mb-3">
+        
+        <div class="col-xl-12 col-xxl-6 mb-3 d-flex container-fluid flex-column">
+          <div class="col-12">
+            <p class="h4">Case 7: img1_width > img2_width and img1_height == img2_height</p>
+          </div>
+          <div class="col-12 d-flex flex-row">
           
           <div class="col">
-            <div class="card">
+            <div class="card p-3 h-100">
               <img
                 src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Case 7: img1_width > img2_width and img1_height == img2_height-1.png"
                 class="card-img-top img-fluid"
@@ -893,7 +839,7 @@
                 title=""
               />
               <div class="card-body">
-                <h5 class="card-title"></h5>
+                <h5 class="card-title">Input Image</h5>
                 <p class="card-text"></p>
 
                 <p class="card-text">
@@ -904,17 +850,14 @@
                 <p class="card-text">
                   <span class="text-muted">TENSOR SHAPE&nbsp;</span>
 
-                  torch.Size([3, 145, 224])
+                  torch.Size([3, 126, 224])
                 </p>
                 <p class="card-text">
                   <span class="text-muted">HEIGHT&nbsp;</span>
-
-                  145
-                </p>
-                <p class="card-text">
+                  <strong> 126 </strong>
+                  &nbsp;&nbsp;
                   <span class="text-muted">WIDTH&nbsp;</span>
-
-                  224
+                  <strong> 224 </strong>
                 </p>
                 <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Case 7: img1_width > img2_width and img1_height == img2_height-1.png" class="btn btn-primary"
                   >OPEN IMG FILE</a
@@ -929,7 +872,7 @@
           </div>
           
           <div class="col">
-            <div class="card">
+            <div class="card p-3 h-100">
               <img
                 src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Case 7: img1_width > img2_width and img1_height == img2_height-2.png"
                 class="card-img-top img-fluid"
@@ -937,7 +880,7 @@
                 title=""
               />
               <div class="card-body">
-                <h5 class="card-title"></h5>
+                <h5 class="card-title">Input Alpha Layer</h5>
                 <p class="card-text"></p>
 
                 <p class="card-text">
@@ -948,17 +891,14 @@
                 <p class="card-text">
                   <span class="text-muted">TENSOR SHAPE&nbsp;</span>
 
-                  torch.Size([3, 140, 224])
+                  torch.Size([3, 126, 114])
                 </p>
                 <p class="card-text">
                   <span class="text-muted">HEIGHT&nbsp;</span>
-
-                  140
-                </p>
-                <p class="card-text">
+                  <strong> 126 </strong>
+                  &nbsp;&nbsp;
                   <span class="text-muted">WIDTH&nbsp;</span>
-
-                  224
+                  <strong> 114 </strong>
                 </p>
                 <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Case 7: img1_width > img2_width and img1_height == img2_height-2.png" class="btn btn-primary"
                   >OPEN IMG FILE</a
@@ -973,7 +913,7 @@
           </div>
           
           <div class="col">
-            <div class="card">
+            <div class="card p-3 h-100">
               <img
                 src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Case 7: img1_width > img2_width and img1_height == img2_height-3.png"
                 class="card-img-top img-fluid"
@@ -981,7 +921,7 @@
                 title=""
               />
               <div class="card-body">
-                <h5 class="card-title"></h5>
+                <h5 class="card-title">Size Matched and Composited</h5>
                 <p class="card-text"></p>
 
                 <p class="card-text">
@@ -992,17 +932,14 @@
                 <p class="card-text">
                   <span class="text-muted">TENSOR SHAPE&nbsp;</span>
 
-                  torch.Size([3, 145, 224])
+                  torch.Size([3, 126, 224])
                 </p>
                 <p class="card-text">
                   <span class="text-muted">HEIGHT&nbsp;</span>
-
-                  145
-                </p>
-                <p class="card-text">
+                  <strong> 126 </strong>
+                  &nbsp;&nbsp;
                   <span class="text-muted">WIDTH&nbsp;</span>
-
-                  224
+                  <strong> 224 </strong>
                 </p>
                 <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Case 7: img1_width > img2_width and img1_height == img2_height-3.png" class="btn btn-primary"
                   >OPEN IMG FILE</a
@@ -1016,17 +953,17 @@
             </div>
           </div>
           
-        </div>
-        
-        <div class="row my-4">
-          <div class="col-4 col-sm-10">
-            <p class="h3">Edge Case 1: img1_width = 1</p>
           </div>
         </div>
-        <div class="row mb-3">
+        
+        <div class="col-xl-12 col-xxl-6 mb-3 d-flex container-fluid flex-column">
+          <div class="col-12">
+            <p class="h4">Edge Case 1: img1_width = 1</p>
+          </div>
+          <div class="col-12 d-flex flex-row">
           
           <div class="col">
-            <div class="card">
+            <div class="card p-3 h-100">
               <img
                 src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 1: img1_width = 1-1.png"
                 class="card-img-top img-fluid"
@@ -1034,474 +971,7 @@
                 title=""
               />
               <div class="card-body">
-                <h5 class="card-title"></h5>
-                <p class="card-text"></p>
-
-                <p class="card-text">
-                  <span class="text-muted">TENSOR TYPE&nbsp;</span>
-
-                  RGB_H_W
-                </p>
-                <p class="card-text">
-                  <span class="text-muted">TENSOR SHAPE&nbsp;</span>
-
-                  torch.Size([3, 1, 224])
-                </p>
-                <p class="card-text">
-                  <span class="text-muted">HEIGHT&nbsp;</span>
-
-                  1
-                </p>
-                <p class="card-text">
-                  <span class="text-muted">WIDTH&nbsp;</span>
-
-                  224
-                </p>
-                <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 1: img1_width = 1-1.png" class="btn btn-primary"
-                  >OPEN IMG FILE</a
-                >
-              </div>
-
-              <div class="card-footer">
-                <small class="text-muted">Edge Case 1: img1_width = 1-1.png</small>
-                
-              </div>
-            </div>
-          </div>
-          
-          <div class="col">
-            <div class="card">
-              <img
-                src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 1: img1_width = 1-2.png"
-                class="card-img-top img-fluid"
-                alt=""
-                title=""
-              />
-              <div class="card-body">
-                <h5 class="card-title"></h5>
-                <p class="card-text"></p>
-
-                <p class="card-text">
-                  <span class="text-muted">TENSOR TYPE&nbsp;</span>
-
-                  RGB_H_W
-                </p>
-                <p class="card-text">
-                  <span class="text-muted">TENSOR SHAPE&nbsp;</span>
-
-                  torch.Size([3, 140, 224])
-                </p>
-                <p class="card-text">
-                  <span class="text-muted">HEIGHT&nbsp;</span>
-
-                  140
-                </p>
-                <p class="card-text">
-                  <span class="text-muted">WIDTH&nbsp;</span>
-
-                  224
-                </p>
-                <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 1: img1_width = 1-2.png" class="btn btn-primary"
-                  >OPEN IMG FILE</a
-                >
-              </div>
-
-              <div class="card-footer">
-                <small class="text-muted">Edge Case 1: img1_width = 1-2.png</small>
-                
-              </div>
-            </div>
-          </div>
-          
-          <div class="col">
-            <div class="card">
-              <img
-                src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 1: img1_width = 1-3.png"
-                class="card-img-top img-fluid"
-                alt=""
-                title=""
-              />
-              <div class="card-body">
-                <h5 class="card-title"></h5>
-                <p class="card-text"></p>
-
-                <p class="card-text">
-                  <span class="text-muted">TENSOR TYPE&nbsp;</span>
-
-                  RGB_H_W
-                </p>
-                <p class="card-text">
-                  <span class="text-muted">TENSOR SHAPE&nbsp;</span>
-
-                  torch.Size([3, 140, 224])
-                </p>
-                <p class="card-text">
-                  <span class="text-muted">HEIGHT&nbsp;</span>
-
-                  140
-                </p>
-                <p class="card-text">
-                  <span class="text-muted">WIDTH&nbsp;</span>
-
-                  224
-                </p>
-                <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 1: img1_width = 1-3.png" class="btn btn-primary"
-                  >OPEN IMG FILE</a
-                >
-              </div>
-
-              <div class="card-footer">
-                <small class="text-muted">Edge Case 1: img1_width = 1-3.png</small>
-                
-              </div>
-            </div>
-          </div>
-          
-        </div>
-        
-        <div class="row my-4">
-          <div class="col-4 col-sm-10">
-            <p class="h3">Edge Case 2: img1_height = 1</p>
-          </div>
-        </div>
-        <div class="row mb-3">
-          
-          <div class="col">
-            <div class="card">
-              <img
-                src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 2: img1_height = 1-1.png"
-                class="card-img-top img-fluid"
-                alt=""
-                title=""
-              />
-              <div class="card-body">
-                <h5 class="card-title"></h5>
-                <p class="card-text"></p>
-
-                <p class="card-text">
-                  <span class="text-muted">TENSOR TYPE&nbsp;</span>
-
-                  RGB_H_W
-                </p>
-                <p class="card-text">
-                  <span class="text-muted">TENSOR SHAPE&nbsp;</span>
-
-                  torch.Size([3, 145, 1])
-                </p>
-                <p class="card-text">
-                  <span class="text-muted">HEIGHT&nbsp;</span>
-
-                  145
-                </p>
-                <p class="card-text">
-                  <span class="text-muted">WIDTH&nbsp;</span>
-
-                  1
-                </p>
-                <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 2: img1_height = 1-1.png" class="btn btn-primary"
-                  >OPEN IMG FILE</a
-                >
-              </div>
-
-              <div class="card-footer">
-                <small class="text-muted">Edge Case 2: img1_height = 1-1.png</small>
-                
-              </div>
-            </div>
-          </div>
-          
-          <div class="col">
-            <div class="card">
-              <img
-                src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 2: img1_height = 1-2.png"
-                class="card-img-top img-fluid"
-                alt=""
-                title=""
-              />
-              <div class="card-body">
-                <h5 class="card-title"></h5>
-                <p class="card-text"></p>
-
-                <p class="card-text">
-                  <span class="text-muted">TENSOR TYPE&nbsp;</span>
-
-                  RGB_H_W
-                </p>
-                <p class="card-text">
-                  <span class="text-muted">TENSOR SHAPE&nbsp;</span>
-
-                  torch.Size([3, 140, 224])
-                </p>
-                <p class="card-text">
-                  <span class="text-muted">HEIGHT&nbsp;</span>
-
-                  140
-                </p>
-                <p class="card-text">
-                  <span class="text-muted">WIDTH&nbsp;</span>
-
-                  224
-                </p>
-                <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 2: img1_height = 1-2.png" class="btn btn-primary"
-                  >OPEN IMG FILE</a
-                >
-              </div>
-
-              <div class="card-footer">
-                <small class="text-muted">Edge Case 2: img1_height = 1-2.png</small>
-                
-              </div>
-            </div>
-          </div>
-          
-          <div class="col">
-            <div class="card">
-              <img
-                src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 2: img1_height = 1-3.png"
-                class="card-img-top img-fluid"
-                alt=""
-                title=""
-              />
-              <div class="card-body">
-                <h5 class="card-title"></h5>
-                <p class="card-text"></p>
-
-                <p class="card-text">
-                  <span class="text-muted">TENSOR TYPE&nbsp;</span>
-
-                  RGB_H_W
-                </p>
-                <p class="card-text">
-                  <span class="text-muted">TENSOR SHAPE&nbsp;</span>
-
-                  torch.Size([3, 140, 224])
-                </p>
-                <p class="card-text">
-                  <span class="text-muted">HEIGHT&nbsp;</span>
-
-                  140
-                </p>
-                <p class="card-text">
-                  <span class="text-muted">WIDTH&nbsp;</span>
-
-                  224
-                </p>
-                <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 2: img1_height = 1-3.png" class="btn btn-primary"
-                  >OPEN IMG FILE</a
-                >
-              </div>
-
-              <div class="card-footer">
-                <small class="text-muted">Edge Case 2: img1_height = 1-3.png</small>
-                
-              </div>
-            </div>
-          </div>
-          
-        </div>
-        
-        <div class="row my-4">
-          <div class="col-4 col-sm-10">
-            <p class="h3">Edge Case 3: img2_width = 1</p>
-          </div>
-        </div>
-        <div class="row mb-3">
-          
-          <div class="col">
-            <div class="card">
-              <img
-                src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 3: img2_width = 1-1.png"
-                class="card-img-top img-fluid"
-                alt=""
-                title=""
-              />
-              <div class="card-body">
-                <h5 class="card-title"></h5>
-                <p class="card-text"></p>
-
-                <p class="card-text">
-                  <span class="text-muted">TENSOR TYPE&nbsp;</span>
-
-                  RGB_H_W
-                </p>
-                <p class="card-text">
-                  <span class="text-muted">TENSOR SHAPE&nbsp;</span>
-
-                  torch.Size([3, 145, 224])
-                </p>
-                <p class="card-text">
-                  <span class="text-muted">HEIGHT&nbsp;</span>
-
-                  145
-                </p>
-                <p class="card-text">
-                  <span class="text-muted">WIDTH&nbsp;</span>
-
-                  224
-                </p>
-                <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 3: img2_width = 1-1.png" class="btn btn-primary"
-                  >OPEN IMG FILE</a
-                >
-              </div>
-
-              <div class="card-footer">
-                <small class="text-muted">Edge Case 3: img2_width = 1-1.png</small>
-                
-              </div>
-            </div>
-          </div>
-          
-          <div class="col">
-            <div class="card">
-              <img
-                src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 3: img2_width = 1-2.png"
-                class="card-img-top img-fluid"
-                alt=""
-                title=""
-              />
-              <div class="card-body">
-                <h5 class="card-title"></h5>
-                <p class="card-text"></p>
-
-                <p class="card-text">
-                  <span class="text-muted">TENSOR TYPE&nbsp;</span>
-
-                  RGB_H_W
-                </p>
-                <p class="card-text">
-                  <span class="text-muted">TENSOR SHAPE&nbsp;</span>
-
-                  torch.Size([3, 1, 224])
-                </p>
-                <p class="card-text">
-                  <span class="text-muted">HEIGHT&nbsp;</span>
-
-                  1
-                </p>
-                <p class="card-text">
-                  <span class="text-muted">WIDTH&nbsp;</span>
-
-                  224
-                </p>
-                <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 3: img2_width = 1-2.png" class="btn btn-primary"
-                  >OPEN IMG FILE</a
-                >
-              </div>
-
-              <div class="card-footer">
-                <small class="text-muted">Edge Case 3: img2_width = 1-2.png</small>
-                
-              </div>
-            </div>
-          </div>
-          
-          <div class="col">
-            <div class="card">
-              <img
-                src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 3: img2_width = 1-3.png"
-                class="card-img-top img-fluid"
-                alt=""
-                title=""
-              />
-              <div class="card-body">
-                <h5 class="card-title"></h5>
-                <p class="card-text"></p>
-
-                <p class="card-text">
-                  <span class="text-muted">TENSOR TYPE&nbsp;</span>
-
-                  RGB_H_W
-                </p>
-                <p class="card-text">
-                  <span class="text-muted">TENSOR SHAPE&nbsp;</span>
-
-                  torch.Size([3, 145, 224])
-                </p>
-                <p class="card-text">
-                  <span class="text-muted">HEIGHT&nbsp;</span>
-
-                  145
-                </p>
-                <p class="card-text">
-                  <span class="text-muted">WIDTH&nbsp;</span>
-
-                  224
-                </p>
-                <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 3: img2_width = 1-3.png" class="btn btn-primary"
-                  >OPEN IMG FILE</a
-                >
-              </div>
-
-              <div class="card-footer">
-                <small class="text-muted">Edge Case 3: img2_width = 1-3.png</small>
-                
-              </div>
-            </div>
-          </div>
-          
-        </div>
-        
-        <div class="row my-4">
-          <div class="col-4 col-sm-10">
-            <p class="h3">Edge Case 4: img2_height = 1</p>
-          </div>
-        </div>
-        <div class="row mb-3">
-          
-          <div class="col">
-            <div class="card">
-              <img
-                src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 4: img2_height = 1-1.png"
-                class="card-img-top img-fluid"
-                alt=""
-                title=""
-              />
-              <div class="card-body">
-                <h5 class="card-title"></h5>
-                <p class="card-text"></p>
-
-                <p class="card-text">
-                  <span class="text-muted">TENSOR TYPE&nbsp;</span>
-
-                  RGB_H_W
-                </p>
-                <p class="card-text">
-                  <span class="text-muted">TENSOR SHAPE&nbsp;</span>
-
-                  torch.Size([3, 145, 224])
-                </p>
-                <p class="card-text">
-                  <span class="text-muted">HEIGHT&nbsp;</span>
-
-                  145
-                </p>
-                <p class="card-text">
-                  <span class="text-muted">WIDTH&nbsp;</span>
-
-                  224
-                </p>
-                <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 4: img2_height = 1-1.png" class="btn btn-primary"
-                  >OPEN IMG FILE</a
-                >
-              </div>
-
-              <div class="card-footer">
-                <small class="text-muted">Edge Case 4: img2_height = 1-1.png</small>
-                
-              </div>
-            </div>
-          </div>
-          
-          <div class="col">
-            <div class="card">
-              <img
-                src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 4: img2_height = 1-2.png"
-                class="card-img-top img-fluid"
-                alt=""
-                title=""
-              />
-              <div class="card-body">
-                <h5 class="card-title"></h5>
+                <h5 class="card-title">Input Image</h5>
                 <p class="card-text"></p>
 
                 <p class="card-text">
@@ -1516,13 +986,447 @@
                 </p>
                 <p class="card-text">
                   <span class="text-muted">HEIGHT&nbsp;</span>
+                  <strong> 140 </strong>
+                  &nbsp;&nbsp;
+                  <span class="text-muted">WIDTH&nbsp;</span>
+                  <strong> 1 </strong>
+                </p>
+                <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 1: img1_width = 1-1.png" class="btn btn-primary"
+                  >OPEN IMG FILE</a
+                >
+              </div>
 
-                  140
+              <div class="card-footer">
+                <small class="text-muted">Edge Case 1: img1_width = 1-1.png</small>
+                
+              </div>
+            </div>
+          </div>
+          
+          <div class="col">
+            <div class="card p-3 h-100">
+              <img
+                src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 1: img1_width = 1-2.png"
+                class="card-img-top img-fluid"
+                alt=""
+                title=""
+              />
+              <div class="card-body">
+                <h5 class="card-title">Input Alpha Layer</h5>
+                <p class="card-text"></p>
+
+                <p class="card-text">
+                  <span class="text-muted">TENSOR TYPE&nbsp;</span>
+
+                  RGB_H_W
                 </p>
                 <p class="card-text">
-                  <span class="text-muted">WIDTH&nbsp;</span>
+                  <span class="text-muted">TENSOR SHAPE&nbsp;</span>
 
-                  1
+                  torch.Size([3, 126, 224])
+                </p>
+                <p class="card-text">
+                  <span class="text-muted">HEIGHT&nbsp;</span>
+                  <strong> 126 </strong>
+                  &nbsp;&nbsp;
+                  <span class="text-muted">WIDTH&nbsp;</span>
+                  <strong> 224 </strong>
+                </p>
+                <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 1: img1_width = 1-2.png" class="btn btn-primary"
+                  >OPEN IMG FILE</a
+                >
+              </div>
+
+              <div class="card-footer">
+                <small class="text-muted">Edge Case 1: img1_width = 1-2.png</small>
+                
+              </div>
+            </div>
+          </div>
+          
+          <div class="col">
+            <div class="card p-3 h-100">
+              <img
+                src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 1: img1_width = 1-3.png"
+                class="card-img-top img-fluid"
+                alt=""
+                title=""
+              />
+              <div class="card-body">
+                <h5 class="card-title">Size Matched and Composited</h5>
+                <p class="card-text"></p>
+
+                <p class="card-text">
+                  <span class="text-muted">TENSOR TYPE&nbsp;</span>
+
+                  RGB_H_W
+                </p>
+                <p class="card-text">
+                  <span class="text-muted">TENSOR SHAPE&nbsp;</span>
+
+                  torch.Size([3, 126, 224])
+                </p>
+                <p class="card-text">
+                  <span class="text-muted">HEIGHT&nbsp;</span>
+                  <strong> 126 </strong>
+                  &nbsp;&nbsp;
+                  <span class="text-muted">WIDTH&nbsp;</span>
+                  <strong> 224 </strong>
+                </p>
+                <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 1: img1_width = 1-3.png" class="btn btn-primary"
+                  >OPEN IMG FILE</a
+                >
+              </div>
+
+              <div class="card-footer">
+                <small class="text-muted">Edge Case 1: img1_width = 1-3.png</small>
+                
+              </div>
+            </div>
+          </div>
+          
+          </div>
+        </div>
+        
+        <div class="col-xl-12 col-xxl-6 mb-3 d-flex container-fluid flex-column">
+          <div class="col-12">
+            <p class="h4">Edge Case 2: img1_height = 1</p>
+          </div>
+          <div class="col-12 d-flex flex-row">
+          
+          <div class="col">
+            <div class="card p-3 h-100">
+              <img
+                src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 2: img1_height = 1-1.png"
+                class="card-img-top img-fluid"
+                alt=""
+                title=""
+              />
+              <div class="card-body">
+                <h5 class="card-title">Input Image</h5>
+                <p class="card-text"></p>
+
+                <p class="card-text">
+                  <span class="text-muted">TENSOR TYPE&nbsp;</span>
+
+                  RGB_H_W
+                </p>
+                <p class="card-text">
+                  <span class="text-muted">TENSOR SHAPE&nbsp;</span>
+
+                  torch.Size([3, 1, 224])
+                </p>
+                <p class="card-text">
+                  <span class="text-muted">HEIGHT&nbsp;</span>
+                  <strong> 1 </strong>
+                  &nbsp;&nbsp;
+                  <span class="text-muted">WIDTH&nbsp;</span>
+                  <strong> 224 </strong>
+                </p>
+                <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 2: img1_height = 1-1.png" class="btn btn-primary"
+                  >OPEN IMG FILE</a
+                >
+              </div>
+
+              <div class="card-footer">
+                <small class="text-muted">Edge Case 2: img1_height = 1-1.png</small>
+                
+              </div>
+            </div>
+          </div>
+          
+          <div class="col">
+            <div class="card p-3 h-100">
+              <img
+                src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 2: img1_height = 1-2.png"
+                class="card-img-top img-fluid"
+                alt=""
+                title=""
+              />
+              <div class="card-body">
+                <h5 class="card-title">Input Alpha Layer</h5>
+                <p class="card-text"></p>
+
+                <p class="card-text">
+                  <span class="text-muted">TENSOR TYPE&nbsp;</span>
+
+                  RGB_H_W
+                </p>
+                <p class="card-text">
+                  <span class="text-muted">TENSOR SHAPE&nbsp;</span>
+
+                  torch.Size([3, 126, 224])
+                </p>
+                <p class="card-text">
+                  <span class="text-muted">HEIGHT&nbsp;</span>
+                  <strong> 126 </strong>
+                  &nbsp;&nbsp;
+                  <span class="text-muted">WIDTH&nbsp;</span>
+                  <strong> 224 </strong>
+                </p>
+                <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 2: img1_height = 1-2.png" class="btn btn-primary"
+                  >OPEN IMG FILE</a
+                >
+              </div>
+
+              <div class="card-footer">
+                <small class="text-muted">Edge Case 2: img1_height = 1-2.png</small>
+                
+              </div>
+            </div>
+          </div>
+          
+          <div class="col">
+            <div class="card p-3 h-100">
+              <img
+                src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 2: img1_height = 1-3.png"
+                class="card-img-top img-fluid"
+                alt=""
+                title=""
+              />
+              <div class="card-body">
+                <h5 class="card-title">Size Matched and Composited</h5>
+                <p class="card-text"></p>
+
+                <p class="card-text">
+                  <span class="text-muted">TENSOR TYPE&nbsp;</span>
+
+                  RGB_H_W
+                </p>
+                <p class="card-text">
+                  <span class="text-muted">TENSOR SHAPE&nbsp;</span>
+
+                  torch.Size([3, 126, 224])
+                </p>
+                <p class="card-text">
+                  <span class="text-muted">HEIGHT&nbsp;</span>
+                  <strong> 126 </strong>
+                  &nbsp;&nbsp;
+                  <span class="text-muted">WIDTH&nbsp;</span>
+                  <strong> 224 </strong>
+                </p>
+                <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 2: img1_height = 1-3.png" class="btn btn-primary"
+                  >OPEN IMG FILE</a
+                >
+              </div>
+
+              <div class="card-footer">
+                <small class="text-muted">Edge Case 2: img1_height = 1-3.png</small>
+                
+              </div>
+            </div>
+          </div>
+          
+          </div>
+        </div>
+        
+        <div class="col-xl-12 col-xxl-6 mb-3 d-flex container-fluid flex-column">
+          <div class="col-12">
+            <p class="h4">Edge Case 3: img2_width = 1</p>
+          </div>
+          <div class="col-12 d-flex flex-row">
+          
+          <div class="col">
+            <div class="card p-3 h-100">
+              <img
+                src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 3: img2_width = 1-1.png"
+                class="card-img-top img-fluid"
+                alt=""
+                title=""
+              />
+              <div class="card-body">
+                <h5 class="card-title">Input Image</h5>
+                <p class="card-text"></p>
+
+                <p class="card-text">
+                  <span class="text-muted">TENSOR TYPE&nbsp;</span>
+
+                  RGB_H_W
+                </p>
+                <p class="card-text">
+                  <span class="text-muted">TENSOR SHAPE&nbsp;</span>
+
+                  torch.Size([3, 140, 224])
+                </p>
+                <p class="card-text">
+                  <span class="text-muted">HEIGHT&nbsp;</span>
+                  <strong> 140 </strong>
+                  &nbsp;&nbsp;
+                  <span class="text-muted">WIDTH&nbsp;</span>
+                  <strong> 224 </strong>
+                </p>
+                <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 3: img2_width = 1-1.png" class="btn btn-primary"
+                  >OPEN IMG FILE</a
+                >
+              </div>
+
+              <div class="card-footer">
+                <small class="text-muted">Edge Case 3: img2_width = 1-1.png</small>
+                
+              </div>
+            </div>
+          </div>
+          
+          <div class="col">
+            <div class="card p-3 h-100">
+              <img
+                src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 3: img2_width = 1-2.png"
+                class="card-img-top img-fluid"
+                alt=""
+                title=""
+              />
+              <div class="card-body">
+                <h5 class="card-title">Input Alpha Layer</h5>
+                <p class="card-text"></p>
+
+                <p class="card-text">
+                  <span class="text-muted">TENSOR TYPE&nbsp;</span>
+
+                  RGB_H_W
+                </p>
+                <p class="card-text">
+                  <span class="text-muted">TENSOR SHAPE&nbsp;</span>
+
+                  torch.Size([3, 126, 1])
+                </p>
+                <p class="card-text">
+                  <span class="text-muted">HEIGHT&nbsp;</span>
+                  <strong> 126 </strong>
+                  &nbsp;&nbsp;
+                  <span class="text-muted">WIDTH&nbsp;</span>
+                  <strong> 1 </strong>
+                </p>
+                <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 3: img2_width = 1-2.png" class="btn btn-primary"
+                  >OPEN IMG FILE</a
+                >
+              </div>
+
+              <div class="card-footer">
+                <small class="text-muted">Edge Case 3: img2_width = 1-2.png</small>
+                
+              </div>
+            </div>
+          </div>
+          
+          <div class="col">
+            <div class="card p-3 h-100">
+              <img
+                src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 3: img2_width = 1-3.png"
+                class="card-img-top img-fluid"
+                alt=""
+                title=""
+              />
+              <div class="card-body">
+                <h5 class="card-title">Size Matched and Composited</h5>
+                <p class="card-text"></p>
+
+                <p class="card-text">
+                  <span class="text-muted">TENSOR TYPE&nbsp;</span>
+
+                  RGB_H_W
+                </p>
+                <p class="card-text">
+                  <span class="text-muted">TENSOR SHAPE&nbsp;</span>
+
+                  torch.Size([3, 140, 224])
+                </p>
+                <p class="card-text">
+                  <span class="text-muted">HEIGHT&nbsp;</span>
+                  <strong> 140 </strong>
+                  &nbsp;&nbsp;
+                  <span class="text-muted">WIDTH&nbsp;</span>
+                  <strong> 224 </strong>
+                </p>
+                <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 3: img2_width = 1-3.png" class="btn btn-primary"
+                  >OPEN IMG FILE</a
+                >
+              </div>
+
+              <div class="card-footer">
+                <small class="text-muted">Edge Case 3: img2_width = 1-3.png</small>
+                
+              </div>
+            </div>
+          </div>
+          
+          </div>
+        </div>
+        
+        <div class="col-xl-12 col-xxl-6 mb-3 d-flex container-fluid flex-column">
+          <div class="col-12">
+            <p class="h4">Edge Case 4: img2_height = 1</p>
+          </div>
+          <div class="col-12 d-flex flex-row">
+          
+          <div class="col">
+            <div class="card p-3 h-100">
+              <img
+                src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 4: img2_height = 1-1.png"
+                class="card-img-top img-fluid"
+                alt=""
+                title=""
+              />
+              <div class="card-body">
+                <h5 class="card-title">Input Image</h5>
+                <p class="card-text"></p>
+
+                <p class="card-text">
+                  <span class="text-muted">TENSOR TYPE&nbsp;</span>
+
+                  RGB_H_W
+                </p>
+                <p class="card-text">
+                  <span class="text-muted">TENSOR SHAPE&nbsp;</span>
+
+                  torch.Size([3, 140, 224])
+                </p>
+                <p class="card-text">
+                  <span class="text-muted">HEIGHT&nbsp;</span>
+                  <strong> 140 </strong>
+                  &nbsp;&nbsp;
+                  <span class="text-muted">WIDTH&nbsp;</span>
+                  <strong> 224 </strong>
+                </p>
+                <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 4: img2_height = 1-1.png" class="btn btn-primary"
+                  >OPEN IMG FILE</a
+                >
+              </div>
+
+              <div class="card-footer">
+                <small class="text-muted">Edge Case 4: img2_height = 1-1.png</small>
+                
+              </div>
+            </div>
+          </div>
+          
+          <div class="col">
+            <div class="card p-3 h-100">
+              <img
+                src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 4: img2_height = 1-2.png"
+                class="card-img-top img-fluid"
+                alt=""
+                title=""
+              />
+              <div class="card-body">
+                <h5 class="card-title">Input Alpha Layer</h5>
+                <p class="card-text"></p>
+
+                <p class="card-text">
+                  <span class="text-muted">TENSOR TYPE&nbsp;</span>
+
+                  RGB_H_W
+                </p>
+                <p class="card-text">
+                  <span class="text-muted">TENSOR SHAPE&nbsp;</span>
+
+                  torch.Size([3, 1, 224])
+                </p>
+                <p class="card-text">
+                  <span class="text-muted">HEIGHT&nbsp;</span>
+                  <strong> 1 </strong>
+                  &nbsp;&nbsp;
+                  <span class="text-muted">WIDTH&nbsp;</span>
+                  <strong> 224 </strong>
                 </p>
                 <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 4: img2_height = 1-2.png" class="btn btn-primary"
                   >OPEN IMG FILE</a
@@ -1537,7 +1441,7 @@
           </div>
           
           <div class="col">
-            <div class="card">
+            <div class="card p-3 h-100">
               <img
                 src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 4: img2_height = 1-3.png"
                 class="card-img-top img-fluid"
@@ -1545,7 +1449,7 @@
                 title=""
               />
               <div class="card-body">
-                <h5 class="card-title"></h5>
+                <h5 class="card-title">Size Matched and Composited</h5>
                 <p class="card-text"></p>
 
                 <p class="card-text">
@@ -1556,17 +1460,14 @@
                 <p class="card-text">
                   <span class="text-muted">TENSOR SHAPE&nbsp;</span>
 
-                  torch.Size([3, 145, 224])
+                  torch.Size([3, 140, 224])
                 </p>
                 <p class="card-text">
                   <span class="text-muted">HEIGHT&nbsp;</span>
-
-                  145
-                </p>
-                <p class="card-text">
+                  <strong> 140 </strong>
+                  &nbsp;&nbsp;
                   <span class="text-muted">WIDTH&nbsp;</span>
-
-                  224
+                  <strong> 224 </strong>
                 </p>
                 <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 4: img2_height = 1-3.png" class="btn btn-primary"
                   >OPEN IMG FILE</a
@@ -1580,17 +1481,17 @@
             </div>
           </div>
           
-        </div>
-        
-        <div class="row my-4">
-          <div class="col-4 col-sm-10">
-            <p class="h3">Edge Case 5: img1_width = prime number</p>
           </div>
         </div>
-        <div class="row mb-3">
+        
+        <div class="col-xl-12 col-xxl-6 mb-3 d-flex container-fluid flex-column">
+          <div class="col-12">
+            <p class="h4">Edge Case 5: img1_width = prime number</p>
+          </div>
+          <div class="col-12 d-flex flex-row">
           
           <div class="col">
-            <div class="card">
+            <div class="card p-3 h-100">
               <img
                 src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 5: img1_width = prime number-1.png"
                 class="card-img-top img-fluid"
@@ -1598,7 +1499,7 @@
                 title=""
               />
               <div class="card-body">
-                <h5 class="card-title"></h5>
+                <h5 class="card-title">Input Image</h5>
                 <p class="card-text"></p>
 
                 <p class="card-text">
@@ -1609,17 +1510,14 @@
                 <p class="card-text">
                   <span class="text-muted">TENSOR SHAPE&nbsp;</span>
 
-                  torch.Size([3, 71, 224])
+                  torch.Size([3, 140, 71])
                 </p>
                 <p class="card-text">
                   <span class="text-muted">HEIGHT&nbsp;</span>
-
-                  71
-                </p>
-                <p class="card-text">
+                  <strong> 140 </strong>
+                  &nbsp;&nbsp;
                   <span class="text-muted">WIDTH&nbsp;</span>
-
-                  224
+                  <strong> 71 </strong>
                 </p>
                 <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 5: img1_width = prime number-1.png" class="btn btn-primary"
                   >OPEN IMG FILE</a
@@ -1634,7 +1532,7 @@
           </div>
           
           <div class="col">
-            <div class="card">
+            <div class="card p-3 h-100">
               <img
                 src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 5: img1_width = prime number-2.png"
                 class="card-img-top img-fluid"
@@ -1642,7 +1540,7 @@
                 title=""
               />
               <div class="card-body">
-                <h5 class="card-title"></h5>
+                <h5 class="card-title">Input Alpha Layer</h5>
                 <p class="card-text"></p>
 
                 <p class="card-text">
@@ -1653,17 +1551,14 @@
                 <p class="card-text">
                   <span class="text-muted">TENSOR SHAPE&nbsp;</span>
 
-                  torch.Size([3, 140, 224])
+                  torch.Size([3, 126, 224])
                 </p>
                 <p class="card-text">
                   <span class="text-muted">HEIGHT&nbsp;</span>
-
-                  140
-                </p>
-                <p class="card-text">
+                  <strong> 126 </strong>
+                  &nbsp;&nbsp;
                   <span class="text-muted">WIDTH&nbsp;</span>
-
-                  224
+                  <strong> 224 </strong>
                 </p>
                 <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 5: img1_width = prime number-2.png" class="btn btn-primary"
                   >OPEN IMG FILE</a
@@ -1678,7 +1573,7 @@
           </div>
           
           <div class="col">
-            <div class="card">
+            <div class="card p-3 h-100">
               <img
                 src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 5: img1_width = prime number-3.png"
                 class="card-img-top img-fluid"
@@ -1686,7 +1581,7 @@
                 title=""
               />
               <div class="card-body">
-                <h5 class="card-title"></h5>
+                <h5 class="card-title">Size Matched and Composited</h5>
                 <p class="card-text"></p>
 
                 <p class="card-text">
@@ -1697,17 +1592,14 @@
                 <p class="card-text">
                   <span class="text-muted">TENSOR SHAPE&nbsp;</span>
 
-                  torch.Size([3, 140, 224])
+                  torch.Size([3, 126, 224])
                 </p>
                 <p class="card-text">
                   <span class="text-muted">HEIGHT&nbsp;</span>
-
-                  140
-                </p>
-                <p class="card-text">
+                  <strong> 126 </strong>
+                  &nbsp;&nbsp;
                   <span class="text-muted">WIDTH&nbsp;</span>
-
-                  224
+                  <strong> 224 </strong>
                 </p>
                 <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 5: img1_width = prime number-3.png" class="btn btn-primary"
                   >OPEN IMG FILE</a
@@ -1721,17 +1613,17 @@
             </div>
           </div>
           
-        </div>
-        
-        <div class="row my-4">
-          <div class="col-4 col-sm-10">
-            <p class="h3">Edge Case 6: img1_height = prime number</p>
           </div>
         </div>
-        <div class="row mb-3">
+        
+        <div class="col-xl-12 col-xxl-6 mb-3 d-flex container-fluid flex-column">
+          <div class="col-12">
+            <p class="h4">Edge Case 6: img1_height = prime number</p>
+          </div>
+          <div class="col-12 d-flex flex-row">
           
           <div class="col">
-            <div class="card">
+            <div class="card p-3 h-100">
               <img
                 src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 6: img1_height = prime number-1.png"
                 class="card-img-top img-fluid"
@@ -1739,7 +1631,7 @@
                 title=""
               />
               <div class="card-body">
-                <h5 class="card-title"></h5>
+                <h5 class="card-title">Input Image</h5>
                 <p class="card-text"></p>
 
                 <p class="card-text">
@@ -1750,17 +1642,14 @@
                 <p class="card-text">
                   <span class="text-muted">TENSOR SHAPE&nbsp;</span>
 
-                  torch.Size([3, 145, 71])
+                  torch.Size([3, 71, 224])
                 </p>
                 <p class="card-text">
                   <span class="text-muted">HEIGHT&nbsp;</span>
-
-                  145
-                </p>
-                <p class="card-text">
+                  <strong> 71 </strong>
+                  &nbsp;&nbsp;
                   <span class="text-muted">WIDTH&nbsp;</span>
-
-                  71
+                  <strong> 224 </strong>
                 </p>
                 <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 6: img1_height = prime number-1.png" class="btn btn-primary"
                   >OPEN IMG FILE</a
@@ -1775,7 +1664,7 @@
           </div>
           
           <div class="col">
-            <div class="card">
+            <div class="card p-3 h-100">
               <img
                 src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 6: img1_height = prime number-2.png"
                 class="card-img-top img-fluid"
@@ -1783,7 +1672,7 @@
                 title=""
               />
               <div class="card-body">
-                <h5 class="card-title"></h5>
+                <h5 class="card-title">Input Alpha Layer</h5>
                 <p class="card-text"></p>
 
                 <p class="card-text">
@@ -1794,17 +1683,14 @@
                 <p class="card-text">
                   <span class="text-muted">TENSOR SHAPE&nbsp;</span>
 
-                  torch.Size([3, 140, 224])
+                  torch.Size([3, 126, 224])
                 </p>
                 <p class="card-text">
                   <span class="text-muted">HEIGHT&nbsp;</span>
-
-                  140
-                </p>
-                <p class="card-text">
+                  <strong> 126 </strong>
+                  &nbsp;&nbsp;
                   <span class="text-muted">WIDTH&nbsp;</span>
-
-                  224
+                  <strong> 224 </strong>
                 </p>
                 <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 6: img1_height = prime number-2.png" class="btn btn-primary"
                   >OPEN IMG FILE</a
@@ -1819,7 +1705,7 @@
           </div>
           
           <div class="col">
-            <div class="card">
+            <div class="card p-3 h-100">
               <img
                 src="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 6: img1_height = prime number-3.png"
                 class="card-img-top img-fluid"
@@ -1827,7 +1713,7 @@
                 title=""
               />
               <div class="card-body">
-                <h5 class="card-title"></h5>
+                <h5 class="card-title">Size Matched and Composited</h5>
                 <p class="card-text"></p>
 
                 <p class="card-text">
@@ -1838,17 +1724,14 @@
                 <p class="card-text">
                   <span class="text-muted">TENSOR SHAPE&nbsp;</span>
 
-                  torch.Size([3, 140, 224])
+                  torch.Size([3, 126, 224])
                 </p>
                 <p class="card-text">
                   <span class="text-muted">HEIGHT&nbsp;</span>
-
-                  140
-                </p>
-                <p class="card-text">
+                  <strong> 126 </strong>
+                  &nbsp;&nbsp;
                   <span class="text-muted">WIDTH&nbsp;</span>
-
-                  224
+                  <strong> 224 </strong>
                 </p>
                 <a href="/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/test/test-results/Edge Case 6: img1_height = prime number-3.png" class="btn btn-primary"
                   >OPEN IMG FILE</a
@@ -1862,8 +1745,10 @@
             </div>
           </div>
           
+          </div>
         </div>
         
+        </div>
       </div>
     </div>
     <!-- MDB -->

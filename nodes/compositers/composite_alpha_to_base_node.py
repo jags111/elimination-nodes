@@ -13,11 +13,11 @@ try:
 except ImportError:
     import sys
     import os
+
     sys.path.append(os.path.dirname(os.path.dirname(__file__)))
     from utils.tensor_utils import TensorImgUtils
     from equalize.equalize_size import SizeMatcher
     from segment.chromakey import ChromaKey
-
 
 
 class CompositeCutoutOnBaseNode:
@@ -123,7 +123,9 @@ class CompositeCutoutOnBaseNode:
         if cutout_alpha.size(1) != cutout.size(1) or cutout_alpha.size(
             2
         ) != cutout.size(2):
-            print(f"Cutout alpha size {cutout_alpha.size()} does not match cutout size {cutout.size()}")
+            print(
+                f"Cutout alpha size {cutout_alpha.size()} does not match cutout size {cutout.size()}"
+            )
             chroma_key = ChromaKey()
             _, cutout_alpha, _ = chroma_key.infer_bg_and_remove(cutout)
 
@@ -133,12 +135,9 @@ class CompositeCutoutOnBaseNode:
         alpha_cutout = self.recombine_alpha(
             cutout, cutout_alpha
         )  # recombine just so resize is easier
-
         base_image, alpha_cutout = self.match_size(
             base_image, alpha_cutout, size_matching_method
         )
-
-        print(f"\n\nSizes after matchsize(): {base_image.size()} and {alpha_cutout.size()}\n\n")
 
         ret = self.composite(base_image, alpha_cutout)
         ret = TensorImgUtils.to_hwc_singleton(ret)
@@ -166,10 +165,6 @@ class CompositeCutoutOnBaseNode:
         alpha_only = cutout[3, :, :]
 
         # alpha_only = alpha_only.unsqueeze(0) if alpha_only.dim() == 2 else alpha_only
-
-        print(f"Cutout shape: {cutout.shape}") 
-        print(f"Base shape: {base_image.shape}")
-        print(f"Alpha shape: {alpha_only.shape}")
 
         # All pixels that are not transparent should be from the cutout
         composite = cutout[:3, :, :] * alpha_only + base_image * (1 - alpha_only)

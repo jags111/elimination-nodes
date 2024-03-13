@@ -147,43 +147,40 @@ class TestCompositeAlphaToBase(unittest.TestCase):
         compositer = CompositeCutoutOnBaseNode()
         results = ComparisonGrid()
         permutations, permutations_descriptions = self.__image_difference_permutations(
-            img1_tags=["people"], img2_tags=["alpha-layers", "cutouts"]
+            img1_tags=["people", "real"], img2_tags=["alpha-layers", "logos"]
         )
         for index, (img1, img2) in enumerate(permutations):
             case_str = permutations_descriptions[index]
             img1 = TensorImgUtils.to_hwc_singleton(img1)
             img2 = TensorImgUtils.to_hwc_singleton(img2)
-            # isolate alpha channel from img2
+
             img2_alpha = img2[:, :, 3]
-            # img2_alpha.unsqueeze(0)
             img2 = img2[:, :, :3]
 
             img1.unsqueeze(0)
             img2.unsqueeze(0)
 
-            pre_resize_str = (
-                f"\n\nBefore Resize:\nimg1: {img1.shape}, img2: {img2.shape}"
-            )
-            # img2_alpha = img2[3, :, :]
             resized = compositer.main(
-                img1, img2, img2_alpha, "cover_crop_center", invert_cutout=False
+                img1,
+                img2,
+                img2_alpha,
+                "cover_crop_center",
+                invert_cutout=True,  # Because in comfy the mask is inverted automatically
             )
-            print(f"Directly from Node: {resized.shape}")
 
-            # permuate to hwc
             resized = resized.squeeze(0)
-            post_resize_str = f"\n\nAfter Resize:\n{resized.shape}"
             self.assertIn(
                 resized.shape[1],
                 [img1.shape[1], img2.shape[1]],
-                f"\n\n{case_str}{pre_resize_str}{post_resize_str}",
+                f"\n\n{case_str}\Inputs: {img1.shape} and {img2.shape}\nOutputs: {resized.shape}",
             )
+
             img1 = TensorImgUtils.to_chw_singleton(img1)
             img2 = TensorImgUtils.to_chw_singleton(img2)
             resized = TensorImgUtils.to_chw_singleton(resized)
-            results.add(case_str, f"| Input Image 1  | ({img1.shape}) |", img1)
-            results.add(case_str, f"| Input Image 2  | ({img2.shape}) |", img2)
-            results.add(case_str, f"| Resized Image  | ({resized.shape}) |", resized)
+            results.add(case_str, "Input Image", img1)
+            results.add(case_str, "Input Alpha Layer", img2)
+            results.add(case_str, "Size Matched and Composited", resized)
 
         results.show_webview()
 
@@ -257,53 +254,45 @@ class TestCompositeAlphaToBase(unittest.TestCase):
         img1 = self.test_images.get_media(
             1,
             tags=img1_tags,
-            prioritize_real=True,
-            is_picture=True,
-            is_video=False,
-            mb_limit=5,
         )[0]
         img2 = self.test_images.get_media(
             1,
             tags=img2_tags,
-            prioritize_real=True,
-            is_picture=True,
-            is_video=False,
-            mb_limit=5,
         )[0]
 
         # Get the upper/lower bounds (max/min x or y values of the 2 images)
         upper = max(img1.shape[1], img2.shape[1], img1.shape[2], img2.shape[2])
         lower = min(img1.shape[1], img2.shape[1], img1.shape[2], img2.shape[2])
         larger = lambda: random.randint(upper + 1, upper * 2)
-        smaller = lambda: random.randint(1, lower - 1)
+        smaller = lambda: random.randint(lower // 2, lower - 1)
 
-        # Create the permutations by slicing the images
+        # Create the permutations by slicing the images (NOTE: HW not WH)
         cases = [
             [
                 img1[:, : larger(), : larger()],
                 img2[:, : smaller(), : smaller()],
             ],  # Case 1
             [
-                img1[:, : larger(), : smaller()],
-                img2[:, : smaller(), : larger()],
-            ],  # Case 2
-            [
                 img1[:, : smaller(), : larger()],
                 img2[:, : larger(), : smaller()],
+            ],  # Case 2
+            [
+                img1[:, : larger(), : smaller()],
+                img2[:, : smaller(), : larger()],
             ],  # Case 3
             [
                 img1[:, : smaller(), : smaller()],
                 img2[:, : larger(), : larger()],
             ],  # Case 4
-            [img1, img2],  # Case 5
-            [img1[:, : larger(), : larger()], img2],  # Case 6
-            [img1, img2[:, : larger(), : larger()]],  # Case 7
-            [img1[:, :1, : larger()], img2],  # Edge Case 1
-            [img1[:, : larger(), :1], img2],  # Edge Case 2
-            [img1, img2[:, :1, : larger()]],  # Edge Case 3
-            [img1, img2[:, : larger(), :1]],  # Edge Case 4
-            [img1[:, :71, : larger()], img2],  # Edge Case 5
-            [img1[:, : larger(), :71], img2],  # Edge Case 6
+            [img1[:, :lower, :lower], img2[:, :lower, :lower]],  # Case 5
+            [img1[:, : larger(), :lower], img2[:, : smaller(), :lower]],  # Case 6
+            [img1[:, :lower, : larger()], img2[:, :lower, : smaller()]],  # Case 7
+            [img1[:, : larger(), :1], img2],  # Edge Case 1
+            [img1[:, :1, : larger()], img2],  # Edge Case 2
+            [img1, img2[:, : larger(), :1]],  # Edge Case 3
+            [img1, img2[:, :1, : larger()]],  # Edge Case 4
+            [img1[:, : larger(), :71], img2],  # Edge Case 5
+            [img1[:, :71, : larger()], img2],  # Edge Case 6
         ]
         return cases, permutations_descriptions
 

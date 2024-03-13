@@ -23,23 +23,23 @@
   <body>
     <div role="main">
       <div class="container-fluid">
-        <div class="row mx-2 mt-4 mb-4">
+        <div class="row mx-2 mt-4 mb-5 py-4">
           <div class="col-12 text-center">
             <h1 class="display-1" style="font-weight: 100 !important">
               Test Results
             </h1>
           </div>
         </div>
+        <div class="row m-1">
         {% for section in sections.values() %}
-        <div class="row my-4">
-          <div class="col-4 col-sm-10">
-            <p class="h3">{{section.title}}</p>
+        <div class="col-xl-12 col-xxl-6 mb-3 d-flex container-fluid flex-column">
+          <div class="col-12">
+            <p class="h4">{{section.title}}</p>
           </div>
-        </div>
-        <div class="row mb-3">
+          <div class="col-12 d-flex flex-row">
           {% for image in section.images %}
           <div class="col">
-            <div class="card">
+            <div class="card p-3 h-100">
               <img
                 src="{{image.path}}"
                 class="card-img-top img-fluid"
@@ -62,13 +62,10 @@
                 </p>
                 <p class="card-text">
                   <span class="text-muted">HEIGHT&nbsp;</span>
-
-                  {{image.height}}
-                </p>
-                <p class="card-text">
+                  <strong> {{image.height}} </strong>
+                  &nbsp;&nbsp;
                   <span class="text-muted">WIDTH&nbsp;</span>
-
-                  {{image.width}}
+                  <strong> {{image.width}} </strong>
                 </p>
                 <a href="{{image.path}}" class="btn btn-primary"
                   >OPEN IMG FILE</a
@@ -84,8 +81,10 @@
             </div>
           </div>
           {% endfor %}
+          </div>
         </div>
         {% endfor %}
+        </div>
       </div>
     </div>
     <!-- MDB -->

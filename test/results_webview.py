@@ -59,7 +59,6 @@ class ComparisonGrid:
         os.makedirs(self.results_dir, exist_ok=True)
 
     def add(self, section_name: str, caption: str, img: torch.Tensor):
-        print(f"Add test-result to section {section_name} with caption {caption}")
         if section_name not in self.sections:
             self.sections[section_name] = {
                 "title": section_name,
@@ -96,6 +95,7 @@ class ComparisonGrid:
                 img_tensor_format += "A_H_W"
 
         img_dict = {
+            "title": caption,
             "pil_img": pil_img,
             "path": path,
             "filename": filename,
@@ -110,8 +110,8 @@ class ComparisonGrid:
         self.all_widths.append(pil_img.width)
 
     def show_webview(self):
-        print(f"Showing test results with option: webview")
-        print("Normalizing images. Relative differences will still be visualized.")
+        print("\nShowing test results with option: webview")
+        print("Normalizing images. Relative differences will still be visualized.\n")
         self.__save_normalized_images()
         env = Environment(loader=FileSystemLoader(self.templates_dir))
         template = env.get_template("test_results_template.html")
@@ -119,8 +119,6 @@ class ComparisonGrid:
         with open(os.path.join(self.results_dir, "test_results.html"), "w") as f:
             f.write(html)
 
-        print(f"User OS open command detected: {OS_Utils.get_xdg_equiv()}")
-        print(f"Opening test results")
         subprocess.run(
             [
                 OS_Utils.get_xdg_equiv(),
