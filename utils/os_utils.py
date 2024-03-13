@@ -1,7 +1,7 @@
 import sys
 
 
-class OSUtils:
+class OS_Utils:
     @staticmethod
     def get_xdg_equiv():
         return {

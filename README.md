@@ -6,15 +6,23 @@ I wrote a ***[GUIDE](wiki/creating-custom-comfyui_nodes-guide.md)*** for creatin
 
 *Table of Contents:*
 
+- [Test Suite](#test-suite)
 - [Nodes](#nodes)
   - [*NODE* — Paste Cutout on Base Image](#node--paste-cutout-on-base-image)
   - [*NODE* — Infer Alpha from RGB Image](#node--infer-alpha-from-rgb-image)
   - [*NODE* — Size Match Images/Masks](#node--size-match-imagesmasks)
-- [Test Suite](#test-suite)
 - [To-do](#to-do)
 
 
 &nbsp;
+
+
+# Test Suite
+
+![Test Suite](test/test_composite_alpha_to_base)
+
+![test suite webview](wiki/wiki-pics/test-suite-webview.png)
+
 
 # Nodes
 
@@ -56,10 +64,6 @@ The custom node highlighted is red in the screenshots
 
 
 ---------------------
-
-# Test Suite
-
-![Test Suite](test/test_composite_alpha_to_base)
 
 # To-do
 

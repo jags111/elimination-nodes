@@ -25,10 +25,12 @@
       <div class="container-fluid">
         <div class="row mx-2 mt-4 mb-4">
           <div class="col-12 text-center">
-            <h1 class="display-1" style="font-weight: 100 !important;">Test Results</h1>
+            <h1 class="display-1" style="font-weight: 100 !important">
+              Test Results
+            </h1>
           </div>
         </div>
-        {% for section in sections %}
+        {% for section in sections.values() %}
         <div class="row my-4">
           <div class="col-4 col-sm-10">
             <p class="h3">{{section.title}}</p>
@@ -47,13 +49,37 @@
               <div class="card-body">
                 <h5 class="card-title">{{image.title}}</h5>
                 <p class="card-text">{{image.caption}}</p>
-                <p class="card-text">{{image.height}}</p>
-                <p class="card-text">{{image.width}}</p>
-                <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
+
+                <p class="card-text">
+                  <span class="text-muted">TENSOR TYPE&nbsp;</span>
+
+                  {{image.tensor_format}}
+                </p>
+                <p class="card-text">
+                  <span class="text-muted">TENSOR SHAPE&nbsp;</span>
+
+                  {{image.tensor_shape}}
+                </p>
+                <p class="card-text">
+                  <span class="text-muted">HEIGHT&nbsp;</span>
+
+                  {{image.height}}
+                </p>
+                <p class="card-text">
+                  <span class="text-muted">WIDTH&nbsp;</span>
+
+                  {{image.width}}
+                </p>
+                <a href="{{image.path}}" class="btn btn-primary"
+                  >OPEN IMG FILE</a
+                >
               </div>
 
               <div class="card-footer">
+                <small class="text-muted">{{image.filename}}</small>
+                {% if image.metadata %}
                 <small class="text-muted">{{image.metadata}}</small>
+                {% endif %}
               </div>
             </div>
           </div>

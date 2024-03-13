@@ -10,22 +10,21 @@ import torchvision
 import torchvision.transforms as transforms
 from moviepy.editor import VideoFileClip
 import sys
+from termcolor import colored
 
 try:
     from ..constants import VIDEO_EXTENSION_LIST, PICTURE_EXTENSION_LIST
     from ..types_interfaces.image_tensor_types import ImageTensorTypes as itt
-    from ..compare.make_grid import ComparisonGrid
-    from .results_webview import ComparisonGridWebView
+    from .results_webview import ComparisonGrid
 except (ImportError, ModuleNotFoundError):
     sys.path.append(os.path.dirname(os.path.dirname(__file__)))
     from constants import VIDEO_EXTENSION_LIST, PICTURE_EXTENSION_LIST
     from types_interfaces.image_tensor_types import ImageTensorTypes as itt
-    from compare.make_grid import ComparisonGrid
-    from results_webview import ComparisonGridWebView
+    from results_webview import ComparisonGrid
 
 
 class TestImages:
-    def __init__(self):
+    def __init__(self, max_width=224, max_height=224):
         self.repo_root = os.path.dirname(os.path.dirname(__file__))
         self.path = os.path.join(self.repo_root, "test")
         self.img_dir = os.path.join(self.path, "test-images")
@@ -33,8 +32,8 @@ class TestImages:
         self.images = {}
         self.__map_images()
 
-        self.max_width = 224
-        self.max_height = 224
+        self.max_width = max_width
+        self.max_height = max_height
 
     def set_max_dimensions(self, width: int, height: int):
         self.max_width = int(width)
@@ -63,8 +62,12 @@ class TestImages:
         if not prioritize_real:
             return self.__generate_images(count)
 
+        print(
+            f"Getting {count} random images with tags {tags} and size limit {mb_limit}MB"
+        )
         ret = []
         tags = set(tags)
+
         for key, img in self.images.items():
             if is_video and not img["is_video"]:
                 continue
@@ -78,16 +81,42 @@ class TestImages:
             if len(ret) == count:
                 break
 
+        if len(ret) != count:
+            print(
+                f"Only found {len(ret)} images with tags {tags} and size limit {mb_limit}MB",
+                "\nGenerating random noise images to supplement.",
+            )
         all_images = self.__generate_images(count - len(ret))
         to_tensor = transforms.ToTensor()
+        print(
+            f"Resizing {len(ret)} images to {self.max_width}x{self.max_height} while maintaining aspect ratio."
+        )
         for img in ret:
-            all_images.append(
-                to_tensor(self.__resize_image(Image.open(img["fullpath"])))
-            )
+            pil = Image.open(img["fullpath"])
+            if (
+                "rgba" in tags
+                or "alpha" in tags
+                or "alpha-layer" in tags
+                or "alpha-layers" in tags
+                or "cutout" in tags
+                or "icon" in tags
+                or "mask" in tags
+            ):
+                pil = pil.convert("RGBA")
+                print(colored(f"Converting {img['file']} to RGBA", 'red'))
+            else:
+                pil = pil.convert("RGB")
+                print(colored(f"Converting {img['file']} to RGB", 'green'))
+            as_tensor = to_tensor(self.__resize_image(pil))
+            print(f"Resized {img['file']} to {as_tensor.size()}")
+            print(f"Shape: {as_tensor.shape}")
+            all_images.append(to_tensor(self.__resize_image(pil)))
 
         return all_images
 
     def __generate_images(self, count):
+        if count > 0:
+            print(f"Generating {count} images with random noise.")
         return [torch.rand(3, self.max_height, self.max_width) for _ in range(count)]
 
     def __is_video(self, file_path):
@@ -99,6 +128,7 @@ class TestImages:
         return file_ext.lower() in PICTURE_EXTENSION_LIST
 
     def __map_images(self):
+        print(f"Mapping images from test-images folder")
         for root, dirs, files in os.walk(self.img_dir):
             for file in files:
                 file_path = os.path.join(root, file)
@@ -155,56 +185,3 @@ class TestImages:
                         os.rename(file_path, os.path.join(root, new_name))
                     except Exception as e:
                         print(f"Error processing {file}: {e}")
-
-
-x = TestImages()
-imgs = x.get_media(
-    count=6,
-    tags=["digital", "background"],
-    prioritize_real=True,
-    is_video=False,
-    is_picture=True,
-)
-
-grid = ComparisonGrid()
-
-sections = [
-    {
-        "title": "Real People Section 1",
-    
-        "images": [
-            {
-                "caption": "caption",
-                "tensor": imgs[0],
-            },
-            {
-                "caption": "caption",
-                "tensor": imgs[1],
-            },
-            {
-                "caption": "caption",
-                "tensor": imgs[2],
-            }
-        ],
-    },
-    {
-        "title": "Real People Section 2",
-        "images": [
-            {
-                "caption": "caption",
-                "tensor": imgs[3],
-            },
-            {
-                "caption": "caption",
-                "tensor": imgs[4],
-            },
-            {
-                "caption": "caption",
-                "tensor": imgs[5],
-            }
-        ],
-    },
-]
-
-webview = ComparisonGridWebView(sections)
-webview.show()

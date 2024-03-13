@@ -5,9 +5,19 @@ pyenv local 3.10.6"""
 import torch
 from torchvision import transforms
 from typing import Tuple, Union
-from ..types_interfaces.image_tensor_types import ImageTensorTypes as itt
-from ..utils.tensor_utils import TensorImgUtils
-from ..transform.scale import ImageScaler
+
+
+try:
+    from ..types_interfaces.image_tensor_types import ImageTensorTypes as itt
+    from ..utils.tensor_utils import TensorImgUtils
+    from ..transform.scale import ImageScaler
+except ImportError:
+    import sys
+    import os
+    sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+    from types_interfaces.image_tensor_types import ImageTensorTypes as itt
+    from utils.tensor_utils import TensorImgUtils
+    from transform.scale import ImageScaler
 
 
 class SizeMatcher:

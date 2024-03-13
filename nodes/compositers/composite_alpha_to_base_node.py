@@ -4,9 +4,20 @@ pyenv local 3.10.6"""
 
 import torch
 from typing import Tuple
-from ...utils.tensor_utils import TensorImgUtils
-from ...equalize.equalize_size import SizeMatcher
-from ...segment.chromakey import ChromaKey
+
+
+try:
+    from ...utils.tensor_utils import TensorImgUtils
+    from ...equalize.equalize_size import SizeMatcher
+    from ...segment.chromakey import ChromaKey
+except ImportError:
+    import sys
+    import os
+    sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+    from utils.tensor_utils import TensorImgUtils
+    from equalize.equalize_size import SizeMatcher
+    from segment.chromakey import ChromaKey
+
 
 
 class CompositeCutoutOnBaseNode:
@@ -48,7 +59,7 @@ class CompositeCutoutOnBaseNode:
         cutout: torch.Tensor,  # [Batch_n, H, W, 3-channel]
         cutout_alpha: torch.Tensor,  # [H, W, 1-channel]
         size_matching_method: str,
-        invert_cutout: str,
+        invert_cutout: bool,
     ) -> Tuple[torch.Tensor, ...]:
         """
         Main method for performing composite alpha-to-base operation.
@@ -112,6 +123,7 @@ class CompositeCutoutOnBaseNode:
         if cutout_alpha.size(1) != cutout.size(1) or cutout_alpha.size(
             2
         ) != cutout.size(2):
+            print(f"Cutout alpha size {cutout_alpha.size()} does not match cutout size {cutout.size()}")
             chroma_key = ChromaKey()
             _, cutout_alpha, _ = chroma_key.infer_bg_and_remove(cutout)
 
@@ -125,6 +137,8 @@ class CompositeCutoutOnBaseNode:
         base_image, alpha_cutout = self.match_size(
             base_image, alpha_cutout, size_matching_method
         )
+
+        print(f"\n\nSizes after matchsize(): {base_image.size()} and {alpha_cutout.size()}\n\n")
 
         ret = self.composite(base_image, alpha_cutout)
         ret = TensorImgUtils.to_hwc_singleton(ret)
@@ -150,6 +164,12 @@ class CompositeCutoutOnBaseNode:
 
         # Extract the alpha channel from the cutout
         alpha_only = cutout[3, :, :]
+
+        # alpha_only = alpha_only.unsqueeze(0) if alpha_only.dim() == 2 else alpha_only
+
+        print(f"Cutout shape: {cutout.shape}") 
+        print(f"Base shape: {base_image.shape}")
+        print(f"Alpha shape: {alpha_only.shape}")
 
         # All pixels that are not transparent should be from the cutout
         composite = cutout[:3, :, :] * alpha_only + base_image * (1 - alpha_only)
