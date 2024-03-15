@@ -12,7 +12,7 @@ import random
 from typing import Tuple
 import sys
 
-# Symlink Solution (idk)
+# Symlink temp
 try:
     from ..nodes.compositers.composite_alpha_to_base_node import (
         CompositeCutoutOnBaseNode,
@@ -20,12 +20,14 @@ try:
     from .results_webview import ComparisonGrid
     from ..utils.tensor_utils import TensorImgUtils
     from .test_images import TestImages
-except (ImportError, ModuleNotFoundError):
+    from .branch_generator import BranchGenerator
+except ImportError:
     sys.path.append(os.path.dirname(os.path.dirname(__file__)))
     from nodes.compositers.composite_alpha_to_base_node import CompositeCutoutOnBaseNode
     from results_webview import ComparisonGrid
     from utils.tensor_utils import TensorImgUtils
     from test_images import TestImages
+    from branch_generator import BranchGenerator
 
 
 root = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
@@ -146,13 +148,14 @@ class TestCompositeAlphaToBase(unittest.TestCase):
     def test_composite_returns_tensor_with_same_size_as_input_images(self):
         compositer = CompositeCutoutOnBaseNode()
         results = ComparisonGrid()
-        permutations, permutations_descriptions = self.__image_difference_permutations(
-            img1_tags=["people", "real"], img2_tags=["alpha-layers", "logos"]
-        )
-        for index, (img1, img2) in enumerate(permutations):
-            case_str = permutations_descriptions[index]
-            img1 = TensorImgUtils.to_hwc_singleton(img1)
-            img2 = TensorImgUtils.to_hwc_singleton(img2)
+        test_rgb_bg = self.test_images.get_media(1, tags=["people", "real"], as_pil=True)
+        test_alpha_layer = self.test_images.get_media(1, tags=["alpha-layers"], as_pil=True)
+        test_images = test_rgb_bg + test_alpha_layer
+        branches = BranchGenerator().gen_branches_img_size(test_images)
+
+        for branch_descrip, branch in branches.items():
+            img1 = TensorImgUtils.to_hwc_singleton(branch[0]["tensor_image"])
+            img2 = TensorImgUtils.to_hwc_singleton(branch[1]["tensor_image"])
 
             img2_alpha = img2[:, :, 3]
             img2 = img2[:, :, :3]
@@ -165,22 +168,22 @@ class TestCompositeAlphaToBase(unittest.TestCase):
                 img2,
                 img2_alpha,
                 "cover_crop_center",
-                invert_cutout=True,  # Because in comfy the mask is inverted automatically
+                invert_cutout=True,  # Emulate the fact that alpha layers are auto-inverted in comfy
             )
 
             resized = resized.squeeze(0)
             self.assertIn(
                 resized.shape[1],
                 [img1.shape[1], img2.shape[1]],
-                f"\n\n{case_str}\Inputs: {img1.shape} and {img2.shape}\nOutputs: {resized.shape}",
+                f"\n\n{branch_descrip}\nInputs: {img1.shape} and {img2.shape}\nOutputs: {resized.shape}\n",
             )
 
             img1 = TensorImgUtils.to_chw_singleton(img1)
             img2 = TensorImgUtils.to_chw_singleton(img2)
             resized = TensorImgUtils.to_chw_singleton(resized)
-            results.add(case_str, "Input Image", img1)
-            results.add(case_str, "Input Alpha Layer", img2)
-            results.add(case_str, "Size Matched and Composited", resized)
+            results.add(branch_descrip, "Input Image", img1)
+            results.add(branch_descrip, "Input Alpha Layer", img2)
+            results.add(branch_descrip, "Size Matched and Composited", resized)
 
         results.show_webview()
 

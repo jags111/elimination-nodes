@@ -16,7 +16,7 @@ try:
     from ..constants import VIDEO_EXTENSION_LIST, PICTURE_EXTENSION_LIST
     from ..types_interfaces.image_tensor_types import ImageTensorTypes as itt
     from .results_webview import ComparisonGrid
-except (ImportError, ModuleNotFoundError):
+except ImportError:
     sys.path.append(os.path.dirname(os.path.dirname(__file__)))
     from constants import VIDEO_EXTENSION_LIST, PICTURE_EXTENSION_LIST
     from types_interfaces.image_tensor_types import ImageTensorTypes as itt
@@ -76,6 +76,7 @@ class TestImages:
         is_video=False,
         is_picture=True,
         mb_limit=5,
+        as_pil=False,
     ):
         if not prioritize_real:
             return self.__generate_images(count)
@@ -83,9 +84,9 @@ class TestImages:
         self.__log(
             "\nGetting",
             colored(f"{count}", "cyan"),
-            "random images with tags ",
+            "random images with tags",
             colored(f"{tags}", "light_cyan"),
-            "and size limit ",
+            "and size limit",
             colored(f"{mb_limit}", "cyan"),
             "MB",
         )
@@ -106,7 +107,7 @@ class TestImages:
 
         random_selection = random.sample(matches, count)
         self.__log(
-            f"\nResizing {len(random_selection)} images to {self.max_width}x{self.max_height} while maintaining aspect ratio."
+            f"\nResizing {len(random_selection)} images to fit within scale/frame {self.max_width}x{self.max_height} while maintaining aspect ratio."
         )
         use_rgba_tags = [
             "rgba",
@@ -124,6 +125,11 @@ class TestImages:
                 self.__log(colored(f"Converting {img['file']} to RGBA", "yellow"))
             else:
                 pil = pil.convert("RGB")
+
+            if as_pil:
+                ret.append(self.__resize_image(pil))
+                continue
+
             as_tensor = self.to_tensor(self.__resize_image(pil))
             self.__log(
                 "Shape of returned test image:", colored(f"{as_tensor.shape}", "yellow")
@@ -131,15 +137,19 @@ class TestImages:
             ret.append(as_tensor)
 
         if len(ret) < count:
-            self.__log(
-                colored(f"\nOnly found {len(ret)}/{count}", "red"),
-                f"{'images/videos' if is_picture and is_video else 'images' if is_picture else 'videos'} with tags:\n",
-                colored(f"{tags}", "light_cyan"),
-                "\nand size limit ",
-                colored(f"{mb_limit}mb", "light_red"),
-                "\nGenerating random noise images to supplement.",
-            )
-            ret.extend(self.__generate_images(count - len(ret)))
+            if as_pil:
+                # duplicate images randomly to reach count
+                ret.extend(random.sample(ret, count - len(ret)))
+            else:
+                self.__log(
+                    colored(f"\nOnly found {len(ret)}/{count}", "red"),
+                    f"{'images/videos' if is_picture and is_video else 'images' if is_picture else 'videos'} with tags:\n",
+                    colored(f"{tags}", "light_cyan"),
+                    "\nand size limit ",
+                    colored(f"{mb_limit}mb", "light_red"),
+                    "\nGenerating random noise images to supplement.",
+                )
+                ret.extend(self.__generate_images(count - len(ret)))
 
         return ret
 
