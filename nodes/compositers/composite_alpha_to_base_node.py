@@ -113,8 +113,8 @@ class CompositeCutoutOnBaseNode:
             )
 
         # NOTE: comfy using [batch, height, width, channels], but we are recurring over batch
-        base_image = TensorImgUtils.to_chw_singleton(base_image)
-        cutout = TensorImgUtils.to_chw_singleton(cutout)
+        base_image = TensorImgUtils.convert_to_type(base_image, "CHW")
+        cutout = TensorImgUtils.convert_to_type(cutout, "CHW")
         # NOTE: masks don't have batch dimension either way
 
         # NOTE: comfy ImageLoader always takes rgb, gives alpha as separate output (inverted) (mask)
@@ -140,7 +140,7 @@ class CompositeCutoutOnBaseNode:
         )
 
         ret = self.composite(base_image, alpha_cutout)
-        ret = TensorImgUtils.to_hwc_singleton(ret)
+        ret = TensorImgUtils.convert_to_type(ret, "HWC")
 
         # add batch dimension back of 1
         ret = ret.unsqueeze(0)

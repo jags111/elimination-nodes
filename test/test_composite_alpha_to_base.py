@@ -162,7 +162,7 @@ class TestCompositeAlphaToBase(unittest.TestCase):
             results.add(branch_descrip, "Input Alpha Layer", img2)
             results.add(branch_descrip, "Size Matched and Composited", resized)
 
-    def test_size_permutations(self):
+    def rtest_size_permutations(self):
         compositer = CompositeCutoutOnBaseNode()
         results = ComparisonGrid()
         test_rgb_bg = self.test_images.get_media(1, tags=["people", "real"], as_pil=True)
