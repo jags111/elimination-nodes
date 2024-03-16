@@ -7,6 +7,8 @@ import unittest
 import torch
 import os
 import sys
+import random
+from torchvision import transforms
 
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 from nodes.compositers.composite_alpha_to_base_node import CompositeCutoutOnBaseNode
@@ -120,13 +122,30 @@ class TestCompositeAlphaToBase(unittest.TestCase):
 
     #     ComparisonGrid(results, "composite")().show()
 
-    # def test_accepts_and_returns_tensors(self):
-    #     random_real_img = self.__random_real_img_tensors(1)[0]
-    #     random_noise_img = self.__random_noise_img_tensors(1)[0]
-    #     compositer = CompositeCutoutOnBaseNode()
-    #     res = compositer.composite(random_real_img, random_noise_img)
-    #     self.assertEqual(type(res), torch.Tensor)
+    def test_with_cutout_from_rgb_image(self):
+        images = self.test_images.get_media(2, tags=["background"], as_pil=False)
+        compositer = CompositeCutoutOnBaseNode()
+        results = ComparisonGrid("Cutout from RGB Image")
+        print(f"\nTesting: Cutout from RGB Image")
+        # Cutout from RGB Image
+        img1 = TensorImgUtils.convert_to_type(images[0], "BHWC")
+        img2 = transforms.RandomCrop((64, 64))(img1)
+        img2 = TensorImgUtils.convert_to_type(img2, "BHWC")
+        img2_alpha = torch.ones_like(img2[:, :, 0])
+        img2_alpha[1] = 62
 
+        resized = compositer.main(
+            img1, img2, img2_alpha, "cover_crop_center", invert_cutout=True
+        )
+        results.add("","Input Image", img1)
+        results.add("", "Input Alpha Layer", img2)
+        results.add("", "Size Matched and Composited", resized)
+        results.show_webview()
+
+    def test_bg_inferred_when_rgb_only(self):
+        pass
+
+    @unittest.skip("Skip for now")
     def test_tensor_type_permutations(self):
         test_title = "Tensor Type Permutations"
         branches = self.branch_gen.gen_branches_tensor_types(["image", "image"])
@@ -135,12 +154,11 @@ class TestCompositeAlphaToBase(unittest.TestCase):
         print(f"Testing: {test_title}")
 
         for branch_descrip, branch in branches.items():
-            print(f"\nRunning Test with {branch_descrip}")
             img1 = branch[0]["tensor_image"]
             img2 = branch[1]["tensor_image"]
-            print(f"Input 1: {img1.shape}, Input 2: {img2.shape}")
 
             # Separate rgb from alpha. Generate opaque alpha layer if rgb-only image
+            # Obviously we cant just convert to constant format, would defeat the purpose of this test
             img2_type = TensorImgUtils.identify_type(img2)[0]
             channel_dim = img2_type.index("C")
             if channel_dim == 0:
@@ -155,6 +173,9 @@ class TestCompositeAlphaToBase(unittest.TestCase):
                     img2_alpha = torch.ones_like(img2[:, :, 0])
             elif channel_dim == 3:
                 if img2.shape[channel_dim] == 4:
+                    print("img2.shape[channel_dim] == 4")
+                    print(f"img2.shape: {img2.shape}")
+                    print(f"channel_dim: {channel_dim}")
                     img2_alpha = img2[:, :, :, 3]
                 else:
                     img2_alpha = torch.ones_like(img2[:, :, :, 0])
@@ -164,11 +185,18 @@ class TestCompositeAlphaToBase(unittest.TestCase):
                 else:
                     img2_alpha = torch.ones_like(img2[:, 0, :, :])
 
+            failure_msg = (
+                f"{branch_descrip}\nInput 1: {img1.shape}, Input 2: {img2.shape}"
+            )
             resized = compositer.main(
                 img1, img2, img2_alpha, "cover_crop_center", invert_cutout=True
             )
+            self.assertEqual(
+                "BHWRGB",
+                TensorImgUtils.identify_type(resized)[1],
+                f"Wrong Tensor Type Returned — {failure_msg}",
+            )
 
-            print(f"Return Shape: {resized.shape}")
             resized = TensorImgUtils.convert_to_type(resized, "CHW")
             img1 = TensorImgUtils.convert_to_type(img1, "CHW")
             img2 = TensorImgUtils.convert_to_type(img2, "CHW")
@@ -178,9 +206,11 @@ class TestCompositeAlphaToBase(unittest.TestCase):
 
         results.show_webview()
 
-    def rtest_size_permutations(self):
+    @unittest.skip("Skip for now")
+    def test_size_permutations(self):
+        test_title = "Image Size Permutations"
         compositer = CompositeCutoutOnBaseNode()
-        results = ComparisonGrid()
+        results = ComparisonGrid(test_title)
         test_rgb_bg = self.test_images.get_media(
             1, tags=["people", "real"], as_pil=True
         )
@@ -190,15 +220,14 @@ class TestCompositeAlphaToBase(unittest.TestCase):
         test_images = test_rgb_bg + test_alpha_layer
         branches = self.branch_gen.gen_branches_img_size(test_images)
 
+        print(f"\nTesting: {test_title}")
         for branch_descrip, branch in branches.items():
-            img1 = TensorImgUtils.to_hwc_singleton(branch[0]["tensor_image"])
-            img2 = TensorImgUtils.to_hwc_singleton(branch[1]["tensor_image"])
+            img1 = TensorImgUtils.convert_to_type(branch[0]["tensor_image"], "BHWC")
+            img2 = TensorImgUtils.convert_to_type(branch[1]["tensor_image"], "BHWC")
 
-            img2_alpha = img2[:, :, 3]
-            img2 = img2[:, :, :3]
-
-            img1.unsqueeze(0)
-            img2.unsqueeze(0)
+            img2_alpha = img2[:, :, :, 3]
+            img2_alpha = img2_alpha.squeeze(0)
+            img2 = img2[:, :, :, :3]
 
             resized = compositer.main(
                 img1,
@@ -206,18 +235,25 @@ class TestCompositeAlphaToBase(unittest.TestCase):
                 img2_alpha,
                 "cover_crop_center",
                 invert_cutout=True,  # Emulate the fact that alpha layers are auto-inverted in comfy
-            )
+            )[0]
 
-            resized = resized.squeeze(0)
+            failure_msg = f"\n\n{branch_descrip}\nInputs: {img1.shape} and {img2.shape}\nOutputs: {resized.shape}\n"
             self.assertIn(
                 resized.shape[1],
                 [img1.shape[1], img2.shape[1]],
-                f"\n\n{branch_descrip}\nInputs: {img1.shape} and {img2.shape}\nOutputs: {resized.shape}\n",
+                f"Width Mismatch — {failure_msg}",
+            )
+            self.assertIn(
+                resized.shape[2],
+                [img1.shape[2], img2.shape[2]],
+                f"Height Mismatch — {failure_msg}",
+            )
+            self.assertEqual(
+                "BHWRGB",
+                TensorImgUtils.identify_type(resized)[1],
+                f"Wrong Tensor Type Returned — {failure_msg}",
             )
 
-            img1 = TensorImgUtils.to_chw_singleton(img1)
-            img2 = TensorImgUtils.to_chw_singleton(img2)
-            resized = TensorImgUtils.to_chw_singleton(resized)
             results.add(branch_descrip, "Input Image", img1)
             results.add(branch_descrip, "Input Alpha Layer", img2)
             results.add(branch_descrip, "Size Matched and Composited", resized)
