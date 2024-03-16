@@ -17,32 +17,30 @@ import random
 
 # Symlink temp
 try:
-    from ..nodes.compositers.composite_alpha_to_base_node import (
-        CompositeCutoutOnBaseNode,
-    )
-    from .results_webview import ComparisonGrid
     from ..utils.tensor_utils import TensorImgUtils
     from .test_images import TestImages
-    from ..constants import ORDER_STRINGS, COLOR_ORDERS
+    from .test_tools_constants import ORDER_STRINGS, COLOR_ORDERS, EDGE_CASE_PIXELS
+    from ..utils.logger import _log
+    from ..types_interfaces.image_tensor_types import ImageTensorTypes as itt
 except ImportError:
     sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-    from nodes.compositers.composite_alpha_to_base_node import CompositeCutoutOnBaseNode
-    from results_webview import ComparisonGrid
     from utils.tensor_utils import TensorImgUtils
     from test_images import TestImages
-    from constants import ORDER_STRINGS, COLOR_ORDERS
+    from test_tools_constants import ORDER_STRINGS, COLOR_ORDERS, EDGE_CASE_PIXELS
+    from utils.logger import _log
+    from types_interfaces.image_tensor_types import ImageTensorTypes as itt
 
 
 VERBOSE = True
 ALLOW_REPEAT_BRANCHES = True
-root = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
-test_base_images = os.path.join(root, "test-images", "base-layers")
-test_alpha_images = os.path.join(root, "test-images", "alpha-layers")
 
 
 class BranchGenerator:
     def __init__(self):
         self.to_tensor = transforms.ToTensor()
+
+    def __log(self, *args):
+        _log("Branch Generator", *args)
 
     def __generate_permutations(
         self, sequence_cardinality: int, items_repeatable: bool = False
@@ -80,7 +78,7 @@ class BranchGenerator:
             if img.height > max_height:
                 img = img.crop((0, 0, max_width, max_height))
             # If resizing by matching width didnt create enough height, enlarge further
-            else:
+            elif img.height < max_height:
                 required_width = (max_height / img.height) * img.width
                 img = img.resize((int(required_width), max_height))
                 # Then crop extra width if width exceeds max
@@ -100,9 +98,9 @@ class BranchGenerator:
     def preview_img_size_branches(
         self, branches: dict[str : list[dict]], height_intervals, width_intervals
     ):
-        MAX_EXAMPLES = 16 // len(next(iter(branches.values())))
+        MAX_PREVIEWS = 14 // len(next(iter(branches.values())))
 
-        print("\nPreview the Generated Image Size Branches:")
+        self.__log("[IMG SIZES] Preview the Generated Image Size Branches:")
         for index in range(len(height_intervals)):
             print(
                 colored(
@@ -112,7 +110,7 @@ class BranchGenerator:
             )
 
         for branch_index, branch in enumerate(branches.values()):
-            print(colored(f"Branch {branch_index}:", "light_cyan"))
+            print(colored(f"Branch {branch_index+1}:", "light_cyan"))
             for img_index, img_result in enumerate(branch):
                 height_order = img_result["ordering"][0]
                 width_order = img_result["ordering"][1]
@@ -129,17 +127,49 @@ class BranchGenerator:
                     colored(f"{img_result['dimensions'][1]}px", width_color),
                 )
 
-            if branch_index > MAX_EXAMPLES - 1:
+            if branch_index > MAX_PREVIEWS - 1:
                 print(
                     colored("And so on for", "light_cyan"),
-                    f"{len(branches) - (MAX_EXAMPLES + 1)}",
+                    f"{len(branches) - (MAX_PREVIEWS + 1)}",
                     colored("more branches...\n", "light_cyan"),
                 )
                 break
 
-    def __img_size_branches(self, images: list[Image.Image]):
-        ordering_permutations = self.__generate_dimension_permutations(len(images))
+    def __img_size_branches(
+        self, images: list[Image.Image], max_branches=40, pad_with_edge_cases=False
+    ):
         equalized_images, standardized_size = self.__equalize_img_sizes_crop(images)
+
+        edge_case_index = len(images) + 1
+        ordering_permutations = self.__generate_dimension_permutations(len(images) + 1)
+
+        # If permutations is far larger than max allowed branches (and unrealistic to display), don't include edge case branches
+        self.__log(
+            f"[IMG SIZES] Total Permutations: {len(ordering_permutations)} (including edge cases)"
+        )
+        if len(ordering_permutations) > max_branches:
+            temp = ordering_permutations
+            self.__log(
+                f"[IMG SIZES] Total branches exceeds max allowed branches ({max_branches}), removing edge cases from permutations before proceeding."
+            )
+            ordering_permutations = self.__generate_dimension_permutations(len(images))
+            self.__log(
+                f"[IMG SIZES] Filtered to core branches (still full coverage) — New branch count = {len(ordering_permutations)}"
+            )
+
+            if pad_with_edge_cases:
+                self.__log(
+                    "[IMG SIZES] Padding branches with edge-case branches until max-allowed # reached"
+                )
+                pad_n = max_branches - len(ordering_permutations)
+                removed_branches = temp[: len(ordering_permutations)]
+                if pad_n >= len(removed_branches):
+                    ordering_permutations += removed_branches
+                else:
+                    pan_branches = random.sample(
+                        temp[len(ordering_permutations) :], pad_n
+                    )
+                    ordering_permutations += pan_branches
 
         height_intervals = self.__get_subintervals(standardized_size[0], len(images))
         width_intervals = self.__get_subintervals(standardized_size[1], len(images))
@@ -147,15 +177,30 @@ class BranchGenerator:
         width_intervals.reverse()
 
         def ordered_rand_permutation(height_order, width_order):
-            height_lower_bound, height_upper_bound = height_intervals[height_order - 1]
-            width_lower_bound, width_upper_bound = width_intervals[width_order - 1]
-            return {
-                "dimensions": (
-                    random.randint(height_lower_bound, height_upper_bound),
-                    random.randint(width_lower_bound, width_upper_bound),
-                ),
+            ret = {
                 "ordering": (height_order, width_order),
             }
+            dimensions = [None, None]
+            if height_order == edge_case_index:
+                dimensions[0] = EDGE_CASE_PIXELS
+            else:
+                height_lower_bound, height_upper_bound = height_intervals[
+                    height_order - 1
+                ]
+                dimensions[0] = random.randint(
+                    height_lower_bound,
+                    height_upper_bound,
+                )
+            if width_order == edge_case_index:
+                dimensions[1] = EDGE_CASE_PIXELS
+            else:
+                width_lower_bound, width_upper_bound = width_intervals[width_order - 1]
+                dimensions[1] = random.randint(
+                    width_lower_bound,
+                    width_upper_bound,
+                )
+            ret["dimensions"] = dimensions
+            return ret
 
         branches = {}
         for index, ordering in enumerate(ordering_permutations):
@@ -185,16 +230,26 @@ class BranchGenerator:
                         1
                     ]
 
+                if height_order == edge_case_index:
+                    height_descrip = "Edge Value"
+                else:
+                    height_descrip = f"{ORDER_STRINGS[height_order - 1]}"
+                if width_order == edge_case_index:
+                    width_descrip = "Edge Value"
+                else:
+                    width_descrip = f"{ORDER_STRINGS[width_order - 1]}"
                 branch_descriptions.append(
-                    f"image{i + 1}: ({ORDER_STRINGS[height_order - 1]} H x {ORDER_STRINGS[width_order - 1]} W)"
+                    f"image{i + 1}: ({height_descrip} H x {width_descrip} W)"
                 )
                 branch.append(rand_dims)
 
             description = f"[BRANCH {index+1}] " + " | ".join(branch_descriptions)
             if description in branches:
                 if not ALLOW_REPEAT_BRANCHES:
-                    raise ValueError(f"Branches are not unique: {description}")
-                print(f"Branches are not unique: {description}")
+                    raise ValueError(
+                        f"[IMG SIZES] Branches are not unique: {description}"
+                    )
+                self.__log(f"[IMG SIZES] Branches are not unique: {description}")
 
             branches[description] = branch
 
@@ -208,8 +263,9 @@ class BranchGenerator:
         images: list[Image.Image],
         return_pil: bool = False,
         return_tensors: bool = True,
+        max_branches=40,
     ):
-        resized_imgs, branches = self.__img_size_branches(images)
+        resized_imgs, branches = self.__img_size_branches(images, max_branches)
         for branch in branches:
             for img_index, img in enumerate(resized_imgs):
                 # PIL uses (width, height), make sure to reverse the order
@@ -221,3 +277,138 @@ class BranchGenerator:
                     branches[branch][img_index]["tensor_image"] = self.to_tensor(img)
 
         return branches
+
+    def gen_branches_tensor_types(
+        self,
+        arg_types: list[str],
+        desired_return_type=itt.B_H_W_C_Tensor,
+        batch_dimension=False,
+    ):
+        """
+
+
+        Args:
+            arg_types (list[str]): A tuple describing each argument type for the class being tested. Valid types are "image", and "mask". For example, if the class takes an image and a mask, the tuple would be ("image", "mask").
+        """
+        valid_arg_types = ["image", "mask"]
+        if not all([arg in valid_arg_types for arg in arg_types]):
+            raise ValueError(
+                f"Invalid arg_types. Must be a list containing only items from: {valid_arg_types}."
+            )
+
+        b = 1
+        height = 24
+        width = 34
+        rgb = 3
+        rgba = 4
+        a = 1
+        image_types = [
+            {
+                "tensor_type": itt.H_W_RGB_Tensor,
+                "tensor_image": torch.rand(height, width, rgb),
+                "description": "(H, W, RGB) Tensor",
+            },
+            {
+                "tensor_type": itt.H_W_RGBA_Tensor,
+                "tensor_image": torch.rand(height, width, rgba),
+                "description": "(H, W, RGBA) Tensor",
+            },
+            {
+                "tensor_type": itt.RGB_H_W_Tensor,
+                "tensor_image": torch.rand(rgb, height, width),
+                "description": "(RGB, H, W) Tensor",
+            },
+            {
+                "tensor_type": itt.RGBA_H_W_Tensor,
+                "tensor_image": torch.rand(rgba, height, width),
+                "description": "(RGBA, H, W) Tensor",
+            },
+        ]
+        batch_types = [
+            {
+                "tensor_type": itt.B_H_W_RGB_Tensor,
+                "tensor_image": torch.rand(b, height, width, rgb),
+                "description": "(B, H, W, RGB) Tensor",
+            },
+            {
+                "tensor_type": itt.B_H_W_RGBA_Tensor,
+                "tensor_image": torch.rand(b, height, width, rgba),
+                "description": "(B, H, W, RGBA) Tensor",
+            },
+            {
+                "tensor_type": itt.B_RGB_H_W_Tensor,
+                "tensor_image": torch.rand(b, rgb, height, width),
+                "description": "(B, RGB, H, W) Tensor",
+            },
+            {
+                "tensor_type": itt.B_RGBA_H_W_Tensor,
+                "tensor_image": torch.rand(b, rgba, height, width),
+                "description": "(B, RGBA, H, W) Tensor",
+            },
+        ]
+        mask_types = [
+            {
+                "tensor_type": itt.H_W_Tensor,
+                "tensor_image": torch.rand(height, width, a),
+                "description": "(H, W) Tensor",
+            },
+            {
+                "tensor_type": itt.A_H_W_Tensor,
+                "tensor_image": torch.rand(a, height, width),
+                "description": "(A, H, W) Tensor",
+            },
+            {
+                "tensor_type": itt.H_W_A_Tensor,
+                "tensor_image": torch.rand(b, height, width),
+                "description": "(H, W, A) Tensor",
+            },
+        ]
+        if batch_dimension:
+            image_types += batch_types
+
+        coord_ranges = [
+            len(mask_types) if arg == "mask" else len(image_types) for arg in arg_types
+        ]
+        ranges = [range(i) for i in coord_ranges]
+        permutations = list(product(*ranges))
+
+        self.__log(f"[TENSOR TYPES] Total Permutations: {len(permutations)}")
+        branches = {}
+        for perm_index, perm in enumerate(permutations):
+            tensor_descriptions = []
+            branch = []
+            for tensor_index in range(len(arg_types)):
+                if arg_types[tensor_index] == "mask":
+                    tensor = mask_types[perm[tensor_index]]
+                elif arg_types[tensor_index] == "image":
+                    tensor = image_types[perm[tensor_index]]
+
+                branch.append(tensor)
+                tensor_descriptions.append(
+                    f"image{tensor_index}: {tensor['description']}"
+                )
+
+            brannch_description = f"[BRANCH {perm_index+1}] " + " | ".join(
+                tensor_descriptions
+            )
+            branches[brannch_description] = branch
+
+        if VERBOSE:
+            self.__preview_tensor_branches(branches)
+
+        return branches
+
+    def __preview_tensor_branches(self, branches):
+        MAX_PREVIEWS = 14 // len(next(iter(branches.values())))
+        self.__log("[TENSOR TYPES] Preview the Generated Tensor Type Branches:")
+        for index, branch in enumerate(branches):
+            print(colored(f"Branch {index}", "light_cyan"))
+            for tensor_index, tensor in enumerate(branches[branch]):
+                print(f"Image {tensor_index + 1} - {tensor['description']}")
+            if index > MAX_PREVIEWS - 1:
+                print(
+                    colored("And so on for", "light_cyan"),
+                    f"{len(branches) - (MAX_PREVIEWS + 1)}",
+                    colored("more branches...\n", "light_cyan"),
+                )
+                break

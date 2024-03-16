@@ -16,11 +16,13 @@ try:
     from ..constants import VIDEO_EXTENSION_LIST, PICTURE_EXTENSION_LIST
     from ..types_interfaces.image_tensor_types import ImageTensorTypes as itt
     from .results_webview import ComparisonGrid
+    from ..utils.logger import _log
 except ImportError:
     sys.path.append(os.path.dirname(os.path.dirname(__file__)))
     from constants import VIDEO_EXTENSION_LIST, PICTURE_EXTENSION_LIST
     from types_interfaces.image_tensor_types import ImageTensorTypes as itt
     from results_webview import ComparisonGrid
+    from utils.logger import _log
 
 
 class TestImages:
@@ -35,8 +37,8 @@ class TestImages:
         self.__log(
             "Found ",
             colored(f"{len(self.images)}", "green"),
-            "images in test-images folder.\n",
-            "Use these tags to select images when using get_media:\n",
+            "images in test-images folder",
+            "\nUse these tags to select images when using get_media:",
             colored(f"{self.all_tags}", "green"),
         )
 
@@ -46,12 +48,7 @@ class TestImages:
         self.to_tensor = transforms.ToTensor()
 
     def __log(self, *args):
-        prefix = colored("[TestImages Generation] ", "light_red")
-        out = " ".join([str(a) for a in args])
-        if out[0] != "\n":
-            out = f"{prefix}{out}"
-        out = out.replace("\n", f"\n{prefix} ")
-        print(out)
+        _log("Test Images", *args)
 
     def set_max_dimensions(self, width: int, height: int):
         self.max_width = int(width)
@@ -82,7 +79,7 @@ class TestImages:
             return self.__generate_images(count)
 
         self.__log(
-            "\nGetting",
+            "Getting",
             colored(f"{count}", "cyan"),
             "random images with tags",
             colored(f"{tags}", "light_cyan"),
@@ -107,7 +104,7 @@ class TestImages:
 
         random_selection = random.sample(matches, count)
         self.__log(
-            f"\nResizing {len(random_selection)} images to fit within scale/frame {self.max_width}x{self.max_height} while maintaining aspect ratio."
+            f"Resizing {len(random_selection)} images to fit within scale/frame {self.max_width}x{self.max_height} while maintaining aspect ratio."
         )
         use_rgba_tags = [
             "rgba",
@@ -122,7 +119,7 @@ class TestImages:
             pil = Image.open(img["fullpath"])
             if any(tag in img["tags"] for tag in use_rgba_tags):
                 pil = pil.convert("RGBA")
-                self.__log(colored(f"Converting {img['file']} to RGBA", "yellow"))
+                self.__log(f"Converting {img['file']} to RGBA")
             else:
                 pil = pil.convert("RGB")
 
@@ -155,7 +152,7 @@ class TestImages:
 
     def __generate_images(self, count):
         if count > 0:
-            print(f"Generating {count} images with random noise.")
+            self.__log(f"Generating {count} images with random noise.")
         return [torch.rand(3, self.max_height, self.max_width) for _ in range(count)]
 
     def __is_video(self, file_path):
