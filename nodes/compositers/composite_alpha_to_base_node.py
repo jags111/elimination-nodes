@@ -21,9 +21,6 @@ except ImportError:
 
 
 class CompositeCutoutOnBaseNode:
-    def __init__(self):
-        pass
-
     CATEGORY = "image"
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "main"
@@ -86,11 +83,11 @@ class CompositeCutoutOnBaseNode:
             - The cutout_alpha tensor is expected to have shape [H, W, 1-channel].
             - The size_matching_method determines how the size of base_image and alpha_cutout is matched.
         """
-        # Handle when alpha is in shape [H, W]
+        # Handle when alpha layer is in shape [H, W]
         if cutout_alpha.dim() == 2:
             cutout_alpha = cutout_alpha.unsqueeze(0)
 
-        # Recurse by batch dimension if present (comfy default is BHWC)
+        # Handles batches by recursing over batch dimension when present (comfy default is BHWC)
         if base_image.dim() == 4 or cutout.dim() == 4 or cutout_alpha.dim() == 4:
             return (
                 torch.cat(
@@ -109,25 +106,24 @@ class CompositeCutoutOnBaseNode:
                         for i in range(base_image.size(0))
                     ),
                     dim=0,  # Concat along batch dimension
-                ),  # Include comma to force tuple type despite single element
+                ),  # Include comma to force tuple return type even when single element
             )
 
-        # NOTE: comfy using [batch, height, width, channels], but we are recurring over batch
         base_image = TensorImgUtils.convert_to_type(base_image, "CHW")
         cutout = TensorImgUtils.convert_to_type(cutout, "CHW")
-        # NOTE: masks don't have batch dimension either way
 
-        # NOTE: comfy ImageLoader always takes rgb, gives alpha as separate output (inverted) (mask)
-        # If no alpha channel, comfy makes default 64x64 alpha channel mask.
-        # In that case, infer an alpha layer from the cutout image automatically.
+        # If base_image is rgba for some reason, remove alpha channel
+        if base_image.size(0) == 4:
+            base_image = base_image[:3, :, :]
+
+        # Comfy creates a default 64x64 mask if rgb image was loaded, so we check for size mismatch to know the image was rgb and didn't have an alpha channel at load time
         if cutout_alpha.size(1) != cutout.size(1) or cutout_alpha.size(
             2
         ) != cutout.size(2):
             print(
-                f"Cutout alpha size {cutout_alpha.size()} does not match cutout size {cutout.size()}"
+                f"Cutout alpha size {cutout_alpha.size()} does not match cutout size {cutout.size()}. Inferring alpha channel automatically."
             )
-            chroma_key = ChromaKey()
-            _, cutout_alpha, _ = chroma_key.infer_bg_and_remove(cutout)
+            _, cutout_alpha, _ = ChromaKey().infer_bg_and_remove(cutout)
 
         if invert_cutout:
             cutout_alpha = 1 - cutout_alpha
@@ -139,12 +135,9 @@ class CompositeCutoutOnBaseNode:
             base_image, alpha_cutout, size_matching_method
         )
 
-        ret = self.composite(base_image, alpha_cutout)
-        ret = TensorImgUtils.convert_to_type(ret, "HWC")
-
-        # add batch dimension back of 1
-        ret = ret.unsqueeze(0)
-        return ret
+        return TensorImgUtils.convert_to_type(
+            self.composite(base_image, alpha_cutout), "BHWC"
+        )
 
     def composite(self, base_image: torch.Tensor, cutout: torch.Tensor) -> torch.Tensor:
         """
@@ -163,8 +156,6 @@ class CompositeCutoutOnBaseNode:
 
         # Extract the alpha channel from the cutout
         alpha_only = cutout[3, :, :]
-
-        # alpha_only = alpha_only.unsqueeze(0) if alpha_only.dim() == 2 else alpha_only
 
         # All pixels that are not transparent should be from the cutout
         composite = cutout[:3, :, :] * alpha_only + base_image * (1 - alpha_only)

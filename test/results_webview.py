@@ -19,12 +19,13 @@ from utils.os_utils import OS_Utils
 class ComparisonGrid:
     def __init__(
         self,
+        title: str = "",
         favor_dimension="width",
         cell_padding: int = 8,
         border_padding: int = 18,
         bg_color=(234, 232, 255),
     ):
-
+        self.title = title
         self.sections = {}
         self.all_widths = []
         self.all_heights = []
@@ -69,30 +70,13 @@ class ComparisonGrid:
             ]
 
         self.sections[section_name]["caption"] = caption
-        pil_img = self.to_pil(img)
+        pil_img = self.to_pil(
+            TensorImgUtils.convert_to_type(img, "CHW")
+        )
         img_index = len(self.sections[section_name]["images"]) + 1
         filename = f"{section_name}-{img_index}.png"
 
         path = os.path.join(self.results_dir, filename)
-
-        img_tensor_shape = img.shape
-        img_tensor_format = ""
-        after_batch = 0
-        if len(img_tensor_shape) == 4:
-            after_batch = 1
-            img_tensor_format += "B_"
-        if img_tensor_shape[after_batch] == 3:
-            img_tensor_format += "RGB_H_W"
-        elif img_tensor_shape[after_batch] == 4:
-            img_tensor_format += "RGBA_H_W"
-        elif img_tensor_shape[after_batch] == 1:
-            # determine if hwc or alpha-channel, hw
-            if img_tensor_shape[after_batch + 2] >= 3:
-                img_tensor_format += "H_W_RGB"
-                if img_tensor_shape[after_batch + 2] == 4:
-                    img_tensor_format += "A"
-            elif img_tensor_shape[after_batch + 2] == 1:
-                img_tensor_format += "A_H_W"
 
         img_dict = {
             "title": caption,
@@ -102,7 +86,7 @@ class ComparisonGrid:
             "height": pil_img.height,
             "width": pil_img.width,
             "tensor_shape" : img.shape,
-            "tensor_format" : img_tensor_format,
+            "tensor_format" : TensorImgUtils.identify_type(img)[1],
             "metadata": str(pil_img.info) if pil_img.info else "",
         }
         self.sections[section_name]["images"].append(img_dict)
@@ -115,7 +99,7 @@ class ComparisonGrid:
         self.__save_normalized_images()
         env = Environment(loader=FileSystemLoader(self.templates_dir))
         template = env.get_template("test_results_template.html")
-        html = template.render(sections=self.sections)
+        html = template.render(sections=self.sections, title=self.title)
         with open(os.path.join(self.results_dir, "test_results.html"), "w") as f:
             f.write(html)
 

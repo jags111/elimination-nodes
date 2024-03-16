@@ -1,28 +1,17 @@
 import os
 from PIL import Image
-import numpy as np
-import cv2
 import random
-import time
-import shutil
 import torch
-import torchvision
 import torchvision.transforms as transforms
 from moviepy.editor import VideoFileClip
 import sys
 from termcolor import colored
 
-try:
-    from ..constants import VIDEO_EXTENSION_LIST, PICTURE_EXTENSION_LIST
-    from ..types_interfaces.image_tensor_types import ImageTensorTypes as itt
-    from .results_webview import ComparisonGrid
-    from ..utils.logger import _log
-except ImportError:
-    sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-    from constants import VIDEO_EXTENSION_LIST, PICTURE_EXTENSION_LIST
-    from types_interfaces.image_tensor_types import ImageTensorTypes as itt
-    from results_webview import ComparisonGrid
-    from utils.logger import _log
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+from constants import VIDEO_EXTENSION_LIST, PICTURE_EXTENSION_LIST
+from test.test_tools_constants import *
+from types_interfaces.image_tensor_types import ImageTensorTypes as itt
+from utils.logger import _log
 
 
 class TestImages:
@@ -48,7 +37,8 @@ class TestImages:
         self.to_tensor = transforms.ToTensor()
 
     def __log(self, *args):
-        _log("Test Images", *args)
+        if VERBOSE: 
+            _log("Test Images", *args)
 
     def set_max_dimensions(self, width: int, height: int):
         self.max_width = int(width)
@@ -59,11 +49,6 @@ class TestImages:
         ratio = min(self.max_width / img.width, self.max_height / img.height)
         new_size = (int(img.width * ratio), int(img.height * ratio))
         return img.resize(new_size, Image.ANTIALIAS)
-
-    def __path_to_chw_tensor(self, img_path: str) -> itt.C_H_W_Tensor:
-        img = Image.open(img_path)
-        img = self.to_tensor(img)
-        return img
 
     def get_media(
         self,

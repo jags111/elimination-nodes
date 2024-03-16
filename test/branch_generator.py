@@ -3,36 +3,26 @@ pyenv local 3.10.6
 
 """
 
-import unittest
 import torch
 from torchvision import transforms
 from PIL import Image
 import os
 import random
-from typing import Tuple
 import sys
 from itertools import permutations, product
 from termcolor import colored
-import random
 
-# Symlink temp
-try:
-    from ..utils.tensor_utils import TensorImgUtils
-    from .test_images import TestImages
-    from .test_tools_constants import ORDER_STRINGS, COLOR_ORDERS, EDGE_CASE_PIXELS
-    from ..utils.logger import _log
-    from ..types_interfaces.image_tensor_types import ImageTensorTypes as itt
-except ImportError:
-    sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-    from utils.tensor_utils import TensorImgUtils
-    from test_images import TestImages
-    from test_tools_constants import ORDER_STRINGS, COLOR_ORDERS, EDGE_CASE_PIXELS
-    from utils.logger import _log
-    from types_interfaces.image_tensor_types import ImageTensorTypes as itt
-
-
-VERBOSE = True
-ALLOW_REPEAT_BRANCHES = True
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+from utils.tensor_utils import TensorImgUtils
+from test.test_tools_constants import (
+    ORDER_STRINGS,
+    COLOR_ORDERS,
+    EDGE_CASE_PIXELS,
+    VERBOSE,
+    ALLOW_REPEAT_BRANCHES,
+)
+from utils.logger import _log
+from types_interfaces.image_tensor_types import ImageTensorTypes as itt
 
 
 class BranchGenerator:
@@ -40,7 +30,8 @@ class BranchGenerator:
         self.to_tensor = transforms.ToTensor()
 
     def __log(self, *args):
-        _log("Branch Generator", *args)
+        if VERBOSE:
+            _log("Branch Generator", *args)
 
     def __generate_permutations(
         self, sequence_cardinality: int, items_repeatable: bool = False
@@ -95,10 +86,10 @@ class BranchGenerator:
         breakpoints = [seperator * i for i in range(count + 1)]
         return [(breakpoints[i] + 1, breakpoints[i + 1] - 1) for i in range(count)]
 
-    def preview_img_size_branches(
+    def __preview_img_size_branches(
         self, branches: dict[str : list[dict]], height_intervals, width_intervals
     ):
-        MAX_PREVIEWS = 14 // len(next(iter(branches.values())))
+        MAX_PREVIEWS = 12 // len(next(iter(branches.values())))
 
         self.__log("[IMG SIZES] Preview the Generated Image Size Branches:")
         for index in range(len(height_intervals)):
@@ -254,7 +245,9 @@ class BranchGenerator:
             branches[description] = branch
 
         if VERBOSE:
-            self.preview_img_size_branches(branches, height_intervals, width_intervals)
+            self.__preview_img_size_branches(
+                branches, height_intervals, width_intervals
+            )
 
         return equalized_images, branches
 
@@ -281,7 +274,6 @@ class BranchGenerator:
     def gen_branches_tensor_types(
         self,
         arg_types: list[str],
-        desired_return_type=itt.B_H_W_C_Tensor,
         batch_dimension=False,
     ):
         """
@@ -385,7 +377,7 @@ class BranchGenerator:
 
                 branch.append(tensor)
                 tensor_descriptions.append(
-                    f"image{tensor_index}: {tensor['description']}"
+                    f"image{tensor_index + 1}: {tensor['description']}"
                 )
 
             brannch_description = f"[BRANCH {perm_index+1}] " + " | ".join(
@@ -399,7 +391,7 @@ class BranchGenerator:
         return branches
 
     def __preview_tensor_branches(self, branches):
-        MAX_PREVIEWS = 14 // len(next(iter(branches.values())))
+        MAX_PREVIEWS = 9 // len(next(iter(branches.values())))
         self.__log("[TENSOR TYPES] Preview the Generated Tensor Type Branches:")
         for index, branch in enumerate(branches):
             print(colored(f"Branch {index}", "light_cyan"))

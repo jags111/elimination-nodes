@@ -1,4 +1,6 @@
-
+EDGE_CASE_PIXELS = 1
+VERBOSE = False
+ALLOW_REPEAT_BRANCHES = True
 COLOR_ORDERS = [
     "light_red",
     "light_yellow",
@@ -19,5 +21,3 @@ ORDER_STRINGS = [
     "7th Largest",
     "8th Largest",
 ]
-
-EDGE_CASE_PIXELS = 1

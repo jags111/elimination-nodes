@@ -21,16 +21,20 @@ class TensorImgUtils:
     @staticmethod
     def convert_to_type(tensor: torch.Tensor, to_type: str) -> torch.Tensor:
         """Convert a tensor to a specific type."""
-        input_dimensions_map = TensorImgUtils.identify_type(tensor)[0]
-        if len(input_dimensions_map) == 4 and len(to_type) == 3:
+        from_type = TensorImgUtils.identify_type(tensor)[0]
+        if from_type == list(to_type):
+            return tensor
+
+        if len(from_type) == 4 and len(to_type) == 3:
             # If converting from a batched tensor to a non-batched tensor, squeeze the batch dimension
             tensor = tensor.squeeze(0)
-            input_dimensions_map = input_dimensions_map[1:]
-        if len(input_dimensions_map) == 3 and len(to_type) == 4:
+            from_type = from_type[1:]
+        if len(from_type) == 3 and len(to_type) == 4:
             # If converting from a non-batched tensor to a batched tensor, unsqueeze the batch dimension
             tensor = tensor.unsqueeze(0)
-            input_dimensions_map = ["B"] + input_dimensions_map
-        return TensorImgUtils.from_to(input_dimensions_map, list(to_type))(tensor)
+            from_type = ["B"] + from_type
+
+        return TensorImgUtils.from_to(from_type, list(to_type))(tensor)
 
     @staticmethod
     def identify_type(tensor: torch.Tensor) -> Tuple[list[str], str]:

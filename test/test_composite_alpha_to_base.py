@@ -5,29 +5,15 @@ pyenv local 3.10.6
 
 import unittest
 import torch
-from torchvision import transforms
-from PIL import Image
 import os
-import random
-from typing import Tuple
 import sys
 
-# Symlink temp
-try:
-    from ..nodes.compositers.composite_alpha_to_base_node import (
-        CompositeCutoutOnBaseNode,
-    )
-    from .results_webview import ComparisonGrid
-    from ..utils.tensor_utils import TensorImgUtils
-    from .test_images import TestImages
-    from .branch_generator import BranchGenerator
-except ImportError:
-    sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-    from nodes.compositers.composite_alpha_to_base_node import CompositeCutoutOnBaseNode
-    from results_webview import ComparisonGrid
-    from utils.tensor_utils import TensorImgUtils
-    from test_images import TestImages
-    from branch_generator import BranchGenerator
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+from nodes.compositers.composite_alpha_to_base_node import CompositeCutoutOnBaseNode
+from test.results_webview import ComparisonGrid
+from utils.tensor_utils import TensorImgUtils
+from test.test_images import TestImages
+from test.branch_generator import BranchGenerator
 
 
 class TestCompositeAlphaToBase(unittest.TestCase):
@@ -142,31 +128,65 @@ class TestCompositeAlphaToBase(unittest.TestCase):
     #     self.assertEqual(type(res), torch.Tensor)
 
     def test_tensor_type_permutations(self):
+        test_title = "Tensor Type Permutations"
         branches = self.branch_gen.gen_branches_tensor_types(["image", "image"])
         compositer = CompositeCutoutOnBaseNode()
-        results = ComparisonGrid()
+        results = ComparisonGrid(test_title)
+        print(f"Testing: {test_title}")
+
         for branch_descrip, branch in branches.items():
+            print(f"\nRunning Test with {branch_descrip}")
             img1 = branch[0]["tensor_image"]
             img2 = branch[1]["tensor_image"]
-            try:
-                img2_alpha = img2[:, :, 3]
-                img2 = img2[:, :, :3]
-            except:
-                # Generate all opaque alpha layer
-                img2_alpha = torch.ones_like(img2[:, :, 0])
-                
+            print(f"Input 1: {img1.shape}, Input 2: {img2.shape}")
+
+            # Separate rgb from alpha. Generate opaque alpha layer if rgb-only image
+            img2_type = TensorImgUtils.identify_type(img2)[0]
+            channel_dim = img2_type.index("C")
+            if channel_dim == 0:
+                if img2.shape[channel_dim] == 4:
+                    img2_alpha = img2[3, :, :]
+                else:
+                    img2_alpha = torch.ones_like(img2[0, :, :])
+            elif channel_dim == 2:
+                if img2.shape[channel_dim] == 4:
+                    img2_alpha = img2[:, :, 3]
+                else:
+                    img2_alpha = torch.ones_like(img2[:, :, 0])
+            elif channel_dim == 3:
+                if img2.shape[channel_dim] == 4:
+                    img2_alpha = img2[:, :, :, 3]
+                else:
+                    img2_alpha = torch.ones_like(img2[:, :, :, 0])
+            elif channel_dim == 1:
+                if img2.shape[channel_dim] == 4:
+                    img2_alpha = img2[:, 0, :, :]
+                else:
+                    img2_alpha = torch.ones_like(img2[:, 0, :, :])
+
             resized = compositer.main(
                 img1, img2, img2_alpha, "cover_crop_center", invert_cutout=True
             )
+
+            print(f"Return Shape: {resized.shape}")
+            resized = TensorImgUtils.convert_to_type(resized, "CHW")
+            img1 = TensorImgUtils.convert_to_type(img1, "CHW")
+            img2 = TensorImgUtils.convert_to_type(img2, "CHW")
             results.add(branch_descrip, "Input Image", img1)
             results.add(branch_descrip, "Input Alpha Layer", img2)
             results.add(branch_descrip, "Size Matched and Composited", resized)
 
+        results.show_webview()
+
     def rtest_size_permutations(self):
         compositer = CompositeCutoutOnBaseNode()
         results = ComparisonGrid()
-        test_rgb_bg = self.test_images.get_media(1, tags=["people", "real"], as_pil=True)
-        test_alpha_layer = self.test_images.get_media(1, tags=["alpha-layers"], as_pil=True)
+        test_rgb_bg = self.test_images.get_media(
+            1, tags=["people", "real"], as_pil=True
+        )
+        test_alpha_layer = self.test_images.get_media(
+            1, tags=["alpha-layers"], as_pil=True
+        )
         test_images = test_rgb_bg + test_alpha_layer
         branches = self.branch_gen.gen_branches_img_size(test_images)
 
@@ -250,8 +270,6 @@ class TestCompositeAlphaToBase(unittest.TestCase):
     #             ]
 
     #         ComparisonGrid(results, mode)().show()
-
-
 
 
 if __name__ == "__main__":
