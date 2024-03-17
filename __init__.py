@@ -6,7 +6,6 @@ from .nodes.compositers.composite_alpha_to_base_node import *
 from .nodes.masks.auto_alpha_mask_node import *
 from .nodes.preprocessors.size_match_node import *
 
-import utils
 from .equalize import *
 from .segment import *
 

@@ -83,12 +83,19 @@ class CompositeCutoutOnBaseNode:
             - The cutout_alpha tensor is expected to have shape [H, W, 1-channel].
             - The size_matching_method determines how the size of base_image and alpha_cutout is matched.
         """
-        # Handle when alpha layer is in shape [H, W]
+        # Handle when alpha layer is mask in shape [H, W].
         if cutout_alpha.dim() == 2:
             cutout_alpha = cutout_alpha.unsqueeze(0)
 
-        # Handles batches by recursing over batch dimension when present (comfy default is BHWC)
-        if base_image.dim() == 4 or cutout.dim() == 4 or cutout_alpha.dim() == 4:
+        # Handles batches by recursing over batch dimension when present (comfy default is BHWC).
+        # Doesn't currently work if multiple images have batch dimension and different batch sizes.
+        batch_sizes = [
+            tensor.size(0)
+            for tensor in [base_image, cutout, cutout_alpha]
+            if tensor.dim() == 4
+        ]
+        if batch_sizes:
+            batch_count = max(batch_sizes)
             return (
                 torch.cat(
                     tuple(
@@ -103,7 +110,7 @@ class CompositeCutoutOnBaseNode:
                             size_matching_method,
                             invert_cutout,
                         )
-                        for i in range(base_image.size(0))
+                        for i in range(batch_count)
                     ),
                     dim=0,  # Concat along batch dimension
                 ),  # Include comma to force tuple return type even when single element
@@ -111,6 +118,7 @@ class CompositeCutoutOnBaseNode:
 
         base_image = TensorImgUtils.convert_to_type(base_image, "CHW")
         cutout = TensorImgUtils.convert_to_type(cutout, "CHW")
+        cutout_alpha = TensorImgUtils.convert_to_type(cutout_alpha, "CHW")
 
         # If base_image is rgba for some reason, remove alpha channel
         if base_image.size(0) == 4:

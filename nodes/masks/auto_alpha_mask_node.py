@@ -63,7 +63,7 @@ class AutoAlphaMaskNode:
         custom_bg_rgb: str = "255, 255, 255",
     ) -> Tuple[torch.Tensor, ...]:
 
-        image = TensorImgUtils.to_chw_singleton(image)
+        image = TensorImgUtils.convert_to_type(image, "CHW")
         chroma_key = ChromaKey()
         error_margin = leniance / 100.0
 
@@ -94,3 +94,4 @@ class AutoAlphaMaskNode:
 
         # NOTE: masks don't have batch dimension
         return (alpha,)
+

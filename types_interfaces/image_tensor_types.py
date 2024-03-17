@@ -16,7 +16,6 @@ class ImageTensorTypes:
                 for t in cls.__dict__.values()
                 if isinstance(t, tuple)
             )
-            @ staticmethod
         )
 
     @classmethod
