@@ -70,7 +70,7 @@ class LayerShifterNode:
         print(f"LayerShifterNode: parallax_config: {parallax_config}")
 
         max_height = input_image.shape[0]
-        for layer in parallax_config:
+        for layer in parallax_config["layers"]:
             if layer["height"] == 0 or layer["velocity"] == 0:
                 continue
 

@@ -46,6 +46,28 @@ class SaveParallaxLayersNode:
         parallax_config: str,  # [Batch_n, H, W, 3-channel]
     ) -> Tuple[torch.Tensor, ...]:
 
+        # get path of node dir
+        this_path = os.path.dirname(os.path.abspath(__file__))
+        # create dir for unique_project_name
+        os.makedirs(os.path.join(this_path, "unique_project_name"), exist_ok=True)
+        output_path = os.path.join(this_path, "unique_project_name")
+
+        def last_num(str):
+            if len(str) == 0:
+                return 0
+            if str[-1].isdigit():
+                return int(str[-1])
+            return last_num(str[:-1])
+        
+        # get current index based on highest index of a file in the dir
+        current_index = 0
+        for file in os.listdir(output_path):
+            if file.endswith(".png"):
+                index = last_num(file)
+                if index > current_index:
+                    current_index = index
+        current_index += 1
+
         to_pil = transforms.ToPILImage()
 
         # squeeze batch dimension
@@ -56,24 +78,26 @@ class SaveParallaxLayersNode:
 
         max_height = input_image.shape[0]
         file_paths = []
-        for layer_index, layer in enumerate(parallax_config):
+        for layer_index, layer in enumerate(parallax_config["layers"]):
             print(f"LayerSaveNode: layer_index: {layer_index}")
             if layer["height"] == 0 or layer["velocity"] == 0:
                 continue
 
-            layer_image = input_image[layer["top"]:layer["bottom"], :, :]
+            layer_image = input_image[layer["top"] : layer["bottom"], :, :]
             layer_image = TensorImgUtils.convert_to_type(layer_image, "CHW")
             print(f"LayerSaveNode: layer_image.shape: {layer_image.shape}")
             pil_image = to_pil(layer_image)
-            path = os.path.join("/home/c_byrne/tools/sd/sd-interfaces/ComfyUI/custom_nodes/elimination-nodes/nodes", f"layer_{layer_index}_{layer['height']}_{layer['velocity']}.png")
-            print(f"LayerSaveNode: path: {path}")
-            file_paths.append(path)
-            pil_image.save(path)
+            layer_img_path = os.path.join(
+                output_path, f"layer{layer_index}_{current_index}.png"
+            )
+            print(f"LayerSaveNode: path: {layer_img_path}")
+            file_paths.append(layer_img_path)
+            pil_image.save(layer_img_path)
 
-            
             if layer["bottom"] > max_height:
-                print(f"LayerSaveNode: layer['bottom'] > max_height: {layer['bottom']} > {max_height}")
+                print(
+                    f"LayerSaveNode: layer['bottom'] > max_height: {layer['bottom']} > {max_height}"
+                )
                 break
 
-        
         return (json.dumps(file_paths),)

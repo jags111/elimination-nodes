@@ -16,16 +16,21 @@ class ParallaxConfigDictNode:
     def INPUT_TYPES(s):
         return {
             "required": {
+                "unique_project_name": (
+                    "STRING",
+                    {"default": "my-project", "multiline": False},
+                ),
                 "l1_height": (
                     "INT",
                     {
                         "min": 0,
                         "default": 100,
+                        "step": 10,
                     },
                 ),
                 "l1_velocity": (
                     "FLOAT",
-                    {"default": 150.0, "min": 0.0, "round": 0.001},
+                    {"default": 150.0, "min": 0.0, "round": 0.01, "step": 5},
                 ),
             },
             "optional": {
@@ -34,69 +39,76 @@ class ParallaxConfigDictNode:
                     {
                         "min": 0,
                         "default": 80,
+                        "step": 10,
                     },
                 ),
                 "l2_velocity": (
                     "FLOAT",
-                    {"default": 60.0, "min": 0.0, "round": 0.001},
+                    {"default": 60.0, "min": 0.0, "round": 0.01, "step": 5},
                 ),
                 "l3_height": (
                     "INT",
                     {
                         "min": 0,
                         "default": 200,
+                        "step": 10,
                     },
                 ),
                 "l3_velocity": (
                     "FLOAT",
-                    {"default": 190.0, "min": 0.0, "round": 0.001},
+                    {"default": 190.0, "min": 0.0, "round": 0.01, "step": 5},
                 ),
                 "l4_height": (
                     "INT",
                     {
                         "min": 0,
                         "default": 600,
+                        "step": 10,
                     },
                 ),
                 "l4_velocity": (
                     "FLOAT",
-                    {"default": 240.0, "min": 0.0, "round": 0.001},
+                    {"default": 240.0, "min": 0.0, "round": 0.01, "step": 5},
                 ),
                 "l5_height": (
                     "INT",
                     {
                         "min": 0,
+                        "step": 10,
                     },
                 ),
                 "l5_velocity": (
                     "FLOAT",
-                    {"default": 0.0, "min": 0.0, "round": 0.001},
+                    {"default": 0.0, "min": 0.0, "round": 0.01, "step": 5},
                 ),
                 "l6_height": (
                     "INT",
                     {
                         "min": 0,
+                        "step": 10,
                     },
                 ),
                 "l6_velocity": (
                     "FLOAT",
-                    {"default": 0.0, "min": 0.0, "round": 0.001},
+                    {"default": 0.0, "min": 0.0, "round": 0.01, "step": 5},
                 ),
                 "l7_height": (
                     "INT",
                     {
                         "min": 0,
+                        "step": 10,
                     },
                 ),
                 "l7_velocity": (
                     "FLOAT",
-                    {"default": 0.0, "min": 0.0, "round": 0.001},
+                    {"default": 0.0, "min": 0.0, "round": 0.01, "step": 5},
                 ),
             },
         }
 
     def main(
         self,
+        unique_project_name: str,
         l1_height: int,
         l1_velocity: float,
         l2_height: Union[int, None] = None,
@@ -111,9 +123,13 @@ class ParallaxConfigDictNode:
         l6_velocity: Union[float, None] = None,
         l7_height: Union[int, None] = None,
         l7_velocity: Union[float, None] = None,
-    ) -> Tuple[torch.Tensor, ...]:
+    ) -> Tuple[str, ...]:
 
-        config = [
+        config = {
+            # "unique_project_name": unique_project_name,
+        }
+
+        layers = [
             {
                 "height": l1_height,
                 "velocity": l1_velocity,
@@ -143,16 +159,17 @@ class ParallaxConfigDictNode:
                 "velocity": l7_velocity,
             },
         ]
+
         # Filter out None values
-        config = [
+        layers = [
             x
-            for x in config
+            for x in layers
             if x["height"] is not None and x["height"] > 0 and x["velocity"] is not None
         ]
 
         # Create top, bottom for each layer
         cur_height = 0
-        for layer in config:
+        for layer in layers:
             height = int(layer["height"])
             top = cur_height
             layer["top"] = top
@@ -160,6 +177,8 @@ class ParallaxConfigDictNode:
             layer["bottom"] = bottom
             cur_height += height
 
+        config["layers"] = layers
+        config["unique_project_name"] = unique_project_name
         # To json string
         config = json.dumps(config)
 
