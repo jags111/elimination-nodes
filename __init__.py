@@ -8,6 +8,7 @@ from .nodes.preprocessors.size_match_node import *
 from .nodes.preprocessors.layer_shifter import *
 from .nodes.config_dicts.parallax_config import *
 from .nodes.file_system.save_parallax_step import *
+from .nodes.loaders.image_loaders.load_parallax_start import *
 
 from .equalize import *
 from .segment import *
@@ -42,12 +43,17 @@ def _assign_class_mappings():
                 ParallaxConfigDictNode,
             ),
             (
-                "Save Parallax Iteration",
+                "Save Parallax Frame",
                 "Save Infinite Parallax Step Components",
                 SaveParallaxStepNode,
             ),
+            (
+                "Load Parallax Frame",
+                "Load Infinite Parallax Step Start",
+                LoadParallaxStartNode,
+            ),
         ],
-        "Compositers": [
+        "Composite": [
             (
                 "Paste Cutout on Base Image",
                 "Composite Alpha Layer",

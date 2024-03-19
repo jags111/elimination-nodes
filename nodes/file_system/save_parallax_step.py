@@ -43,14 +43,17 @@ class SaveParallaxStepNode:
     def main(
         self,
         input_image: torch.Tensor,  # [Batch_n, H, W, 3-channel]
-        parallax_config: str,  # [Batch_n, H, W, 3-channel]
+        parallax_config: str,  # json string
     ) -> Tuple[torch.Tensor, ...]:
+
+        # parallax_config json string to dict
+        parallax_config = json.loads(parallax_config)
 
         # get path of node dir
         this_path = os.path.dirname(os.path.abspath(__file__))
-        # create dir for unique_project_name
-        os.makedirs(os.path.join(this_path, "unique_project_name"), exist_ok=True)
-        output_path = os.path.join(this_path, "unique_project_name")
+        # get and create path to the parallax project dir
+        output_path = os.path.join(this_path, parallax_config["unique_project_name"])
+        os.makedirs(output_path, exist_ok=True)
 
         def last_num(str):
             if len(str) == 0:
@@ -72,9 +75,6 @@ class SaveParallaxStepNode:
 
         # squeeze batch dimension
         input_image = TensorImgUtils.test_squeeze_batch(input_image)
-
-        # parallax_config json string to dict
-        parallax_config = json.loads(parallax_config)
 
         # start by saving the entire image - to serve as the start image of the next step
         next_step_start_image = to_pil(

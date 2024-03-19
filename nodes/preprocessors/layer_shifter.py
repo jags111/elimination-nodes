@@ -49,7 +49,7 @@ class LayerShifterNode:
     def main(
         self,
         input_image: torch.Tensor,  # [Batch_n, H, W, 3-channel]
-        parallax_config: str,  # [Batch_n, H, W, 3-channel]
+        parallax_config: str,  # json string 
     ) -> Tuple[torch.Tensor, ...]:
 
         self.TRANSPARENT = 0

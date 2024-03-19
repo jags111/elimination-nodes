@@ -15,13 +15,25 @@
     - [Integers](#integers)
     - [Floats](#floats)
   - [Conditioning](#conditioning)
+  - [Model](#model)
+  - [VAE](#vae)
+  - [CLIP](#clip)
   - [Latent](#latent)
   - [Images](#images)
-    - [From a Dropdown Selection of the Images in the Comfy Input Directory](#from-a-dropdown-selection-of-the-images-in-the-comfy-input-directory)
-    - [From an Absolute Path](#from-an-absolute-path)
-    - [From another Node as a Tensor](#from-another-node-as-a-tensor)
+    - [From a Dropdown Selection of the Images in the Comfy Input Directory (list\[STRING\])](#from-a-dropdown-selection-of-the-images-in-the-comfy-input-directory-liststring)
+    - [From an Absolute Path (STRING)](#from-an-absolute-path-string)
+    - [IMAGE (From another Node as a Tensor)](#image-from-another-node-as-a-tensor)
   - [Masks](#masks)
-    - [From another Node as a Tensor](#from-another-node-as-a-tensor-1)
+    - [From another Node as a Tensor](#from-another-node-as-a-tensor)
+- [Custom Input Types](#custom-input-types)
+- [Required vs. Hidden vs. Optional Fields](#required-vs-hidden-vs-optional-fields)
+- [Output/Return](#outputreturn)
+  - [The Type of the Return Object](#the-type-of-the-return-object)
+  - [Custom Output Field Names](#custom-output-field-names)
+- [Determining when the Custom Node should Run](#determining-when-the-custom-node-should-run)
+  - [Is Changed Method](#is-changed-method)
+    - [Using Hashes](#using-hashes)
+  - [`OUTPUT` Attribute](#output-attribute)
 - [*Important*: Data Types of Images in Comfy Environment (Tensor Structure)](#important-data-types-of-images-in-comfy-environment-tensor-structure)
 - [*Important*: The Batch Dimension](#important-the-batch-dimension)
 - [Getting Alpha Channels](#getting-alpha-channels)
@@ -53,9 +65,7 @@ Create the directory structure for the custom node.
 1. Create a project directory for your new node in `ComfyUI/custom_nodes`
 2. Create an `__init__.py` file in the project directory
 3. Create the python file for your custom node in the project directory
-4. Import or copy util functions/files you want from the comfy root directory `ComfyUI/`
-    - E.g., if you want to mimic the way `INPUT_TYPES()` is implemented in the [*Load Image*](https://github.com/comfyanonymous/ComfyUI/blob/b3e97fc7141681b1fa6da3ee6701c0f9a31d38f8/nodes.py#L1468) default node in `ComfyUI/nodes.py`, you will want to import and use `ComfyUI/folder_paths.py`
-      - So either import [folder_paths.py](https://raw.githubusercontent.com/comfyanonymous/ComfyUI/b3e97fc7141681b1fa6da3ee6701c0f9a31d38f8/folder_paths.py) from the comfy root directory or just copy and paste the file into your custom node dir and import from there
+4. you can `import` files from the ComfyUI main folder directly. For example, you may want to import `folder_paths` in your node code: `import folder_paths`
 
 </details>
 
@@ -451,7 +461,14 @@ def INPUT_TYPES(s):
 class CLIPTextEncode:
     @classmethod
     def INPUT_TYPES(s):
-        return {"required": {"text": ("STRING", {"multiline": True}), "clip": ("CLIP", )}}
+        return {"required": {
+            "text": ("STRING", {
+                "multiline": True, 
+                "default": "Hello World"
+                }), 
+            "clip": ("CLIP", )
+            }}
+            
     RETURN_TYPES = ("CONDITIONING",)
     FUNCTION = "encode"
 
@@ -516,6 +533,18 @@ def INPUT_TYPES(s):
 
 *From [ComfyUI-Inspire-Pack](https://github.com/ltdrdata/ComfyUI-Inspire-Pack/blob/main/inspire/sampler_nodes.py)'s `KSamplerAdvanced_progress`*
 
+## Model
+
+..
+
+
+## VAE
+
+..
+
+## CLIP
+
+..
 
 ## Latent
 
@@ -534,12 +563,13 @@ def INPUT_TYPES(s):
 
 ## Images
 
-### From a Dropdown Selection of the Images in the Comfy Input Directory
+### From a Dropdown Selection of the Images in the Comfy Input Directory (list\[STRING\])
 
 ```python
 import os
 import folder_paths
 # folder_paths.py from https://github.com/comfyanonymous/ComfyUI/blob/b3e97fc7141681b1fa6da3ee6701c0f9a31d38f8/nodes.py#L1468
+# can be imported directly, because it's in the ComfyUI main folder
 
 @classmethod
 def INPUT_TYPES(s):
@@ -557,19 +587,19 @@ def INPUT_TYPES(s):
     }
 ```
 
-### From an Absolute Path
+### From an Absolute Path (STRING)
 
 ```python
 @classmethod
 def INPUT_TYPES(s):
     return {
         "required": {
-            "image": ("IMAGE", {"image_upload": True}),
+            "image": ("STRING", {"multiline": False}),
         }
     }
 ```
 
-### From another Node as a Tensor
+### IMAGE (From another Node as a Tensor)
 
 ```python
 @classmethod
@@ -595,9 +625,118 @@ def INPUT_TYPES(s):
     }
 ```
 
+# Custom Input Types
+
+If you want to use custom input types, it's probably because you have either made a different node which outputs that type, or want to accept input from someone else's custom node that outputs that type.
+
+For example, some custom nodes like [was-node-suite](https://github.com/WASasquatch/was-node-suite-comfyui/blob/main/WAS_Node_Suite.py) use a `"DICT"` type for some outputs, when they have a configuration object to pass to the next node it seems. So in one node you might have:
+
+```python
+class WASNode:
+    RETURN_TYPES = ("DICT",)
+    RETURN_NAMES = ("was_dict",)
+```
+
+Then if you want to accept those input and know the actual type it is and how to handle that type, you can accept it like:
+
+```python
+@classmethod
+def INPUT_TYPES(s):
+    return {
+        "required": {
+            "was_dict": ("DICT",),
+        }
+    }
+```
+
+# Required vs. Hidden vs. Optional Fields
+
+A `required` dict is required for the node to run.
+
+```python
+class WAS_Number_Counter:
+    def __init__(self):
+        self.counters = {}
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "number_type": (["integer", "float"],),
+                "mode": (["increment", "decrement", "increment_to_stop", "decrement_to_stop"],),
+                "start": ("FLOAT", {"default": 0, "min": -18446744073709551615, "max": 18446744073709551615, "step": 0.01}),
+                "stop": ("FLOAT", {"default": 0, "min": -18446744073709551615, "max": 18446744073709551615, "step": 0.01}),
+                "step": ("FLOAT", {"default": 1, "min": 0, "max": 99999, "step": 0.01}),
+            },
+            "optional": {
+                "reset_bool": ("NUMBER",),
+            },
+            "hidden": {
+                "unique_id": "UNIQUE_ID",
+            }
+        }
+```
+
+*From [was-node-suite](https://github.com/WASasquatch/was-node-suite-comfyui)'s `WAS_Number_Counter`*
+
+# Output/Return
+
+## The Type of the Return Object
+
+Enforce a `tuple` using the comma trick (`return (image,)`)
+    
+```python
+class CustomNode:
+    RETURN_TYPES = ("IMAGE",)
+    RETURN_NAMES = ("image_output_name",)
+    FUNCTION = "main"
+
+    def main(self):
+        return (image_output,)
+```
 
 
+## Custom Output Field Names
 
+```python
+class CustomNode:
+    RETURN_TYPES = ("IMAGE",)
+    RETURN_NAMES = ("image_output_name",)
+```
+
+# Determining when the Custom Node should Run
+
+## Is Changed Method
+
+- The node will always be re executed if any of the inputs change but
+- The `IS_CHANGED()` classmethod can be used to force the node to execute again even when the inputs don't change.
+    - You can make `IS_CHANGED()` return a number or a string. 
+      - This value will be compared to the one returned the last time the node was executed
+      - If it is different the node will be executed again.
+- `IS_CHANGED()` is used in the core repo for the `LoadImage` node where they return the image hash as a string
+  - In that example, if the image hash changes between executions the LoadImage node is executed again.
+    
+```python
+    @classmethod
+    def IS_CHANGED(s, image, string_field, int_field, float_field, print_to_screen):
+        return "" # iterator, key, hash, epoch time, numer of files in an output folder, etc.
+```
+
+### Using Hashes
+
+```python
+import hashlib
+
+class CustomNode:
+    @classmethod
+    def IS_CHANGED(s, image):
+        m = hashlib.sha256()
+        with open(image, "rb") as f:
+            m.update(f.read())
+        return m.digest().hex()
+```
+
+## `OUTPUT` Attribute
 
 # *Important*: Data Types of Images in Comfy Environment (Tensor Structure)
 
@@ -640,9 +779,10 @@ def INPUT_TYPES(s):
     - If there was only one image, the single tensor is passed to the next node
       - However, **the single image's tensor is not squeezed before being passed**, so in either case, the return type is BHWC 
 - Therefore, the standard date type of images always includes a batch dimension, even if it is just a single image
-  - **The exception is with the `MASK` input type**, which will not have a batch dimension added
+    - *Correction*: it seems masks do have a batch dimension added by default
+  <!-- - **The exception is with the `MASK` input type**, which will not have a batch dimension added
     - Thus, masks are just HWC, specifically `(H, W, 1)` because they are not images with rgb channels (which would be `(H, W, 3)`) but instead masks with a single channel (alpha channel - representing transparency levels, rather than color levels)
-      - It follows that an rgba image would be `(H, W, 4)`
+      - It follows that an rgba image would be `(H, W, 4)` -->
 - As a result, it is necessary to write code that handles tensors with a batch dimension — and thus, batches of HWC images iteratively
   - If the relationship between images in a batch is not important to your node's processing (e.g., you aren't expecting a bach anyway), an easy/good solution seems to be to write your code to work with an individual HWC tensor, then add a recursion check at the injection point which checks if the input tensor has a batch dimension, and if it does, calls itself on each image in the batch, batch_size times
     - `if len(image.shape) == 4: return [my_method(image[i]) for i in range(image.shape[0])]`
@@ -707,8 +847,11 @@ output_masks.append(mask.unsqueeze(0))
 
 - As you can see, if there is no detected alpha channel, it creates a mask of shape `(64, 64)` filled with zeros. 
   - I.e., the mask is not created to match the size of the corresponding image. 
-- If you're getting an error that the mask and image sizes don't match and it mentions a mismatched shape of `(64, 64)`, this is the reason -- the image did not have an alpha channel to begin with
+- If you're getting an error that the mask and image sizes don't match and it mentions a mismatched shape of `(64, 64)`, this is probably the reason -- the image did not have an alpha channel to begin with
   - You can add logic to catch this condition and resize the mask, if necessary 
+
+
+
 
 
 # Debugging 
