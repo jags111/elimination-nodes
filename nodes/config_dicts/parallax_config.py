@@ -150,6 +150,16 @@ class ParallaxConfigDictNode:
             if x["height"] is not None and x["height"] > 0 and x["velocity"] is not None
         ]
 
+        # Create top, bottom for each layer
+        cur_height = 0
+        for layer in config:
+            height = int(layer["height"])
+            top = cur_height
+            layer["top"] = top
+            bottom = cur_height + height
+            layer["bottom"] = bottom
+            cur_height += height
+
         # To json string
         config = json.dumps(config)
 

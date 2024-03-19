@@ -7,6 +7,7 @@ from .nodes.masks.auto_alpha_mask_node import *
 from .nodes.preprocessors.size_match_node import *
 from .nodes.preprocessors.layer_shifter import *
 from .nodes.config_dicts.parallax_config import *
+from .nodes.file_system.save_parallax_layers import *
 
 from .equalize import *
 from .segment import *
@@ -23,6 +24,11 @@ CLASS_MAPPINGS = {
             "Parallax Config",
             "Parallax Config Dict | Infinite Parallax",
             ParallaxConfigDictNode,
+        ),
+        (
+            "Save Parallax Layers",
+            "Save Parallax Layers | Infinite Parallax",
+            SaveParallaxLayersNode,
         ),
     ],
     "Compositers": [
