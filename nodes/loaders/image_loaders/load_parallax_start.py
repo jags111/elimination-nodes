@@ -29,6 +29,9 @@ except ImportError:
     import folder_paths
 
 class LoadParallaxStartNode:
+    def __init__(self):
+        self.start_frame_keyword = "start"
+    
     @classmethod
     def INPUT_TYPES(s):
         input_dir = folder_paths.get_input_directory()
@@ -53,17 +56,14 @@ class LoadParallaxStartNode:
         image_path: str = None,
     ) -> Tuple[torch.Tensor, ...]:
 
-        parallax_config = json.loads(parallax_config)
+        self.__set_config(parallax_config)
 
-        # Check if there is a start image in the parallax project dir
-        cur_image_path = self.try_get_start_img(parallax_config["unique_project_name"])
-        if not cur_image_path:
-            # If no start images found in the parallax project dir (it's the first step), use the input image
+        # Use most recent frame if it exists, otherwise use the input image (first iteration of the project)
+        if self.get_project_frame_ct() == 0:
             cur_image_path = folder_paths.get_annotated_filepath(image_path)
+        else:
+            cur_image_path = self.try_get_start_img()
             
-        print(f"[LoadParallaxStart] image_path: {cur_image_path}")
-
-        cur_image_path = folder_paths.get_annotated_filepath(cur_image_path)
         img = Image.open(cur_image_path)
 
         # If the image has exif data, rotate it to the correct orientation and remove the exif data
@@ -89,12 +89,15 @@ class LoadParallaxStartNode:
         rgb_image = torch.from_numpy(rgb_image)[None,] # Add a batch dimension, new format is [B, H, W, C]
         
         return (rgb_image, mask)
+    
+    def get_project_frame_ct(self):
+        if not self.__project_dir_exists():
+            return 0
+        return len([f for f in os.listdir(self.__get_parallax_proj_dirpath()) if "start" in f])
 
-    def try_get_start_img(self, project_name):
-        node_dir = os.path.dirname(os.path.abspath(__file__))
-        print(f"\n[LoadParallaxStart] node_dir: {node_dir}")
-        output_path = os.path.join(node_dir, project_name)
-        print(f"[LoadParallaxStart] output_path: {output_path}")
+    def try_get_start_img(self):
+        
+        output_path = self.__get_parallax_proj_dirpath()
         cur_image_path = False
         if os.path.exists(output_path):
             start_images = [f for f in os.listdir(output_path) if "start" in f]
@@ -105,6 +108,21 @@ class LoadParallaxStartNode:
                 print(f"[LoadParallaxStart] cur_image_path: {cur_image_path}")
         return cur_image_path
 
+    def __set_config(self, parallax_config: str) -> None:
+        self.parallax_config = json.loads(parallax_config)
+
+    def __get_proj_name(self):
+        return self.parallax_config["unique_project_name"]
+
+    def __project_dir_exists(self):
+        return os.path.exists(self.__get_parallax_proj_dirpath())
+
+    def __get_parallax_proj_dirpath(self):
+        node_dir = os.path.dirname(os.path.abspath(__file__)).split("elimination-nodes")[0]
+        node_dir = os.path.join(node_dir, "elimination-nodes", "nodes", "file_system")
+        output_path = os.path.join(node_dir, self.__get_proj_name())
+        return output_path
+
     @classmethod
     def IS_CHANGED(s, image):
-        return True
+        return LoadParallaxStartNode.get_project_frame_ct()
