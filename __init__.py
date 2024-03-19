@@ -9,6 +9,7 @@ from .nodes.preprocessors.layer_shifter import *
 from .nodes.config_dicts.parallax_config import *
 from .nodes.file_system.save_parallax_step import *
 from .nodes.loaders.image_loaders.load_parallax_start import *
+from .nodes.animation.create_parallax_video import *
 
 from .equalize import *
 from .segment import *
@@ -52,6 +53,11 @@ def _assign_class_mappings():
                 "Load Infinite Parallax Step Start",
                 LoadParallaxStartNode,
             ),
+            (
+                "Create Parallax Video",
+                "Create and Composite Layer VideoClips",
+                LayerFramesToParallaxVideoNode,
+            )
         ],
         "Composite": [
             (

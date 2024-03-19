@@ -34,6 +34,27 @@ class ParallaxConfigDictNode:
                 ),
             },
             "optional": {
+                "num_iterations": (
+                    "INT",
+                    {
+                        "default": 10,
+                        "min": 3,
+                        "max": 50,
+                        "step": 1,
+                        "display": "slider",
+                    },
+                ),
+                "fps": (
+                    "FLOAT",
+                    {
+                        "default": 1.0,
+                        "min": .001,
+                        "max": 30.002,
+                        "step": .0001,
+                        "round" : .0001,
+                        "display": "slider",
+                    },
+                ),
                 "l2_height": (
                     "INT",
                     {
@@ -111,6 +132,8 @@ class ParallaxConfigDictNode:
         unique_project_name: str,
         l1_height: int,
         l1_velocity: float,
+        num_iterations: int = 10,
+        fps: float = .020,
         l2_height: Union[int, None] = None,
         l2_velocity: Union[float, None] = None,
         l3_height: Union[int, None] = None,
@@ -179,7 +202,8 @@ class ParallaxConfigDictNode:
 
         config["layers"] = layers
         config["unique_project_name"] = unique_project_name
-        # To json string
+        config["num_iterations"] = int(num_iterations)
+        config["fps"] = float(fps)
         config = json.dumps(config)
 
         return (config,)
