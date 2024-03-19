@@ -25,7 +25,7 @@ except ImportError:
     from segment.chromakey import ChromaKey
 
 
-class SaveParallaxLayersNode:
+class SaveParallaxStepNode:
     CATEGORY = "parallax"
     RETURN_TYPES = ("STRING",)
     FUNCTION = "main"
@@ -58,7 +58,7 @@ class SaveParallaxLayersNode:
             if str[-1].isdigit():
                 return int(str[-1])
             return last_num(str[:-1])
-        
+
         # get current index based on highest index of a file in the dir
         current_index = 0
         for file in os.listdir(output_path):
@@ -76,6 +76,13 @@ class SaveParallaxLayersNode:
         # parallax_config json string to dict
         parallax_config = json.loads(parallax_config)
 
+        # start by saving the entire image - to serve as the start image of the next step
+        next_step_start_image = to_pil(
+            TensorImgUtils.convert_to_type(input_image, "CHW")
+        )
+        save_path = os.path.join(output_path, f"start_{current_index}.png")
+        next_step_start_image.save(save_path)
+
         max_height = input_image.shape[0]
         file_paths = []
         for layer_index, layer in enumerate(parallax_config["layers"]):
@@ -87,12 +94,12 @@ class SaveParallaxLayersNode:
             layer_image = TensorImgUtils.convert_to_type(layer_image, "CHW")
             print(f"LayerSaveNode: layer_image.shape: {layer_image.shape}")
             pil_image = to_pil(layer_image)
-            layer_img_path = os.path.join(
+            save_path = os.path.join(
                 output_path, f"layer{layer_index}_{current_index}.png"
             )
-            print(f"LayerSaveNode: path: {layer_img_path}")
-            file_paths.append(layer_img_path)
-            pil_image.save(layer_img_path)
+            print(f"LayerSaveNode: path: {save_path}")
+            file_paths.append(save_path)
+            pil_image.save(save_path)
 
             if layer["bottom"] > max_height:
                 print(

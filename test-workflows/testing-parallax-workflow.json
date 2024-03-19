@@ -1,46 +1,7 @@
 {
-  "last_node_id": 20,
-  "last_link_id": 23,
+  "last_node_id": 28,
+  "last_link_id": 38,
   "nodes": [
-    {
-      "id": 9,
-      "type": "LoadImage",
-      "pos": [
-        270,
-        350
-      ],
-      "size": [
-        320,
-        310
-      ],
-      "flags": {},
-      "order": 0,
-      "mode": 0,
-      "outputs": [
-        {
-          "name": "IMAGE",
-          "type": "IMAGE",
-          "links": [
-            6
-          ],
-          "shape": 3,
-          "slot_index": 0
-        },
-        {
-          "name": "MASK",
-          "type": "MASK",
-          "links": null,
-          "shape": 3
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "LoadImage"
-      },
-      "widgets_values": [
-        "00475-1381931056-group,back view,beauty,dress, (1).png",
-        "image"
-      ]
-    },
     {
       "id": 11,
       "type": "PreviewImage",
@@ -53,143 +14,17 @@
         "1": 340
       },
       "flags": {},
-      "order": 6,
+      "order": 3,
       "mode": 0,
       "inputs": [
         {
           "name": "images",
           "type": "IMAGE",
-          "link": 7
+          "link": 24
         }
       ],
       "properties": {
         "Node name for S&R": "PreviewImage"
-      }
-    },
-    {
-      "id": 13,
-      "type": "Parallax Config Dict | Infinite Parallax",
-      "pos": [
-        290,
-        770
-      ],
-      "size": {
-        "0": 315,
-        "1": 370
-      },
-      "flags": {},
-      "order": 1,
-      "mode": 0,
-      "outputs": [
-        {
-          "name": "parallax_config",
-          "type": "parallax_config",
-          "links": [
-            9
-          ],
-          "shape": 3,
-          "slot_index": 0
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "Parallax Config Dict | Infinite Parallax"
-      },
-      "widgets_values": [
-        100,
-        50,
-        300,
-        30,
-        600,
-        126,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
-      ]
-    },
-    {
-      "id": 8,
-      "type": "Shift and Pad Slices for Parallax Outpainting | Infinite Parallax",
-      "pos": [
-        810,
-        550
-      ],
-      "size": {
-        "0": 319.20001220703125,
-        "1": 166
-      },
-      "flags": {},
-      "order": 3,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "input_image",
-          "type": "IMAGE",
-          "link": 6
-        },
-        {
-          "name": "parallax_config",
-          "type": "parallax_config",
-          "link": 9
-        },
-        {
-          "name": "object_mask_1",
-          "type": "MASK",
-          "link": null
-        },
-        {
-          "name": "object_mask_2",
-          "type": "MASK",
-          "link": null
-        },
-        {
-          "name": "object_mask_3",
-          "type": "MASK",
-          "link": null
-        },
-        {
-          "name": "object_mask_4",
-          "type": "MASK",
-          "link": null
-        },
-        {
-          "name": "object_mask_5",
-          "type": "MASK",
-          "link": null
-        },
-        {
-          "name": "object_mask_6",
-          "type": "MASK",
-          "link": null
-        }
-      ],
-      "outputs": [
-        {
-          "name": "IMAGE",
-          "type": "IMAGE",
-          "links": [
-            7,
-            10
-          ],
-          "shape": 3,
-          "slot_index": 0
-        },
-        {
-          "name": "MASK",
-          "type": "MASK",
-          "links": [
-            11
-          ],
-          "shape": 3,
-          "slot_index": 1
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "Shift and Pad Slices for Parallax Outpainting | Infinite Parallax"
       }
     },
     {
@@ -275,6 +110,132 @@
       "bgcolor": "#533"
     },
     {
+      "id": 9,
+      "type": "LoadImage",
+      "pos": [
+        270,
+        350
+      ],
+      "size": [
+        320,
+        310
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            24,
+            26
+          ],
+          "shape": 3,
+          "slot_index": 0
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": null,
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "rgb-background-digital-H736px_W736px-jpg-26.jpg",
+        "image"
+      ]
+    },
+    {
+      "id": 24,
+      "type": "PreviewImage",
+      "pos": [
+        1000,
+        1440
+      ],
+      "size": {
+        "0": 390,
+        "1": 250
+      },
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 30
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      }
+    },
+    {
+      "id": 23,
+      "type": "PreviewImage",
+      "pos": [
+        1430,
+        1110
+      ],
+      "size": {
+        "0": 410,
+        "1": 320
+      },
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 31
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      }
+    },
+    {
+      "id": 22,
+      "type": "MaskToImage",
+      "pos": [
+        1080,
+        1080
+      ],
+      "size": {
+        "0": 210,
+        "1": 26
+      },
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 29
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            30
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MaskToImage"
+      }
+    },
+    {
       "id": 14,
       "type": "InpaintModelConditioning",
       "pos": [
@@ -286,7 +247,7 @@
         "1": 106
       },
       "flags": {},
-      "order": 7,
+      "order": 9,
       "mode": 0,
       "inputs": [
         {
@@ -307,12 +268,12 @@
         {
           "name": "pixels",
           "type": "IMAGE",
-          "link": 10
+          "link": 32
         },
         {
           "name": "mask",
           "type": "MASK",
-          "link": 11
+          "link": 33
         }
       ],
       "outputs": [
@@ -349,6 +310,245 @@
       }
     },
     {
+      "id": 21,
+      "type": "Shift and Pad Slices for Parallax Outpainting | Infinite Parallax",
+      "pos": [
+        820,
+        450
+      ],
+      "size": {
+        "0": 319.20001220703125,
+        "1": 166
+      },
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "input_image",
+          "type": "IMAGE",
+          "link": 26
+        },
+        {
+          "name": "parallax_config",
+          "type": "parallax_config",
+          "link": 37
+        },
+        {
+          "name": "object_mask_1",
+          "type": "MASK",
+          "link": null
+        },
+        {
+          "name": "object_mask_2",
+          "type": "MASK",
+          "link": null
+        },
+        {
+          "name": "object_mask_3",
+          "type": "MASK",
+          "link": null
+        },
+        {
+          "name": "object_mask_4",
+          "type": "MASK",
+          "link": null
+        },
+        {
+          "name": "object_mask_5",
+          "type": "MASK",
+          "link": null
+        },
+        {
+          "name": "object_mask_6",
+          "type": "MASK",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            31,
+            32
+          ],
+          "shape": 3,
+          "slot_index": 0
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": [
+            29,
+            33
+          ],
+          "shape": 3,
+          "slot_index": 1
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Shift and Pad Slices for Parallax Outpainting | Infinite Parallax"
+      }
+    },
+    {
+      "id": 20,
+      "type": "PreviewImage",
+      "pos": [
+        1880,
+        1110
+      ],
+      "size": {
+        "0": 350,
+        "1": 300
+      },
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 23
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      }
+    },
+    {
+      "id": 19,
+      "type": "VAEDecode",
+      "pos": [
+        2050,
+        480
+      ],
+      "size": {
+        "0": 210,
+        "1": 46
+      },
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 21
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 22
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            23,
+            35
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecode"
+      }
+    },
+    {
+      "id": 26,
+      "type": "Save Parallax Layers | Infinite Parallax",
+      "pos": [
+        660,
+        1520
+      ],
+      "size": {
+        "0": 280,
+        "1": 300
+      },
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "input_image",
+          "type": "IMAGE",
+          "link": 35
+        },
+        {
+          "name": "parallax_config",
+          "type": "parallax_config",
+          "link": 38
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": null,
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Save Parallax Layers | Infinite Parallax"
+      }
+    },
+    {
+      "id": 17,
+      "type": "CheckpointLoaderSimple",
+      "pos": [
+        1210,
+        850
+      ],
+      "size": {
+        "0": 315,
+        "1": 98
+      },
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            18
+          ],
+          "shape": 3,
+          "slot_index": 0
+        },
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            15,
+            16
+          ],
+          "shape": 3,
+          "slot_index": 1
+        },
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            14,
+            22
+          ],
+          "shape": 3,
+          "slot_index": 2
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CheckpointLoaderSimple"
+      },
+      "widgets_values": [
+        "Stable-diffusion/inpainting/wondermix_V2-inpainting.safetensors"
+      ]
+    },
+    {
       "id": 18,
       "type": "KSampler",
       "pos": [
@@ -360,7 +560,7 @@
         "1": 262
       },
       "flags": {},
-      "order": 8,
+      "order": 11,
       "mode": 0,
       "inputs": [
         {
@@ -399,175 +599,64 @@
         "Node name for S&R": "KSampler"
       },
       "widgets_values": [
-        0,
+        819201806921033,
         "randomize",
-        20,
-        8,
-        "euler",
-        "normal",
-        1
+        45,
+        4,
+        "dpmpp_2m_sde_gpu",
+        "karras",
+        0.8
       ]
     },
     {
-      "id": 17,
-      "type": "CheckpointLoaderSimple",
+      "id": 28,
+      "type": "Parallax Config Dict | Infinite Parallax",
       "pos": [
-        1210,
-        850
+        342.3999938964844,
+        940.7999877929688
       ],
       "size": {
         "0": 315,
-        "1": 98
+        "1": 394
       },
       "flags": {},
       "order": 2,
       "mode": 0,
       "outputs": [
         {
-          "name": "MODEL",
-          "type": "MODEL",
+          "name": "parallax_config",
+          "type": "parallax_config",
           "links": [
-            18
+            37,
+            38
           ],
           "shape": 3,
           "slot_index": 0
-        },
-        {
-          "name": "CLIP",
-          "type": "CLIP",
-          "links": [
-            15,
-            16
-          ],
-          "shape": 3,
-          "slot_index": 1
-        },
-        {
-          "name": "VAE",
-          "type": "VAE",
-          "links": [
-            14,
-            22
-          ],
-          "shape": 3,
-          "slot_index": 2
         }
       ],
       "properties": {
-        "Node name for S&R": "CheckpointLoaderSimple"
+        "Node name for S&R": "Parallax Config Dict | Infinite Parallax"
       },
       "widgets_values": [
-        "Stable-diffusion/inpainting/experience_70-inpainting.safetensors"
+        "gibli-car",
+        100,
+        125,
+        80,
+        13.5,
+        200,
+        101,
+        100,
+        175,
+        400,
+        195,
+        0,
+        0,
+        0,
+        0
       ]
-    },
-    {
-      "id": 19,
-      "type": "VAEDecode",
-      "pos": [
-        2050,
-        480
-      ],
-      "size": {
-        "0": 210,
-        "1": 46
-      },
-      "flags": {},
-      "order": 9,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "samples",
-          "type": "LATENT",
-          "link": 21
-        },
-        {
-          "name": "vae",
-          "type": "VAE",
-          "link": 22
-        }
-      ],
-      "outputs": [
-        {
-          "name": "IMAGE",
-          "type": "IMAGE",
-          "links": [
-            23
-          ],
-          "shape": 3,
-          "slot_index": 0
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "VAEDecode"
-      }
-    },
-    {
-      "id": 20,
-      "type": "PreviewImage",
-      "pos": [
-        690,
-        860
-      ],
-      "size": [
-        330,
-        250
-      ],
-      "flags": {},
-      "order": 10,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "images",
-          "type": "IMAGE",
-          "link": 23
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "PreviewImage"
-      }
     }
   ],
   "links": [
-    [
-      6,
-      9,
-      0,
-      8,
-      0,
-      "IMAGE"
-    ],
-    [
-      7,
-      8,
-      0,
-      11,
-      0,
-      "IMAGE"
-    ],
-    [
-      9,
-      13,
-      0,
-      8,
-      1,
-      "parallax_config"
-    ],
-    [
-      10,
-      8,
-      0,
-      14,
-      3,
-      "IMAGE"
-    ],
-    [
-      11,
-      8,
-      1,
-      14,
-      4,
-      "MASK"
-    ],
     [
       12,
       15,
@@ -663,6 +752,86 @@
       20,
       0,
       "IMAGE"
+    ],
+    [
+      24,
+      9,
+      0,
+      11,
+      0,
+      "IMAGE"
+    ],
+    [
+      26,
+      9,
+      0,
+      21,
+      0,
+      "IMAGE"
+    ],
+    [
+      29,
+      21,
+      1,
+      22,
+      0,
+      "MASK"
+    ],
+    [
+      30,
+      22,
+      0,
+      24,
+      0,
+      "IMAGE"
+    ],
+    [
+      31,
+      21,
+      0,
+      23,
+      0,
+      "IMAGE"
+    ],
+    [
+      32,
+      21,
+      0,
+      14,
+      3,
+      "IMAGE"
+    ],
+    [
+      33,
+      21,
+      1,
+      14,
+      4,
+      "MASK"
+    ],
+    [
+      35,
+      19,
+      0,
+      26,
+      0,
+      "IMAGE"
+    ],
+    [
+      37,
+      28,
+      0,
+      21,
+      1,
+      "parallax_config"
+    ],
+    [
+      38,
+      28,
+      0,
+      26,
+      1,
+      "parallax_config"
     ]
   ],
   "groups": [],
