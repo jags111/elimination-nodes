@@ -4,7 +4,6 @@ pyenv local 3.10.6"""
 
 import torch
 from torchvision import transforms
-from PIL import Image
 import os
 import json
 
@@ -13,21 +12,17 @@ from typing import Tuple
 
 try:
     from ...utils.tensor_utils import TensorImgUtils
-    from ...equalize.equalize_size import SizeMatcher
-    from ...segment.chromakey import ChromaKey
 except ImportError:
     import sys
     import os
 
     sys.path.append(os.path.dirname(os.path.dirname(__file__)))
     from utils.tensor_utils import TensorImgUtils
-    from equalize.equalize_size import SizeMatcher
-    from segment.chromakey import ChromaKey
 
 
 class SaveParallaxStepNode:
-    CATEGORY = "parallax"
     RETURN_TYPES = ("STRING",)
+    RETURN_NAMES = ("save_path_str",)
     FUNCTION = "main"
     OUTPUT_NODE = True
 
@@ -44,7 +39,7 @@ class SaveParallaxStepNode:
         self,
         input_image: torch.Tensor,  # [Batch_n, H, W, 3-channel]
         parallax_config: str,  # json string
-    ) -> Tuple[torch.Tensor, ...]:
+    ) -> Tuple[str, ...]:
 
         # parallax_config json string to dict
         parallax_config = json.loads(parallax_config)
@@ -86,18 +81,17 @@ class SaveParallaxStepNode:
         max_height = input_image.shape[0]
         file_paths = []
         for layer_index, layer in enumerate(parallax_config["layers"]):
-            print(f"LayerSaveNode: layer_index: {layer_index}")
             if layer["height"] == 0 or layer["velocity"] == 0:
                 continue
 
             layer_image = input_image[layer["top"] : layer["bottom"], :, :]
             layer_image = TensorImgUtils.convert_to_type(layer_image, "CHW")
-            print(f"LayerSaveNode: layer_image.shape: {layer_image.shape}")
+
             pil_image = to_pil(layer_image)
             save_path = os.path.join(
                 output_path, f"layer{layer_index}_{current_index}.png"
             )
-            print(f"LayerSaveNode: path: {save_path}")
+
             file_paths.append(save_path)
             pil_image.save(save_path)
 

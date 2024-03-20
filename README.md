@@ -57,5 +57,5 @@ The custom node highlighted is red in the screenshots
 
 # To-do
 
-- match size node
-- parallax node
+- match size node tests with test tool
+- more tests

@@ -2,32 +2,15 @@
 
 pyenv local 3.10.6"""
 
-import torch
-from torchvision import transforms
-import numpy as np
-from PIL import Image, ImageOps, ImageSequence
 import os
 import json
+from PIL import Image, ImageOps
+import numpy as np
+import torch
 
 from typing import Tuple
 
-
-try:
-    from ....utils.tensor_utils import TensorImgUtils
-    from ....equalize.equalize_size import SizeMatcher
-    from ....segment.chromakey import ChromaKey
-
-    # from .... import folder_paths
-    import folder_paths
-except ImportError:
-    import sys
-    import os
-
-    sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
-    from utils.tensor_utils import TensorImgUtils
-    from equalize.equalize_size import SizeMatcher
-    from segment.chromakey import ChromaKey
-    import folder_paths
+import folder_paths
 
 
 class LoadParallaxStartNode:
@@ -117,11 +100,9 @@ class LoadParallaxStartNode:
         cur_image_path = False
         if os.path.exists(output_path):
             start_images = [f for f in os.listdir(output_path) if "start" in f]
-            print(f"[LoadParallaxStart] start_images: {start_images}")
             if len(start_images) > 0:
                 start_images.sort()
                 cur_image_path = os.path.join(output_path, start_images[-1])
-                print(f"[LoadParallaxStart] cur_image_path: {cur_image_path}")
         return cur_image_path
 
     def __set_config(self, parallax_config: str) -> None:

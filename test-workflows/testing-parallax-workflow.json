@@ -1,6 +1,6 @@
 {
-  "last_node_id": 39,
-  "last_link_id": 52,
+  "last_node_id": 42,
+  "last_link_id": 57,
   "nodes": [
     {
       "id": 14,
@@ -14,7 +14,7 @@
         "1": 106
       },
       "flags": {},
-      "order": 9,
+      "order": 11,
       "mode": 0,
       "inputs": [
         {
@@ -90,7 +90,7 @@
       "flags": {
         "collapsed": true
       },
-      "order": 10,
+      "order": 12,
       "mode": 0,
       "inputs": [
         {
@@ -178,7 +178,7 @@
         "1": 166
       },
       "flags": {},
-      "order": 6,
+      "order": 8,
       "mode": 0,
       "inputs": [
         {
@@ -189,7 +189,7 @@
         {
           "name": "parallax_config",
           "type": "parallax_config",
-          "link": 40
+          "link": 54
         },
         {
           "name": "object_mask_1",
@@ -246,35 +246,9 @@
       ],
       "properties": {
         "Node name for S&R": "Wrap-Shift and Mask Slices for Parallax 🔹Elimination Nodes🔹"
-      }
-    },
-    {
-      "id": 11,
-      "type": "PreviewImage",
-      "pos": [
-        360,
-        340
-      ],
-      "size": {
-        "0": 310,
-        "1": 270
       },
-      "flags": {},
-      "order": 8,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "images",
-          "type": "IMAGE",
-          "link": 45
-        }
-      ],
-      "title": "Preview - Shifted Layers Image",
-      "properties": {
-        "Node name for S&R": "PreviewImage"
-      },
-      "color": "#2a363b",
-      "bgcolor": "#3f5159"
+      "color": "#46444a",
+      "bgcolor": "#323036"
     },
     {
       "id": 24,
@@ -283,12 +257,12 @@
         360,
         900
       ],
-      "size": [
-        300,
-        290
-      ],
+      "size": {
+        "0": 300,
+        "1": 290
+      },
       "flags": {},
-      "order": 12,
+      "order": 14,
       "mode": 0,
       "inputs": [
         {
@@ -305,116 +279,18 @@
       "bgcolor": "#3f5159"
     },
     {
-      "id": 32,
-      "type": "Infinite Parallax User Dict 🔹Elimination Nodes🔹",
-      "pos": [
-        -520,
-        680
-      ],
-      "size": {
-        "0": 315,
-        "1": 394
-      },
-      "flags": {},
-      "order": 1,
-      "mode": 0,
-      "outputs": [
-        {
-          "name": "parallax_config",
-          "type": "parallax_config",
-          "links": [
-            40,
-            46,
-            50
-          ],
-          "shape": 3,
-          "slot_index": 0
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "Infinite Parallax User Dict 🔹Elimination Nodes🔹"
-      },
-      "widgets_values": [
-        "gibli-test-1",
-        200,
-        150,
-        80,
-        60,
-        200,
-        190,
-        600,
-        240,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
-      ],
-      "color": "#322",
-      "bgcolor": "#533"
-    },
-    {
-      "id": 38,
-      "type": "Load Infinite Parallax Step Start 🔹Elimination Nodes🔹",
-      "pos": [
-        -70,
-        650
-      ],
-      "size": {
-        "0": 315,
-        "1": 78
-      },
-      "flags": {},
-      "order": 5,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "parallax_config",
-          "type": "parallax_config",
-          "link": 50
-        }
-      ],
-      "outputs": [
-        {
-          "name": "IMAGE",
-          "type": "IMAGE",
-          "links": [
-            51,
-            52
-          ],
-          "shape": 3,
-          "slot_index": 0
-        },
-        {
-          "name": "MASK",
-          "type": "MASK",
-          "links": null,
-          "shape": 3
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "Load Infinite Parallax Step Start 🔹Elimination Nodes🔹"
-      },
-      "widgets_values": [
-        "rgb-background-digital-H736px_W736px-jpg-26.jpg"
-      ],
-      "color": "#46444a",
-      "bgcolor": "#323036"
-    },
-    {
       "id": 39,
       "type": "PreviewImage",
       "pos": [
         -70,
         780
       ],
-      "size": [
-        310,
-        320
-      ],
+      "size": {
+        "0": 310,
+        "1": 320
+      },
       "flags": {},
-      "order": 7,
+      "order": 9,
       "mode": 0,
       "inputs": [
         {
@@ -437,10 +313,10 @@
         1130,
         -230
       ],
-      "size": [
-        380,
-        130
-      ],
+      "size": {
+        "0": 380,
+        "1": 130
+      },
       "flags": {},
       "order": 4,
       "mode": 0,
@@ -483,7 +359,7 @@
         "1": 46
       },
       "flags": {},
-      "order": 15,
+      "order": 17,
       "mode": 0,
       "inputs": [
         {
@@ -494,7 +370,7 @@
         {
           "name": "parallax_config",
           "type": "parallax_config",
-          "link": 46
+          "link": 55
         }
       ],
       "outputs": [
@@ -518,10 +394,10 @@
         700,
         -230
       ],
-      "size": [
-        400,
-        130
-      ],
+      "size": {
+        "0": 400,
+        "1": 130
+      },
       "flags": {},
       "order": 3,
       "mode": 0,
@@ -564,7 +440,7 @@
         "1": 46
       },
       "flags": {},
-      "order": 13,
+      "order": 15,
       "mode": 0,
       "inputs": [
         {
@@ -606,7 +482,7 @@
         "1": 262
       },
       "flags": {},
-      "order": 11,
+      "order": 13,
       "mode": 0,
       "inputs": [
         {
@@ -645,7 +521,7 @@
         "Node name for S&R": "KSampler"
       },
       "widgets_values": [
-        1023780429200860,
+        598025257673998,
         "randomize",
         45,
         4,
@@ -666,7 +542,7 @@
         "1": 320
       },
       "flags": {},
-      "order": 14,
+      "order": 16,
       "mode": 0,
       "inputs": [
         {
@@ -683,16 +559,222 @@
       "bgcolor": "#3f5159"
     },
     {
+      "id": 11,
+      "type": "PreviewImage",
+      "pos": [
+        360,
+        330
+      ],
+      "size": {
+        "0": 310,
+        "1": 270
+      },
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 45
+        }
+      ],
+      "title": "Preview - Shifted Layers Image",
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      },
+      "color": "#2a363b",
+      "bgcolor": "#3f5159"
+    },
+    {
+      "id": 38,
+      "type": "Load Infinite Parallax Step Start 🔹Elimination Nodes🔹",
+      "pos": [
+        -70,
+        650
+      ],
+      "size": {
+        "0": 315,
+        "1": 78
+      },
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "parallax_config",
+          "type": "parallax_config",
+          "link": 56
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            51,
+            52
+          ],
+          "shape": 3,
+          "slot_index": 0
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": null,
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Load Infinite Parallax Step Start 🔹Elimination Nodes🔹"
+      },
+      "widgets_values": [
+        "rgb-background-digital-H736px_W736px-jpg-26.jpg"
+      ],
+      "color": "#46444a",
+      "bgcolor": "#323036"
+    },
+    {
+      "id": 41,
+      "type": "Infinite Parallax User Dict 🔹Elimination Nodes🔹",
+      "pos": [
+        -470,
+        650
+      ],
+      "size": {
+        "0": 315,
+        "1": 442
+      },
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "parallax_config",
+          "type": "parallax_config",
+          "links": [
+            53,
+            54,
+            55,
+            56
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Infinite Parallax User Dict 🔹Elimination Nodes🔹"
+      },
+      "widgets_values": [
+        "my-project",
+        100,
+        150,
+        6,
+        0.0337,
+        80,
+        60,
+        200,
+        190,
+        600,
+        240,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "#46444a",
+      "bgcolor": "#323036"
+    },
+    {
+      "id": 40,
+      "type": "Create and Composite Layer VideoClips 🔹Elimination Nodes🔹",
+      "pos": [
+        1010,
+        1150
+      ],
+      "size": [
+        310,
+        130
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "parallax_config",
+          "type": "parallax_config",
+          "link": 53
+        }
+      ],
+      "outputs": [
+        {
+          "name": "video_path",
+          "type": "STRING",
+          "links": [
+            57
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Create and Composite Layer VideoClips 🔹Elimination Nodes🔹"
+      },
+      "color": "#46444a",
+      "bgcolor": "#323036"
+    },
+    {
+      "id": 42,
+      "type": "ShowText|pysssss",
+      "pos": [
+        1360,
+        1150
+      ],
+      "size": [
+        315,
+        58
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "link": 57,
+          "widget": {
+            "name": "text"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": null,
+          "shape": 6
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ShowText|pysssss"
+      },
+      "widgets_values": [
+        ""
+      ]
+    },
+    {
       "id": 35,
       "type": "Note",
       "pos": [
         -550,
         110
       ],
-      "size": [
-        810,
-        70
-      ],
+      "size": {
+        "0": 810,
+        "1": 70
+      },
       "flags": {},
       "order": 2,
       "mode": 0,
@@ -804,14 +886,6 @@
       "IMAGE"
     ],
     [
-      40,
-      32,
-      0,
-      33,
-      1,
-      "parallax_config"
-    ],
-    [
       42,
       33,
       0,
@@ -844,14 +918,6 @@
       "IMAGE"
     ],
     [
-      46,
-      32,
-      0,
-      34,
-      1,
-      "parallax_config"
-    ],
-    [
       47,
       19,
       0,
@@ -868,14 +934,6 @@
       "IMAGE"
     ],
     [
-      50,
-      32,
-      0,
-      38,
-      0,
-      "parallax_config"
-    ],
-    [
       51,
       38,
       0,
@@ -890,6 +948,46 @@
       39,
       0,
       "IMAGE"
+    ],
+    [
+      53,
+      41,
+      0,
+      40,
+      0,
+      "parallax_config"
+    ],
+    [
+      54,
+      41,
+      0,
+      33,
+      1,
+      "parallax_config"
+    ],
+    [
+      55,
+      41,
+      0,
+      34,
+      1,
+      "parallax_config"
+    ],
+    [
+      56,
+      41,
+      0,
+      38,
+      0,
+      "parallax_config"
+    ],
+    [
+      57,
+      40,
+      0,
+      42,
+      0,
+      "STRING"
     ]
   ],
   "groups": [],

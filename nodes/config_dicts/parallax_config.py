@@ -2,7 +2,6 @@
 
 pyenv local 3.10.6"""
 
-import torch
 import json
 from typing import Tuple, Union
 
@@ -10,6 +9,7 @@ from typing import Tuple, Union
 class ParallaxConfigDictNode:
     CATEGORY = "image"
     RETURN_TYPES = ("parallax_config",)
+    RETURN_NAMES = ("parallax_config",)
     FUNCTION = "main"
 
     @classmethod
@@ -37,9 +37,9 @@ class ParallaxConfigDictNode:
                 "num_iterations": (
                     "INT",
                     {
-                        "default": 10,
+                        "default": 12,
                         "min": 3,
-                        "max": 50,
+                        "max": 45,
                         "step": 1,
                         "display": "slider",
                     },
@@ -47,11 +47,11 @@ class ParallaxConfigDictNode:
                 "fps": (
                     "FLOAT",
                     {
-                        "default": 1.0,
-                        "min": .001,
-                        "max": 30.002,
-                        "step": .0001,
-                        "round" : .0001,
+                        "default": 0.125,
+                        "min": 0.001,
+                        "max": 5.00001,
+                        "step": 0.00001,
+                        "round": 0.00001,
                         "display": "slider",
                     },
                 ),
@@ -132,8 +132,8 @@ class ParallaxConfigDictNode:
         unique_project_name: str,
         l1_height: int,
         l1_velocity: float,
-        num_iterations: int = 10,
-        fps: float = .020,
+        num_iterations: int = 12,
+        fps: float = 0.125,
         l2_height: Union[int, None] = None,
         l2_velocity: Union[float, None] = None,
         l3_height: Union[int, None] = None,
@@ -148,9 +148,7 @@ class ParallaxConfigDictNode:
         l7_velocity: Union[float, None] = None,
     ) -> Tuple[str, ...]:
 
-        config = {
-            # "unique_project_name": unique_project_name,
-        }
+        config = {}
 
         layers = [
             {

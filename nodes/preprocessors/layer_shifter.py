@@ -9,24 +9,20 @@ from typing import Tuple
 
 try:
     from ...utils.tensor_utils import TensorImgUtils
-    from ...equalize.equalize_size import SizeMatcher
-    from ...segment.chromakey import ChromaKey
 except ImportError:
     import sys
     import os
 
     sys.path.append(os.path.dirname(os.path.dirname(__file__)))
     from utils.tensor_utils import TensorImgUtils
-    from equalize.equalize_size import SizeMatcher
-    from segment.chromakey import ChromaKey
 
 
 class LayerShifterNode:
-    CATEGORY = "image"
     RETURN_TYPES = (
         "IMAGE",
         "MASK",
     )
+    RETURN_NAMES = ("shifted_image", "shifted_mask")
     FUNCTION = "main"
 
     @classmethod
@@ -49,7 +45,7 @@ class LayerShifterNode:
     def main(
         self,
         input_image: torch.Tensor,  # [Batch_n, H, W, 3-channel]
-        parallax_config: str,  # json string 
+        parallax_config: str,  # json string
     ) -> Tuple[torch.Tensor, ...]:
 
         self.TRANSPARENT = 0
@@ -65,9 +61,6 @@ class LayerShifterNode:
         mask_tensor = torch.zeros(
             (input_image.shape[0], input_image.shape[1]), dtype=torch.uint8
         )
-
-        print(f"LayerShifterNode: input_image.shape: {input_image.shape}")
-        print(f"LayerShifterNode: parallax_config: {parallax_config}")
 
         max_height = input_image.shape[0]
         for layer in parallax_config["layers"]:
@@ -95,9 +88,6 @@ class LayerShifterNode:
                 break
 
         input_image = TensorImgUtils.test_unsqueeze_batch(input_image)
-
-        print(f"LayerShifterNode: input_image.shape: {input_image.shape}")
-        print(f"LayerShifterNode: mask_tensor.shape: {mask_tensor.shape}")
 
         return (
             input_image,
