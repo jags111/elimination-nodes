@@ -9,10 +9,10 @@
     - [*NODE* — Paste Cutout on Base Image](#node--paste-cutout-on-base-image)
     - [*NODE* — Infer Alpha from RGB Image](#node--infer-alpha-from-rgb-image)
   - [Infinite Parallax Nodes](#infinite-parallax-nodes)
-    - [*NODE* — Layer Shifter for Parallax Outpainting](#node--layer-shifter-for-parallax-outpainting)
     - [*NODE* — Parallax Config](#node--parallax-config)
-    - [*NODE* — Save Parallax Frame](#node--save-parallax-frame)
     - [*NODE* — Load Parallax Frame](#node--load-parallax-frame)
+    - [*NODE* — Layer Shifter for Parallax Outpainting](#node--layer-shifter-for-parallax-outpainting)
+    - [*NODE* — Save Parallax Frame](#node--save-parallax-frame)
     - [*NODE* — Create Parallax Video](#node--create-parallax-video)
     - [*NODE* — Infinite Parallax - 3D Parallax](#node--infinite-parallax---3d-parallax)
   - [Utility Nodes](#utility-nodes)
@@ -63,16 +63,40 @@ The custom node highlighted is red in the screenshots
 
 ## Infinite Parallax Nodes
 
-### *NODE* — Layer Shifter for Parallax Outpainting
-
 ### *NODE* — Parallax Config
 
-### *NODE* — Save Parallax Frame
+- All config options for a parallax video, passes to other parallax nodes as json string
 
 ### *NODE* — Load Parallax Frame
 
+![load-parallax-frame-demo_pic](wiki/wiki-pics/node-demos/load_parallax_frame-node.png)
+
+- Loads the most recent frame for the parallax video
+- If it's the first iteration, it uses the `start_image`
+- Allows for automated loopback
+
+### *NODE* — Layer Shifter for Parallax Outpainting
+
+![layer-shifter-for-parallax-outpainting-demo_pic](wiki/wiki-pics/node-demos/layer_shifter_for_parallax_outpainting-demo_pic.png)
+
+- Shifts each layer by its associated velocity
+  - The shifting wraps, to enable methods that would use the context of the region when inpainting
+- Creates mask for the shifted regions (for inpainting)
+
+
+### *NODE* — Save Parallax Frame
+
+![save-parallax-frame-demo_pic](wiki/wiki-pics/node-demos/save_parallax_frame-demo_pic.png)
+
+- Saves the intermediate frame from each iteration step, so the process of saving and organizing each iteration's output frame is all automated
+
 ### *NODE* — Create Parallax Video
 
+![create-parallax-video-demo_gif](wiki/wiki-pics/node-demos/create_parallax_video_node-demo_gif.gif)
+
+- After the set number of iterations is met, the animated parallax video is made
+- Each layer has its own panning speed, and the layer videos are stacked on top of each other
+- Object layers are recomposited as their own panning videos with associated alpha mask videos
 
 ### *NODE* — Infinite Parallax - 3D Parallax
 
