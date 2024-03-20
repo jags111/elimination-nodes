@@ -1,26 +1,37 @@
 
-Some nodes I created / am creating 🤗. I also wrote a ***[GUIDE](wiki/creating-custom-comfyui_nodes-guide.md)*** for creating custom nodes while I was learning.
 
 ----
 
 *Table of Contents:*
 
 - [Nodes](#nodes)
-  - [*NODE* — Paste Cutout on Base Image](#node--paste-cutout-on-base-image)
-  - [*NODE* — Infer Alpha from RGB Image](#node--infer-alpha-from-rgb-image)
-  - [*NODE* — Size Match Images/Masks](#node--size-match-imagesmasks)
+  - [Compositing Nodes](#compositing-nodes)
+    - [*NODE* — Paste Cutout on Base Image](#node--paste-cutout-on-base-image)
+    - [*NODE* — Infer Alpha from RGB Image](#node--infer-alpha-from-rgb-image)
+  - [Infinite Parallax Nodes](#infinite-parallax-nodes)
+    - [*NODE* — Layer Shifter for Parallax Outpainting](#node--layer-shifter-for-parallax-outpainting)
+    - [*NODE* — Parallax Config](#node--parallax-config)
+    - [*NODE* — Save Parallax Frame](#node--save-parallax-frame)
+    - [*NODE* — Load Parallax Frame](#node--load-parallax-frame)
+    - [*NODE* — Create Parallax Video](#node--create-parallax-video)
+    - [*NODE* — Infinite Parallax - 3D Parallax](#node--infinite-parallax---3d-parallax)
+  - [Utility Nodes](#utility-nodes)
+    - [*NODE* — Size Match Images/Masks](#node--size-match-imagesmasks)
 - [To-do](#to-do)
 
 
 &nbsp;
 
+Custom [ComfyUI](https://github.com/comfyanonymous/ComfyUI) Nodes 🤗. I also wrote a ***[GUIDE](wiki/creating-custom-comfyui_nodes-guide.md)*** for creating custom nodes.
 
 
 # Nodes
 
 The custom node highlighted is red in the screenshots
 
-## *NODE* — Paste Cutout on Base Image
+## Compositing Nodes
+
+### *NODE* — Paste Cutout on Base Image
 
 - Automatically matches size of two images with various size matching methods
 - If the cutout doesn't have an alpha channel (not really a cutout), the bg is automatically inferred and made transparent
@@ -40,7 +51,7 @@ The custom node highlighted is red in the screenshots
 ![paste-cutout-on-base-image-demo_pic-with_segmentation](wiki/wiki-pics/node-demos/paste-cutout-on-base-image-with_segmentation-demo_pic.png)
 
 
-## *NODE* — Infer Alpha from RGB Image
+### *NODE* — Infer Alpha from RGB Image
 
 - Chromakeying, remove white bg, remove black bg, remove neutrals, remove non-neutrals, remove by color
 - Invert option
@@ -50,12 +61,28 @@ The custom node highlighted is red in the screenshots
 ![infer-alpha-from-rgb-image-demo_pic](wiki/wiki-pics/node-demos/infer_alpha_from_rgb_image-demo.png)
 
 
-## *NODE* — Size Match Images/Masks
+## Infinite Parallax Nodes
+
+### *NODE* — Layer Shifter for Parallax Outpainting
+
+### *NODE* — Parallax Config
+
+### *NODE* — Save Parallax Frame
+
+### *NODE* — Load Parallax Frame
+
+### *NODE* — Create Parallax Video
+
+
+### *NODE* — Infinite Parallax - 3D Parallax
+
+## Utility Nodes
+
+### *NODE* — Size Match Images/Masks
 
 - Automatically matches size of two images with various size matching methods
 
-
 # To-do
 
-- match size node tests with test tool
-- more tests
+- tests
+  - match size node tests

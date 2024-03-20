@@ -20,20 +20,6 @@ class ParallaxConfigDictNode:
                     "STRING",
                     {"default": "my-project", "multiline": False},
                 ),
-                "l1_height": (
-                    "INT",
-                    {
-                        "min": 0,
-                        "default": 100,
-                        "step": 10,
-                    },
-                ),
-                "l1_velocity": (
-                    "FLOAT",
-                    {"default": 150.0, "min": 0.0, "round": 0.01, "step": 5},
-                ),
-            },
-            "optional": {
                 "num_iterations": (
                     "INT",
                     {
@@ -55,12 +41,26 @@ class ParallaxConfigDictNode:
                         "display": "slider",
                     },
                 ),
+                "l1_height": (
+                    "INT",
+                    {
+                        "min": 0,
+                        "default": 100,
+                        "step": 1,
+                    },
+                ),
+                "l1_velocity": (
+                    "FLOAT",
+                    {"default": 150.0, "min": 0.0, "round": 0.01, "step": 5},
+                ),
+            },
+            "optional": {
                 "l2_height": (
                     "INT",
                     {
                         "min": 0,
                         "default": 80,
-                        "step": 10,
+                        "step": 1,
                     },
                 ),
                 "l2_velocity": (
@@ -72,7 +72,7 @@ class ParallaxConfigDictNode:
                     {
                         "min": 0,
                         "default": 200,
-                        "step": 10,
+                        "step": 1,
                     },
                 ),
                 "l3_velocity": (
@@ -84,7 +84,7 @@ class ParallaxConfigDictNode:
                     {
                         "min": 0,
                         "default": 600,
-                        "step": 10,
+                        "step": 1,
                     },
                 ),
                 "l4_velocity": (
@@ -95,7 +95,7 @@ class ParallaxConfigDictNode:
                     "INT",
                     {
                         "min": 0,
-                        "step": 10,
+                        "step": 1,
                     },
                 ),
                 "l5_velocity": (
@@ -106,7 +106,7 @@ class ParallaxConfigDictNode:
                     "INT",
                     {
                         "min": 0,
-                        "step": 10,
+                        "step": 1,
                     },
                 ),
                 "l6_velocity": (
@@ -117,7 +117,7 @@ class ParallaxConfigDictNode:
                     "INT",
                     {
                         "min": 0,
-                        "step": 10,
+                        "step": 1,
                     },
                 ),
                 "l7_velocity": (
@@ -130,10 +130,10 @@ class ParallaxConfigDictNode:
     def main(
         self,
         unique_project_name: str,
+        num_iterations: int,
+        fps: float,
         l1_height: int,
         l1_velocity: float,
-        num_iterations: int = 12,
-        fps: float = 0.125,
         l2_height: Union[int, None] = None,
         l2_velocity: Union[float, None] = None,
         l3_height: Union[int, None] = None,

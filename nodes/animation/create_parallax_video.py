@@ -12,6 +12,8 @@ from moviepy.editor import VideoClip, ImageClip, CompositeVideoClip
 from termcolor import colored
 from typing import Tuple
 
+import folder_paths
+
 
 class LayerFramesToParallaxVideoNode:
     @classmethod
@@ -24,7 +26,7 @@ class LayerFramesToParallaxVideoNode:
         }
 
     RETURN_TYPES = ("STRING",)
-    RETURN_NAMES = ("video_path",)
+    RETURN_NAMES = ("video",)
     FUNCTION = "main"
     OUTPUT_NODE = True
 
@@ -82,34 +84,42 @@ class LayerFramesToParallaxVideoNode:
         video_ct = len([f for f in os.listdir(output_path) if "parallax_video" in f])
         video_path = os.path.join(output_path, f"parallax_video_{video_ct}.mp4")
 
-        video_composite.write_videofile(
-            video_path,
-            codec="libx264",
-            fps=30,
-            preset="slow",
-            ffmpeg_params=(
-                [
-                    "-crf",
-                    "18",
-                    "-b:v",
-                    "2M",
-                    "-pix_fmt",
-                    "yuv420p",
-                    "-profile:v",
-                    "high",
-                    "-vf",
-                    "scale=1920:1080",
-                ]
-            ),
-            threads=12,
-        )
+        def write_video(path):
+            video_composite.write_videofile(
+                path,
+                codec="libx264",
+                fps=30,
+                preset="slow",
+                ffmpeg_params=(
+                    [
+                        "-crf",
+                        "18",
+                        "-b:v",
+                        "2M",
+                        "-pix_fmt",
+                        "yuv420p",
+                        "-profile:v",
+                        "high",
+                        "-vf",
+                        "scale=1920:1080",
+                    ]
+                ),
+                threads=12,
+            )
+        
+        # Write to project dir
+        write_video(video_path)
+        # Write to inputs dir
+        inputs_path = os.path.join(folder_paths.get_input_directory(), f"parallax_video_{video_ct}.mp4")
+        write_video(inputs_path)
 
         subprocess.Popen(
             ["xdg-open", video_path],
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
         )
-        return video_path
+
+        return inputs_path
 
     def create_layer_videoclip(self, layer_config, layer_index):
         # Get the layer height and velocity

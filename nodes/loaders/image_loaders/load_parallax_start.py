@@ -7,10 +7,19 @@ import json
 from PIL import Image, ImageOps
 import numpy as np
 import torch
+from torchvision import transforms
 
-from typing import Tuple
+from typing import Tuple, Union
 
 import folder_paths
+
+try:
+    from ....utils.tensor_utils import TensorImgUtils
+except ImportError:
+    import sys
+
+    sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+    from utils.tensor_utils import TensorImgUtils
 
 
 class LoadParallaxStartNode:
@@ -30,7 +39,7 @@ class LoadParallaxStartNode:
                 "parallax_config": ("parallax_config",),
             },
             "optional": {
-                "image_path": (sorted(files), {"image_upload": True}),
+                "start_image": ("IMAGE",),
             },
         }
 
@@ -42,22 +51,31 @@ class LoadParallaxStartNode:
     def load_image(
         self,
         parallax_config: str,  # json string
-        image_path: str = None,
+        start_image: Union[torch.Tensor, None],  # [Batch_n, H, W, 3-channel]
     ) -> Tuple[torch.Tensor, ...]:
 
         self.__set_config(parallax_config)
 
-        # Use most recent frame if it exists, otherwise use the input image (first iteration of the project)
+        # Use most recent frame if it exists (this isn't the first iteration of the project)
         if self.get_project_frame_ct() == 0:
-            cur_image_path = folder_paths.get_annotated_filepath(image_path)
+            start_img_pil = transforms.ToPILImage()(
+                TensorImgUtils.convert_to_type(start_image, "CHW")
+            )
             # Create the project directory, and save the loaded image as the start frame
             output_path = self.__get_parallax_proj_dirpath()
             os.makedirs(output_path, exist_ok=True)
-            Image.open(cur_image_path).save(os.path.join(output_path, "original.png"))
-        else:
-            cur_image_path = self.try_get_start_img()
+            start_img_pil.save(os.path.join(output_path, "original.png"))
 
-        img = Image.open(cur_image_path)
+            mask = torch.zeros(
+                (start_img_pil.height, start_img_pil.width),
+                dtype=torch.float32,
+                device="cpu",
+            )
+            mask = mask.unsqueeze(0)
+            start_image = TensorImgUtils.convert_to_type(start_image, "BHWC")
+            return (start_image, mask)
+
+        img = Image.open(self.try_get_start_img())
 
         # If the image has exif data, rotate it to the correct orientation and remove the exif data
         img_raw = ImageOps.exif_transpose(img)
