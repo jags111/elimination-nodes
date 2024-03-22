@@ -16,11 +16,12 @@
     - [*NODE* — Save Parallax Frame](#node--save-parallax-frame)
     - [*NODE* — Create Parallax Video](#node--create-parallax-video)
     - [Video Post-Processing Nodes](#video-post-processing-nodes)
-    - [*NODE* — Add Ambiance Sound by Layer Distance](#node--add-ambiance-sound-by-layer-distance)
-    - [*NODE* — Add Music from Prompt](#node--add-music-from-prompt)
+      - [*NODE* — Add Ambiance Sound by Layer Distance](#node--add-ambiance-sound-by-layer-distance)
+      - [*NODE* — Add Music from Prompt](#node--add-music-from-prompt)
   - [Infinite Zoom Nodes](#infinite-zoom-nodes)
-    - [*NODE* — Load Most Recent Image in Folder](#node--load-most-recent-image-in-folder)
     - [*NODE* — Shrink and Pad for Outpainting](#node--shrink-and-pad-for-outpainting)
+    - [*NODE* — Load Most Recent Image in Folder](#node--load-most-recent-image-in-folder)
+    - [*NODE* — Create Infinite Zoom Video](#node--create-infinite-zoom-video)
   - [Utility Nodes](#utility-nodes)
     - [*NODE* — Size Match Images/Masks](#node--size-match-imagesmasks)
 - [To-do](#to-do)
@@ -28,7 +29,7 @@
 
 &nbsp;
 
-Custom [ComfyUI](https://github.com/comfyanonymous/ComfyUI) Nodes 🤗. I also wrote a ***[GUIDE](wiki/creating-custom-comfyui_nodes-guide.md)*** for creating custom nodes.
+Custom [ComfyUI](https://github.com/comfyanonymous/ComfyUI) Nodes 🤗. My ***[GUIDE](wiki/creating-custom-comfyui_nodes-guide.md)*** for creating custom nodes, work in progress.
 
 
 # Nodes
@@ -113,22 +114,32 @@ The custom node highlighted is red in the screenshots
 
 ### Video Post-Processing Nodes
 
-### *NODE* — Add Ambiance Sound by Layer Distance
+#### *NODE* — Add Ambiance Sound by Layer Distance
 
-### *NODE* — Add Music from Prompt
+#### *NODE* — Add Music from Prompt
 
 ## Infinite Zoom Nodes
 
+### *NODE* — Shrink and Pad for Outpainting
+
+![shrink-and-pad-for-outpainting-demo_pic](wiki/wiki-pics/node-demos/shrink_and_pad_for_outpainting-demo_pic.png)
+
+- Prioritizes aspect ratio over user specification, when they would conflict
+
 ### *NODE* — Load Most Recent Image in Folder
 
+![load-most-recent-image-in-folder-demo_pic](wiki/wiki-pics/node-demos/load_most_recent_image_in_folder-demo_pic.png)
+
 - Allows for iterative workflows where the start image is the end image of the previous iteration, whatever the workflow is
+- Can just queue up a ton of iterations at once, and/or observe each output then delete that output from the folder to redo that step, without interrupting the process or having to start over
+  - Since it gets the most recent file, you can just delete all files leading up to the point where something went wrong, and start from that leaf
 - Optional `start_image` input field for the first iteration, when the folder is empty
   - After the first iteration, and the first new image is generated & saved, the `start_image` is ignored and that new image is used, and so on
 - Sorting options: `Most Recent`, `Oldest`
 
-### *NODE* — Shrink and Pad for Outpainting
+### *NODE* — Create Infinite Zoom Video
 
-- 
+- ...
 
 ## Utility Nodes
 
