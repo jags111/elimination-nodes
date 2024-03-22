@@ -11,10 +11,13 @@
   - [Infinite Parallax Nodes](#infinite-parallax-nodes)
     - [*NODE* — Parallax Config](#node--parallax-config)
     - [*NODE* — Load Parallax Frame](#node--load-parallax-frame)
+    - [*NODE* — Save Parallax Object Layers](#node--save-parallax-object-layers)
     - [*NODE* — Layer Shifter for Parallax Outpainting](#node--layer-shifter-for-parallax-outpainting)
     - [*NODE* — Save Parallax Frame](#node--save-parallax-frame)
     - [*NODE* — Create Parallax Video](#node--create-parallax-video)
-    - [*NODE* — Infinite Parallax - 3D Parallax](#node--infinite-parallax---3d-parallax)
+    - [Video Post-Processing Nodes](#video-post-processing-nodes)
+    - [*NODE* — Add Ambiance Sound by Layer Distance](#node--add-ambiance-sound-by-layer-distance)
+    - [*NODE* — Add Music from Prompt](#node--add-music-from-prompt)
   - [Utility Nodes](#utility-nodes)
     - [*NODE* — Size Match Images/Masks](#node--size-match-imagesmasks)
 - [To-do](#to-do)
@@ -75,6 +78,13 @@ The custom node highlighted is red in the screenshots
 - If it's the first iteration, it uses the `start_image`
 - Allows for automated loopback
 
+### *NODE* — Save Parallax Object Layers
+
+- Only segments and saves object layers if first iteration of project
+- Determines lowest layer breakpoint threshold
+- Packages all data into config object, which is passed to *Create Parallax Video* node
+
+
 ### *NODE* — Layer Shifter for Parallax Outpainting
 
 ![layer-shifter-for-parallax-outpainting-demo_pic](wiki/wiki-pics/node-demos/layer_shifter_for_parallax_outpainting-demo_pic.png)
@@ -98,7 +108,12 @@ The custom node highlighted is red in the screenshots
 - Each layer has its own panning speed, and the layer videos are stacked on top of each other
 - Object layers are recomposited as their own panning videos with associated alpha mask videos
 
-### *NODE* — Infinite Parallax - 3D Parallax
+### Video Post-Processing Nodes
+
+### *NODE* — Add Ambiance Sound by Layer Distance
+
+### *NODE* — Add Music from Prompt
+
 
 ## Utility Nodes
 
@@ -108,5 +123,13 @@ The custom node highlighted is red in the screenshots
 
 # To-do
 
+- parallax
+  - iterative object removal -> save -> re-composite with lowest breakpoint layer velocity
+    - idea: "pad region" is a horizontal space between each layer border, such that it overlaps some small number of pixels with both of the connected layers, like a chain link. The chain link moves at the average velocity fo the connecter layers. but instead of iterative inpainting of the shifted region, the entire pad region is re-inpainted after each step. During final video compositing, the different ierations of the pad region are perpetually cross faded. It may also be best to not use any type of velocity at all and keep the pad region static, only having motion as a result of cross-fading
+  - template workflow -> share
+    - iterative auto prompt prepend. maybe. with exclusion list if so
+    - frame interpolation
+    - video post-processing
+    - remove unecessary custom nodes
 - tests
   - match size node tests
