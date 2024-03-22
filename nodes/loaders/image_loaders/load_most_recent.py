@@ -29,9 +29,6 @@ except ImportError:
 
 
 class LoadMostRecentInFolderNode:
-    def __init__(self):
-        self.start_frame_keyword = "start"
-
     @classmethod
     def INPUT_TYPES(s):
         return {
@@ -57,8 +54,9 @@ class LoadMostRecentInFolderNode:
             },
         }
 
-    RETURN_TYPES = ("IMAGE", "MASK")
+    RETURN_TYPES = ("IMAGE", "MASK", "STRING")
     FUNCTION = "load_image"
+    RETURN_NAMES = ("IMAGE", "MASK", "folder_path_string")
 
     def load_image(
         self,
@@ -73,6 +71,11 @@ class LoadMostRecentInFolderNode:
 
         candidate_files = self.__get_candidate_files()
 
+        print(f"Found {len(candidate_files)} files in {self.folder_abs_path}\n")
+        for i, f in enumerate(candidate_files):
+            print(f"File {i}: {f}")
+        print("\n")
+
         # If no files are found, load the start_image instead
         if len(candidate_files) == 0:
             start_img_pil = transforms.ToPILImage()(
@@ -81,7 +84,7 @@ class LoadMostRecentInFolderNode:
             # Create the project directory, and save the loaded image as the start frame
             output_path = self.folder_abs_path
             os.makedirs(output_path, exist_ok=True)
-            start_img_pil.save(os.path.join(output_path, "original.png"))
+            start_img_pil.save(os.path.join(output_path, "z9original9.png"))
 
             mask = torch.zeros(
                 (start_img_pil.height, start_img_pil.width),
@@ -90,7 +93,7 @@ class LoadMostRecentInFolderNode:
             )
             mask = mask.unsqueeze(0)
             start_image = TensorImgUtils.convert_to_type(start_image, "BHWC")
-            return (start_image, mask)
+            return (start_image, mask, self.folder_abs_path)
 
         img = Image.open(
             os.path.join(self.folder_abs_path, candidate_files[self.target_index])
@@ -123,7 +126,7 @@ class LoadMostRecentInFolderNode:
             None,
         ]  # Add a batch dimension, new format is [B, H, W, C]
 
-        return (rgb_image, mask)
+        return (rgb_image, mask, self.folder_abs_path)
 
     def __get_candidate_files(self):
         if not os.path.exists(self.folder_abs_path):
@@ -145,17 +148,21 @@ class LoadMostRecentInFolderNode:
             f for f in os.listdir(self.folder_abs_path) if self.file_type in f
         ]
         try:
-            self.cadidate_files = sorted(
+            for f in candidate_files:
+                print(f"File: {f}, Modified: {os.path.getmtime(os.path.join(self.folder_abs_path, f))}")
+            candidate_files = sorted(
                 candidate_files,
                 key=lambda f: os.path.getmtime(os.path.join(self.folder_abs_path, f)),
             )
         except OSError:
-            self.candidate_files = sorted(candidate_files)
+            print("Could not get the modified time of the files.")
+            print(OSError)
+            candidate_files = sorted(candidate_files)
 
         return candidate_files
 
     def get_candidate_files_ct(self):
-        return len(self.__get_candidate_files())
+        return len([f for f in os.listdir(self.folder_abs_path) if self.file_type in f])
 
     @classmethod
     def IS_CHANGED(s, image):

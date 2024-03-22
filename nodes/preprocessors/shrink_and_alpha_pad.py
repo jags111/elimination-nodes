@@ -23,7 +23,7 @@ class ShrinkAndAlphaPadNode:
         "IMAGE",
         "MASK",
     )
-    RETURN_NAMES = ("shrunk_image", "mask_for_outpainting")
+    RETURN_NAMES = ("shrunk_padded_image", "mask_for_outpainting")
     FUNCTION = "main"
 
     @classmethod
@@ -138,10 +138,10 @@ class ShrinkAndAlphaPadNode:
         output_image[top_margin:-bottom_margin, left_margin:-right_margin, :] = shrunk_image
         
         # Apply feathering to the mask only
-        top_margin = max(0, top_margin - feather_px)
-        bottom_margin = min(input_image.shape[0], bottom_margin + feather_px)
-        left_margin = max(0, left_margin - feather_px)
-        right_margin = min(input_image.shape[1], right_margin + feather_px)
+        top_margin = max(0, top_margin + feather_px) // 2
+        bottom_margin = max(0, bottom_margin + feather_px // 2)
+        left_margin = max(0, left_margin + feather_px // 2)
+        right_margin = max(0, right_margin + feather_px // 2)
         mask_tensor[top_margin:-bottom_margin, left_margin:-right_margin] = self.TRANSPARENT
 
         output_image = TensorImgUtils.test_unsqueeze_batch(output_image)

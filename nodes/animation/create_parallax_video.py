@@ -26,7 +26,7 @@ class LayerFramesToParallaxVideoNode:
         }
 
     RETURN_TYPES = ("STRING",)
-    RETURN_NAMES = ("video",)
+    RETURN_NAMES = ("saved_video_path_str",)
     FUNCTION = "main"
     OUTPUT_NODE = True
 
@@ -109,10 +109,11 @@ class LayerFramesToParallaxVideoNode:
         
         # Write to project dir
         write_video(video_path)
-        # Write to inputs dir
+
+
+        # TODO: Remove writing to input dir and opening with subprocess - for testing
         inputs_path = os.path.join(folder_paths.get_input_directory(), f"parallax_video_{video_ct}.mp4")
         write_video(inputs_path)
-
         subprocess.Popen(
             ["xdg-open", video_path],
             stdout=subprocess.DEVNULL,
