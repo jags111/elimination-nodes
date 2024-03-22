@@ -63,3 +63,27 @@ PICTURE_EXTENSION_LIST = [
     ".thm",
     ".yuv",
 ]
+
+TEXT_EXTENSION_LIST = [
+    ".txt",
+    ".json",
+    ".csv",
+    ".xml",
+    ".yaml",
+    ".yml",
+    ".html",
+    ".md",
+    ".rst",
+    ".log",
+    ".pdf",
+    ".doc",
+    ".docx",
+    ".odt",
+    ".rtf",
+    ".tex",
+    ".wik",
+    ".ini",
+    ".conf",
+    ".cfg",
+    ".less",
+]

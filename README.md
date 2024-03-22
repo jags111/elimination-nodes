@@ -18,6 +18,9 @@
     - [Video Post-Processing Nodes](#video-post-processing-nodes)
     - [*NODE* — Add Ambiance Sound by Layer Distance](#node--add-ambiance-sound-by-layer-distance)
     - [*NODE* — Add Music from Prompt](#node--add-music-from-prompt)
+  - [Infinite Zoom Nodes](#infinite-zoom-nodes)
+    - [*NODE* — Load Most Recent Image in Folder](#node--load-most-recent-image-in-folder)
+    - [*NODE* — Shrink and Pad for Outpainting](#node--shrink-and-pad-for-outpainting)
   - [Utility Nodes](#utility-nodes)
     - [*NODE* — Size Match Images/Masks](#node--size-match-imagesmasks)
 - [To-do](#to-do)
@@ -114,6 +117,18 @@ The custom node highlighted is red in the screenshots
 
 ### *NODE* — Add Music from Prompt
 
+## Infinite Zoom Nodes
+
+### *NODE* — Load Most Recent Image in Folder
+
+- Allows for iterative workflows where the start image is the end image of the previous iteration, whatever the workflow is
+- Optional `start_image` input field for the first iteration, when the folder is empty
+  - After the first iteration, and the first new image is generated & saved, the `start_image` is ignored and that new image is used, and so on
+- Sorting options: `Most Recent`, `Oldest`
+
+### *NODE* — Shrink and Pad for Outpainting
+
+- 
 
 ## Utility Nodes
 

@@ -11,7 +11,6 @@ from torchvision import transforms
 
 from typing import Tuple, Union
 
-import folder_paths
 
 try:
     from ....utils.tensor_utils import TensorImgUtils
@@ -28,12 +27,6 @@ class LoadParallaxStartNode:
 
     @classmethod
     def INPUT_TYPES(s):
-        input_dir = folder_paths.get_input_directory()
-        files = [
-            f
-            for f in os.listdir(input_dir)
-            if os.path.isfile(os.path.join(input_dir, f))
-        ]
         return {
             "required": {
                 "parallax_config": ("parallax_config",),

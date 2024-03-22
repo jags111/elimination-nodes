@@ -456,6 +456,7 @@ def INPUT_TYPES(s):
 
 ## Strings
 
+***String fields must have a default value***, and can be multiline.
 
 ```python
 class CLIPTextEncode:

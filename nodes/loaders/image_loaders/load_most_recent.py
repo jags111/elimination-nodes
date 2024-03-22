@@ -7,20 +7,25 @@ from PIL import Image, ImageOps
 import numpy as np
 import torch
 from torchvision import transforms
-
 from typing import Tuple, Union
-
-import folder_paths
 
 try:
     from ....utils.tensor_utils import TensorImgUtils
-    from ....constants import *
+    from ....constants import (
+        PICTURE_EXTENSION_LIST,
+        VIDEO_EXTENSION_LIST,
+        TEXT_EXTENSION_LIST,
+    )
 except ImportError:
     import sys
 
     sys.path.append(os.path.dirname(os.path.dirname(__file__)))
     from utils.tensor_utils import TensorImgUtils
-    from constants import *
+    from constants import (
+        PICTURE_EXTENSION_LIST,
+        VIDEO_EXTENSION_LIST,
+        TEXT_EXTENSION_LIST,
+    )
 
 
 class LoadMostRecentInFolderNode:
@@ -29,21 +34,25 @@ class LoadMostRecentInFolderNode:
 
     @classmethod
     def INPUT_TYPES(s):
-        input_dir = folder_paths.get_input_directory()
-        files = [
-            f
-            for f in os.listdir(input_dir)
-            if os.path.isfile(os.path.join(input_dir, f))
-        ]
         return {
             "required": {
-                "folder_abs_path": ("STRING",),
+                "folder_abs_path": (
+                    "STRING",
+                    {
+                        "default": "/absolute/path/to/folder",
+                        "multiline": False,
+                    },
+                ),
             },
             "optional": {
                 "start_image": ("IMAGE",),
                 "file_type": (
-                    PICTURE_EXTENSION_LIST + VIDEO_EXTENSION_LIST,
+                    PICTURE_EXTENSION_LIST + VIDEO_EXTENSION_LIST + TEXT_EXTENSION_LIST,
                     {"default": ".png"},
+                ),
+                "load": (
+                    "BOOLEAN",
+                    {"default": True, "label_on": "Most Recent", "label_off": "Oldest"},
                 ),
             },
         }
@@ -56,9 +65,11 @@ class LoadMostRecentInFolderNode:
         folder_abs_path: str,  # absolute path to folder
         start_image: Union[torch.Tensor, None],  # [Batch_n, H, W, 3-channel]
         file_type: str,
+        load: bool,
     ) -> Tuple[torch.Tensor, ...]:
         self.folder_abs_path = folder_abs_path
         self.file_type = file_type
+        self.target_index = -1 if load else 0
 
         candidate_files = self.__get_candidate_files()
 
@@ -81,7 +92,9 @@ class LoadMostRecentInFolderNode:
             start_image = TensorImgUtils.convert_to_type(start_image, "BHWC")
             return (start_image, mask)
 
-        img = Image.open(os.path.join(self.folder_abs_path, candidate_files[-1]))
+        img = Image.open(
+            os.path.join(self.folder_abs_path, candidate_files[self.target_index])
+        )
 
         # If the image has exif data, rotate it to the correct orientation and remove the exif data.
         img_raw = ImageOps.exif_transpose(img)
@@ -138,6 +151,8 @@ class LoadMostRecentInFolderNode:
             )
         except OSError:
             self.candidate_files = sorted(candidate_files)
+
+        return candidate_files
 
     def get_candidate_files_ct(self):
         return len(self.__get_candidate_files())

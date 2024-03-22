@@ -84,7 +84,7 @@ class ShrinkAndAlphaPadNode:
         input_image = TensorImgUtils.test_squeeze_batch(input_image)
 
         # Create mask Tensor.
-        mask_tensor = torch.zeros(
+        mask_tensor = torch.ones(
             (input_image.shape[0], input_image.shape[1]), dtype=torch.uint8
         )
 
@@ -142,7 +142,7 @@ class ShrinkAndAlphaPadNode:
         bottom_margin = min(input_image.shape[0], bottom_margin + feather_px)
         left_margin = max(0, left_margin - feather_px)
         right_margin = min(input_image.shape[1], right_margin + feather_px)
-        mask_tensor[top_margin:-bottom_margin, left_margin:-right_margin] = self.OPAQUE
+        mask_tensor[top_margin:-bottom_margin, left_margin:-right_margin] = self.TRANSPARENT
 
         output_image = TensorImgUtils.test_unsqueeze_batch(output_image)
         mask_tensor = TensorImgUtils.test_unsqueeze_batch(mask_tensor)
