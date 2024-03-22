@@ -10,6 +10,8 @@ from .nodes.config_dicts.parallax_config import *
 from .nodes.file_system.save_parallax_step import *
 from .nodes.loaders.image_loaders.load_parallax_start import *
 from .nodes.animation.create_parallax_video import *
+from .nodes.loaders.image_loaders.load_most_recent import *
+from .nodes.preprocessors.shrink_and_alpha_pad import *
 
 from .equalize import *
 from .segment import *
@@ -57,6 +59,13 @@ def _assign_class_mappings():
                 "Create Parallax Video",
                 "Create and Composite Layer VideoClips",
                 LayerFramesToParallaxVideoNode,
+            ),
+        ],
+        "Infinite Zoom": [
+            (
+                "Shrink and Pad for Outpainting",
+                "Shrink Inplace and Create Alpha Pad",
+                ShrinkAndAlphaPadNode,
             )
         ],
         "Composite": [
@@ -76,7 +85,13 @@ def _assign_class_mappings():
                 SizeMatchNode,
             ),
         ],
-        "Utils": [],
+        "Utils": [
+            (
+                "Load Most Recent Image in Folder",
+                "Load Filetype by Mtime",
+                LoadMostRecentInFolderNode,
+            )
+        ],
     }
 
     for node_category, node_mapping in class_mappings.items():
