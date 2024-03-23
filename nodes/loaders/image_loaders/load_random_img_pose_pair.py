@@ -6,6 +6,7 @@ import os
 from PIL import Image, ImageOps
 import numpy as np
 import torch
+import re
 from typing import Tuple
 import random
 import folder_paths
@@ -79,6 +80,13 @@ class LoadRandomImgPosePairNode:
                     PICTURE_EXTENSION_LIST + VIDEO_EXTENSION_LIST + TEXT_EXTENSION_LIST,
                     {"default": ".png"},
                 ),
+                "alternate_file_type": (
+                    PICTURE_EXTENSION_LIST
+                    + VIDEO_EXTENSION_LIST
+                    + TEXT_EXTENSION_LIST
+                    + [""],
+                    {"default": ".jpg"},
+                ),
             },
         }
 
@@ -100,9 +108,19 @@ class LoadRandomImgPosePairNode:
         folder_abs_path: str,  # absolute path to folder
         folder: bool,  # Custom Folder, Default Input Folder
         file_type: str,
+        alternate_file_type: str,
     ) -> Tuple[torch.Tensor, ...]:
         self.used_indices = []
-        self.file_type = file_type
+
+        self.valid_match_extensions = set()
+        for match_ext in [file_type, alternate_file_type]:
+            if match_ext:
+                self.valid_match_extensions.add(match_ext)
+        if "jpg" in self.valid_match_extensions:
+            self.valid_match_extensions.add("jpeg")
+        if "jpeg" in self.valid_match_extensions:
+            self.valid_match_extensions.add("jpg")
+
         if folder_abs_path == "/absolute/path/to/folder" or not folder:
             self.folder_abs_path = folder_paths.get_input_directory()
         else:
@@ -117,6 +135,7 @@ class LoadRandomImgPosePairNode:
             target_index = random.randint(
                 0, min(len(pose_candidates), len(img_candidates)) - 1
             )
+            self.used_indices.append(target_index)
         elif select_method == "random no repeats":
             target_index = random.choice(
                 [
@@ -128,6 +147,7 @@ class LoadRandomImgPosePairNode:
             self.used_indices.append(target_index)
         elif select_method == "most recent":
             target_index = -1
+            self.used_indices.append(target_index)
         elif select_method == "iterate forward":
             target_index = len(self.used_indices)
             self.used_indices.append(target_index)
@@ -141,10 +161,32 @@ class LoadRandomImgPosePairNode:
         img_path = os.path.join(self.folder_abs_path, img_candidates[target_index])
         print(colored(f"Image Path: {img_path}", "light_red"))
 
+        def extract_index(filename):
+            pattern = r'(\d+)(?=\D*$)'
+            matches = re.findall(pattern, filename)
+            if matches:
+                return int(matches[0])
+            return False
+
+        # Try to get the index from the filename.
+        try:
+            pose_image_fi_index = extract_index(pose_candidates[target_index])
+            img_image_fi_index = extract_index(img_candidates[target_index])
+            if pose_image_fi_index and img_image_fi_index:
+                if pose_image_fi_index != img_image_fi_index:
+                    img_path = img_path.replace(
+                        str(img_image_fi_index), str(pose_image_fi_index)
+                    )
+        except IndexError:
+            pass
+
         image, image_mask = self.load_image(img_path)
         pose_image, pose_image_mask = self.load_image(pose_path)
 
         return (image, image_mask, pose_image, pose_image_mask, f"{target_index}")
+
+    def __match_file(self, filename):
+        return any([filename.endswith(ext) for ext in self.valid_match_extensions])
 
     def load_image(self, img):
         img = Image.open(img)
@@ -197,7 +239,7 @@ class LoadRandomImgPosePairNode:
 
     def __get_candidate_files(self):
         candidate_files = [
-            f for f in os.listdir(self.folder_abs_path) if self.file_type in f
+            f for f in os.listdir(self.folder_abs_path) if self.__match_file(f)
         ]
         try:
             candidate_files = sorted(
