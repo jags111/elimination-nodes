@@ -12,6 +12,7 @@ from .nodes.loaders.image_loaders.load_parallax_start import *
 from .nodes.animation.create_parallax_video import *
 from .nodes.loaders.image_loaders.load_most_recent import *
 from .nodes.preprocessors.shrink_and_alpha_pad import *
+from .nodes.loaders.image_loaders.load_random_img_pose_pair import *
 
 from .equalize import *
 from .segment import *
@@ -90,7 +91,12 @@ def _assign_class_mappings():
                 "Load Most Recent Image in Folder",
                 "Load Filetype by Mtime",
                 LoadMostRecentInFolderNode,
-            )
+            ),
+            (
+                "Load Random Image-Pose Pair",
+                "Load Random Image and Pose",
+                LoadRandomImgPosePairNode,
+            ),
         ],
     }
 
