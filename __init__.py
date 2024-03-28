@@ -32,40 +32,44 @@ def _assign_class_mappings():
                 reference to the node class
             )
         ]
+
+    The category name will replace each node class's CATEGORY attribute.
+    The backend name will be appended with the nobe_library_name.
     """
-    node_name_suffix = "🔹Elimination Nodes🔹"
+
+    node_library_name = "🔹Elimination"
     class_mappings = {
         "🖼️✨🎬 Infinite Parallax": [
             (
                 "Layer Shifter for Parallax Outpainting",
-                "Wrap-Shift and Mask Slices for Parallax",
+                "Wrap-Shift & Mask Slices",
                 LayerShifterNode,
             ),
             (
                 "Parallax Config",
-                "Infinite Parallax User Dict",
+                "IP User Dict",
                 ParallaxConfigDictNode,
             ),
             (
                 "Save Parallax Frame",
-                "Save Infinite Parallax Step Components",
+                "Save IP Step Components",
                 SaveParallaxStepNode,
             ),
             (
                 "Load Parallax Frame",
-                "Load Infinite Parallax Step Start",
+                "Load IP Step Start",
                 LoadParallaxStartNode,
             ),
             (
                 "Create Parallax Video",
-                "Create and Composite Layer VideoClips",
+                "Create Composited Layer VClips",
                 LayerFramesToParallaxVideoNode,
             ),
         ],
         "Infinite Zoom": [
             (
                 "Shrink and Pad for Outpainting",
-                "Shrink Inplace and Create Alpha Pad",
+                "Shrink Inplace & Alpha Pad",
                 ShrinkAndAlphaPadNode,
             )
         ],
@@ -77,7 +81,7 @@ def _assign_class_mappings():
             ),
             (
                 "Mask from RGB Image by Method",
-                "Infer Alpha from Non-RGBA Cutout",
+                "Infer Alpha",
                 AutoAlphaMaskNode,
             ),
             (
@@ -89,12 +93,12 @@ def _assign_class_mappings():
         "Utils": [
             (
                 "Load Most Recent Image in Folder",
-                "Load Filetype by Mtime",
+                "Load File by Mtime",
                 LoadMostRecentInFolderNode,
             ),
             (
                 "Load Random Image-Pose Pair",
-                "Load Random Image and Pose",
+                "Load Image Pair by Method",
                 LoadRandomImgPosePairNode,
             ),
         ],
@@ -103,7 +107,7 @@ def _assign_class_mappings():
     for node_category, node_mapping in class_mappings.items():
         for display_name, node_name, node_class in node_mapping:
             # Strip and add the suffix to the node name
-            node_name = f"{node_name.strip()} {node_name_suffix.strip()}"
+            node_name = f"{node_name.strip()} {node_library_name.strip()}"
             # Assign node class
             NODE_CLASS_MAPPINGS[node_name] = node_class
             # Assign display name

@@ -24,6 +24,7 @@
     - [*NODE* — Create Infinite Zoom Video](#node--create-infinite-zoom-video)
   - [Utility Nodes](#utility-nodes)
     - [*NODE* — Size Match Images/Masks](#node--size-match-imagesmasks)
+    - [*NODE* — Load Random Img-Pose Pair](#node--load-random-img-pose-pair)
 - [To-do](#to-do)
 
 
@@ -147,8 +148,21 @@ The custom node highlighted is red in the screenshots
 
 - Automatically matches size of two images with various size matching methods
 
+### *NODE* — Load Random Img-Pose Pair
+
+![load-random-img-pose-pair-demo_pic](wiki/wiki-pics/node-demos/load_random_image_pose_pair-demo_pic.png)
+
+- Selection methods: random, random no repeat, iterate, iterate backwards, most recent
+- Filetype selection
+- Keyword selection
+- Default dir or custom dir by path
+- Double checks if the filenames have indices in them that the pairs have matching indices
+- Graceful with file extension selectors and paths
+
+
 # To-do
 
+- preview web extension on load image nodes
 - parallax
   - iterative object removal -> save -> re-composite with lowest breakpoint layer velocity
     - idea: "pad region" is a horizontal space between each layer border, such that it overlaps some small number of pixels with both of the connected layers, like a chain link. The chain link moves at the average velocity fo the connecter layers. but instead of iterative inpainting of the shifted region, the entire pad region is re-inpainted after each step. During final video compositing, the different ierations of the pad region are perpetually cross faded. It may also be best to not use any type of velocity at all and keep the pad region static, only having motion as a result of cross-fading

@@ -157,26 +157,26 @@ class LoadRandomImgPosePairNode:
             target_index = -1 * target_index
 
         pose_path = os.path.join(self.folder_abs_path, pose_candidates[target_index])
-        print(colored(f"Pose Path: {pose_path}", "light_red"))
         img_path = os.path.join(self.folder_abs_path, img_candidates[target_index])
-        print(colored(f"Image Path: {img_path}", "light_red"))
 
         def extract_index(filename):
-            pattern = r'(\d+)(?=\D*$)'
+            pattern = r"(\d+)(?=\D*$)"
             matches = re.findall(pattern, filename)
             if matches:
                 return int(matches[0])
             return False
 
-        # Try to get the index from the filename.
+        # Try to match any indices found in filenames if the indices in the folders lead to a disalignment.
         try:
             pose_image_fi_index = extract_index(pose_candidates[target_index])
             img_image_fi_index = extract_index(img_candidates[target_index])
             if pose_image_fi_index and img_image_fi_index:
                 if pose_image_fi_index != img_image_fi_index:
-                    img_path = img_path.replace(
+                    attempt = img_path.replace(
                         str(img_image_fi_index), str(pose_image_fi_index)
                     )
+                    if os.path.exists(attempt):
+                        img_path = attempt
         except IndexError:
             pass
 
