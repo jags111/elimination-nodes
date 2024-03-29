@@ -5,6 +5,7 @@
 *Table of Contents:*
 
 - [Nodes](#nodes)
+  - [*Node* — Image to Text - Auto Caption](#node--image-to-text---auto-caption)
   - [Compositing Nodes](#compositing-nodes)
     - [*NODE* — Paste Cutout on Base Image](#node--paste-cutout-on-base-image)
     - [*NODE* — Infer Alpha from RGB Image](#node--infer-alpha-from-rgb-image)
@@ -36,6 +37,23 @@ Custom [ComfyUI](https://github.com/comfyanonymous/ComfyUI) Nodes 🤗. My ***[G
 # Nodes
 
 The custom node highlighted is red in the screenshots
+
+## *Node* — Image to Text - Auto Caption
+
+![alt text](wiki/wiki-pics/node-demos/image_to_text_blip-demo_pic.png)
+
+- Uses [Salesforce's Blip Image Captioning](https://huggingface.co/Salesforce/blip-image-captioning-large) pretrained on Conceptual Captions dataset
+- Returns the caption as a string, and displays it in the node (bottom)
+- Fields:
+  - input_image (torch.Tensor): [Batch_n, H, W, 3-channel] The input image
+  - conditional_image_captioning (str): Conditional captioning phrase
+  - temperature (float): 0.1 to 2.0 value to control the randomness of the output
+  - repetition_penalty (float): 0.1 to 2.0 value to control the repetition of the output
+  - min_words (int): Minimum number of tokens in the output
+  - max_words (int): Maximum number of tokens in the output
+  - threads (int): The number of beams in the beam search
+  - exclude_terms (str): Comma-separated terms to exclude from the output
+  - skip_special_tokens (bool): Whether to skip special tokens in the output like [CLS], [SEP], etc.
 
 ## Compositing Nodes
 
