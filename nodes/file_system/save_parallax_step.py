@@ -1,4 +1,4 @@
-"""Method signatures automatically generated
+"""Doc Strings automatically generated
 
 pyenv local 3.10.6"""
 

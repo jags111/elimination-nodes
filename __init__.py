@@ -13,13 +13,15 @@ from .nodes.animation.create_parallax_video import *
 from .nodes.loaders.image_loaders.load_most_recent import *
 from .nodes.preprocessors.shrink_and_alpha_pad import *
 from .nodes.loaders.image_loaders.load_random_img_pose_pair import *
+from .nodes.img2txt.img2txt_blip import *
 
 from .equalize import *
 from .segment import *
 
 NODE_CLASS_MAPPINGS = {}
 NODE_DISPLAY_NAME_MAPPINGS = {}
-
+WEB_DIRECTORY = "./web"
+    
 
 def _assign_class_mappings():
     """
@@ -102,12 +104,19 @@ def _assign_class_mappings():
                 LoadRandomImgPosePairNode,
             ),
         ],
+        "img2txt": [
+            (
+                "Image to Text - Auto Caption",
+                "img2txt BLIP SalesForce Large",
+                Img2TxtBlipNode,
+            )
+        ],
     }
 
     for node_category, node_mapping in class_mappings.items():
         for display_name, node_name, node_class in node_mapping:
             # Strip and add the suffix to the node name
-            node_name = f"{node_name.strip()} {node_library_name.strip()}"
+            node_name = f"{node_name.strip()}{node_library_name.strip()}"
             # Assign node class
             NODE_CLASS_MAPPINGS[node_name] = node_class
             # Assign display name
@@ -117,5 +126,3 @@ def _assign_class_mappings():
 
 
 _assign_class_mappings()
-
-# WEB_DIRECTORY = './js'

@@ -162,7 +162,9 @@ The custom node highlighted is red in the screenshots
 
 # To-do
 
-- preview web extension on load image nodes
+<!-- - parallax toolset. add smoke/fog/blur/foreground layer in front, remove background and replace with stuff, create layers or object layers, parallax. another example: https://youtu.be/MvbmVOz08lU?t=1629 -->
+<!-- - use border type of cutout to improve parallax. use a photo like this one in https://www.youtube.com/watch?v=RnEypwmJiaA wherein there are already basically just objects in space to do parallax. create new demo
+  - 2nd type of parallax generator: auto segment -> object layers -> parallax the traditional way like it would be in unity -->
 - parallax
   - iterative object removal -> save -> re-composite with lowest breakpoint layer velocity
     - idea: "pad region" is a horizontal space between each layer border, such that it overlaps some small number of pixels with both of the connected layers, like a chain link. The chain link moves at the average velocity fo the connecter layers. but instead of iterative inpainting of the shifted region, the entire pad region is re-inpainted after each step. During final video compositing, the different ierations of the pad region are perpetually cross faded. It may also be best to not use any type of velocity at all and keep the pad region static, only having motion as a result of cross-fading

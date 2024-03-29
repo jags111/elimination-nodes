@@ -1,4 +1,4 @@
-"""Method signatures automatically generated"""
+"""Doc Strings automatically generated"""
 
 import torch
 from typing import Tuple, Union
