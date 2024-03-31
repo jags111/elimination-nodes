@@ -32,7 +32,6 @@ VIDEO_EXTENSION_LIST = [
     ".3g2",
     ".3gpp",
 ]
-
 PICTURE_EXTENSION_LIST = [
     ".jpg",
     ".jpeg",
@@ -63,7 +62,6 @@ PICTURE_EXTENSION_LIST = [
     ".thm",
     ".yuv",
 ]
-
 TEXT_EXTENSION_LIST = [
     ".txt",
     ".json",
