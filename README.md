@@ -1,13 +1,10 @@
 
-
-----
-
 *Table of Contents:*
 
-- [Nodes](#nodes)
-  - [Image to Text Nodes](#image-to-text-nodes)
+- [All Nodes](#all-nodes)
+  - [🖼️➡️🔤 Image to Text Nodes](#️️-image-to-text-nodes)
     - [*Node* — Image to Text - Auto Caption](#node--image-to-text---auto-caption)
-  - [Infinite Parallax Nodes](#infinite-parallax-nodes)
+  - [🌌 Infinite Parallax Nodes](#-infinite-parallax-nodes)
     - [*NODE* — Create Parallax Video](#node--create-parallax-video)
     - [*NODE* — Parallax Config](#node--parallax-config)
     - [*NODE* — Load Parallax Frame](#node--load-parallax-frame)
@@ -17,14 +14,14 @@
     - [Video Post-Processing Nodes](#video-post-processing-nodes)
       - [*NODE* — Add Ambiance Sound by Layer Distance](#node--add-ambiance-sound-by-layer-distance)
       - [*NODE* — Add Music from Prompt](#node--add-music-from-prompt)
-  - [Compositing Nodes](#compositing-nodes)
+  - [🖼️ Compositing Nodes](#️-compositing-nodes)
     - [*NODE* — Paste Cutout on Base Image](#node--paste-cutout-on-base-image)
     - [*NODE* — Infer Alpha from RGB Image](#node--infer-alpha-from-rgb-image)
-  - [Infinite Zoom Nodes](#infinite-zoom-nodes)
+  - [🔍 Infinite Zoom Nodes](#-infinite-zoom-nodes)
     - [*NODE* — Shrink and Pad for Outpainting](#node--shrink-and-pad-for-outpainting)
     - [*NODE* — Load Most Recent Image in Folder](#node--load-most-recent-image-in-folder)
     - [*NODE* — Create Infinite Zoom Video](#node--create-infinite-zoom-video)
-  - [Utility Nodes](#utility-nodes)
+  - [🛠️ Utility Nodes](#️-utility-nodes)
     - [*NODE* — Size Match Images/Masks](#node--size-match-imagesmasks)
     - [*NODE* — Load Random Img-Pose Pair](#node--load-random-img-pose-pair)
 - [To-do](#to-do)
@@ -35,11 +32,11 @@
 Custom [ComfyUI](https://github.com/comfyanonymous/ComfyUI) Nodes 🤗. My ***[GUIDE](wiki/creating-custom-comfyui_nodes-guide.md)*** for creating custom nodes, work in progress.
 
 
-# Nodes
+# All Nodes
 
-The custom node highlighted is red in the screenshots
+*The custom node highlighted is red in the screenshots*
 
-## Image to Text Nodes
+## 🖼️➡️🔤 Image to Text Nodes
 
 ### *Node* — Image to Text - Auto Caption
 
@@ -65,7 +62,9 @@ The custom node highlighted is red in the screenshots
 
 **Output:** a photograph of a woman sitting in the back seat of a car looking out the window at a street at night with her arm resting on the window sill of the back of the car
 
-## Infinite Parallax Nodes
+## 🌌 Infinite Parallax Nodes
+
+&nbsp;
 
 ### *NODE* — Create Parallax Video
 
@@ -143,9 +142,16 @@ Above is a gif showing the output video on the right
 
 #### *NODE* — Add Ambiance Sound by Layer Distance
 
+....
+
 #### *NODE* — Add Music from Prompt
 
-## Compositing Nodes
+...
+
+
+## 🖼️ Compositing Nodes
+
+&nbsp;
 
 ### *NODE* — Paste Cutout on Base Image
 
@@ -191,7 +197,7 @@ Above is a gif showing the output video on the right
 
 
 
-## Infinite Zoom Nodes
+## 🔍 Infinite Zoom Nodes
 
 ### *NODE* — Shrink and Pad for Outpainting
 
@@ -228,9 +234,11 @@ Above is a gif showing the output video on the right
 
 ### *NODE* — Create Infinite Zoom Video
 
-- ...
+- Like above
 
-## Utility Nodes
+## 🛠️ Utility Nodes
+
+&nbsp;
 
 ### *NODE* — Size Match Images/Masks
 
