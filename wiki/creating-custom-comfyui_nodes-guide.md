@@ -780,10 +780,7 @@ class CustomNode:
     - If there was only one image, the single tensor is passed to the next node
       - However, **the single image's tensor is not squeezed before being passed**, so in either case, the return type is BHWC 
 - Therefore, the standard date type of images always includes a batch dimension, even if it is just a single image
-    - *Correction*: it seems masks do have a batch dimension added by default
-  <!-- - **The exception is with the `MASK` input type**, which will not have a batch dimension added
-    - Thus, masks are just HWC, specifically `(H, W, 1)` because they are not images with rgb channels (which would be `(H, W, 3)`) but instead masks with a single channel (alpha channel - representing transparency levels, rather than color levels)
-      - It follows that an rgba image would be `(H, W, 4)` -->
+    - *Note*: This standard shape also applies to masks 
 - As a result, it is necessary to write code that handles tensors with a batch dimension — and thus, batches of HWC images iteratively
   - If the relationship between images in a batch is not important to your node's processing (e.g., you aren't expecting a bach anyway), an easy/good solution seems to be to write your code to work with an individual HWC tensor, then add a recursion check at the injection point which checks if the input tensor has a batch dimension, and if it does, calls itself on each image in the batch, batch_size times
     - `if len(image.shape) == 4: return [my_method(image[i]) for i in range(image.shape[0])]`
@@ -800,8 +797,7 @@ class CustomNode:
 
 - Since images are generally loaded in `PIL.Image.open()` in "rgb" mode, the alpha channel is not included in the image data
 - Instead, the alpha channel is separated into a tensor of its own, with the same shape but only 1 channel in the Channel(s) dimension
-    - Structure: `(H, W, 1)` (HWC)
-    - *Note*: there is no batch dimension attached to the mask tensor by default
+    - Structure: `(B, H, W, 1)` (HWC)
 - The Comfy environment presupposes that if someone wants the alpha channel, they will want to use it as a mask, so the alpha channel is also automatically inverted
 - If the alpha channel is important to your custom node, you can:
   - Accept an additional input of type `"MASK"`

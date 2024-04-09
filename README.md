@@ -262,7 +262,7 @@ Above is a gif showing the output video on the right
 # To-do
 
 - [ ] img2text node
-  - [ ] By model
+  - [ ] By model ([models](https://huggingface.co/models?pipeline_tag=image-to-text&sort=trending))
     - [x] BLIP image captioning
     - [ ] vit
     - [ ] CLIP
